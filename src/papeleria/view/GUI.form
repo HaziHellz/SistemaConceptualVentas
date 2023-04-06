@@ -105,7 +105,7 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtPrice" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtPrice" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxTypeSolds" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnSell" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -125,6 +125,9 @@
                     <StringItem index="2" value="Item 3"/>
                     <StringItem index="3" value="Item 4"/>
                   </StringArray>
+                </Property>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[72, 23]"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -147,8 +150,8 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jScrollPane1" pref="442" max="32767" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="jScrollPane1" pref="444" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -233,22 +236,22 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                              <Component id="cbxMonth" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cbxYear" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxMonth" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="cbxYear" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="cbxMonthFilter" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cbxYearFilter" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxMonthFilter" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="cbxYearFilter" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                               <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cbxProvider" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtQuantitySpends" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cbxTypeSpends" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cbxProviderFilter" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="cbxTypeSpendsFilter" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxProvider" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="txtQuantitySpends" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="cbxTypeSpends" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="cbxProviderFilter" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="cbxTypeSpendsFilter" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="443" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="444" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -452,17 +455,17 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="cbxMonthFilterSolds" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbxYearFilterSolds" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbxMonthFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="cbxYearFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbxProviderFilterSolds" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbxTypeSpendsFilterSolds" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtQuantitySolds" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbxTypesSolds" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbxProviderFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="cbxTypeSpendsFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="txtQuantitySolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="cbxTypesSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane4" pref="443" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" pref="444" max="32767" attributes="0"/>
                           <Component id="jScrollPane3" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>

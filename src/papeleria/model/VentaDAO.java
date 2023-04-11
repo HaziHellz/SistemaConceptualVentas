@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import static papeleria.model.Conexion.*;
 
 /**
@@ -19,10 +20,10 @@ import static papeleria.model.Conexion.*;
  * @author heber
  */
 public class VentaDAO {
-    
+
     private static VentaDAO ventaDAO;
-    
-   public static TableModel tableModel() {
+
+    public static TableModel tableModel() {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -31,8 +32,9 @@ public class VentaDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta");
+            rs = stmt.executeQuery("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = true");
             metaData = rs.getMetaData();
+            //metaData = Conexion.consulta("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = true");
             int columns = metaData.getColumnCount();
             for (int i = 1; i <= columns; i++) {
                 tableModel.addColumn(metaData.getColumnLabel(i));
@@ -44,7 +46,7 @@ public class VentaDAO {
                 }
                 tableModel.addRow(fila);
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -58,8 +60,53 @@ public class VentaDAO {
             return tableModel;
         }
     }
-   
-   public static VentaDAO getInstance() {
+
+    public static DefaultComboBoxModel comboModel() {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ResultSetMetaData metaData;
+        DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
+            metaData = rs.getMetaData();
+            
+            int rows = 0;
+            List<Object> name = new ArrayList();
+            
+            while (rs.next()) {
+                rows += 1;
+                name.add(rs.getObject(1));
+                System.out.println(rows);
+            }
+            
+            String[] types = new String[rows];
+            for (int i = 0; i < rows; i++) {
+                types[i] = (String) name.get(i);
+                
+            }
+            
+            cbxModel = new javax.swing.DefaultComboBoxModel<>(types);
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return cbxModel;
+        }
+
+    }
+
+    public static VentaDAO getInstance() {
         if (ventaDAO == null) {
             ventaDAO = new VentaDAO();
         }
@@ -229,5 +276,4 @@ public class VentaDAO {
 //        }
 
 //    }
-   
 }

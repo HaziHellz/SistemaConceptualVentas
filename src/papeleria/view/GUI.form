@@ -92,7 +92,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="txtPrice" min="-2" pref="77" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cbxTypeSolds" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbxTypeSale" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnSell" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
@@ -106,7 +106,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txtPrice" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
-                          <Component id="cbxTypeSolds" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbxTypeSale" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnSell" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -116,7 +116,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JComboBox" name="cbxTypeSolds">
+            <Component class="javax.swing.JComboBox" name="cbxTypeSale">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="4">
@@ -444,12 +444,19 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxMonthFilterSolds" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxProviderFilterSolds" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxDeleted" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxTypeSpendsFilterSolds" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="jScrollPane4" min="-2" pref="260" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="jScrollPane4" min="-2" pref="260" max="-2" attributes="0"/>
+                                  <Group type="102" attributes="0">
+                                      <Component id="btnDeleteHistory" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Component id="btnAcceptHistory" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane3" pref="580" max="32767" attributes="0"/>
                           </Group>
@@ -466,15 +473,22 @@
                           <Component id="cbxMonthFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxYearFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbxProviderFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="cbxDeleted" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxTypeSpendsFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="txtQuantitySolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxTypesSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane4" pref="444" max="32767" attributes="0"/>
-                          <Component id="jScrollPane3" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="444" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Component id="jScrollPane4" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btnAcceptHistory" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnDeleteHistory" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -612,7 +626,7 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cbxProviderFilterSolds">
+            <Component class="javax.swing.JComboBox" name="cbxDeleted">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="4">
@@ -641,6 +655,16 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnAcceptHistory">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Aceptar"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnDeleteHistory">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Eliminar"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>

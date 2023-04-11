@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
 import papeleria.model.TableModel;
 import papeleria.model.VentaDAO;
@@ -24,12 +25,22 @@ public class HistorialController extends MouseAdapter implements ActionListener,
 
     private final int HISTORIAL_VENTAS = 0;
     private final int VENTA = 1;
+    private final int TYPE_SOLDS = 4;
+    
     private List<JTable> tablesHistorial;
+    private List<JComboBox> combos;
+    
     private int selectedIndexHistorial = -1;
 
-    public HistorialController(List<JTable> tablesHistorial) {
+    public HistorialController(List<JTable> tablesHistorial, List<JComboBox> combos) {
         this.tablesHistorial = tablesHistorial;
+        this.combos = combos;
+        loadCombos();
         showHistory("");
+    }
+    
+    private void loadCombos(){
+        combos.get(TYPE_SOLDS).setModel(VentaDAO.comboModel());
     }
 
     private void showHistory(String strParam) {

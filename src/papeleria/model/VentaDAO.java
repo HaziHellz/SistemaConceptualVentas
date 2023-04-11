@@ -61,50 +61,7 @@ public class VentaDAO {
         }
     }
 
-    public static DefaultComboBoxModel comboModel() {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        ResultSetMetaData metaData;
-        DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
-        try {
-            conn = Conexion.getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
-            metaData = rs.getMetaData();
-            
-            int rows = 0;
-            List<Object> name = new ArrayList();
-            
-            while (rs.next()) {
-                rows += 1;
-                name.add(rs.getObject(1));
-                System.out.println(rows);
-            }
-            
-            String[] types = new String[rows];
-            for (int i = 0; i < rows; i++) {
-                types[i] = (String) name.get(i);
-                
-            }
-            
-            cbxModel = new javax.swing.DefaultComboBoxModel<>(types);
-
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
-        } finally {
-            
-            try {
-                close(rs);
-                close(stmt);
-                close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-            return cbxModel;
-        }
-
-    }
+    
 
     public static VentaDAO getInstance() {
         if (ventaDAO == null) {

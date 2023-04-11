@@ -14,6 +14,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import papeleria.model.TableModel;
+import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipoDAO;
 
@@ -35,14 +36,14 @@ public class HistorialController extends MouseAdapter implements ActionListener,
     public HistorialController(List<JTable> tablesHistorial, List<JComboBox> combos) {
         this.tablesHistorial = tablesHistorial;
         this.combos = combos;
-        loadCombos();
-        showHistory("");
+        //showHistory("");
     }
     
     private void loadCombos(){
-        combos.get(TYPE_SOLDS).setModel(VentaDAO.comboModel());
+        combos.get(TYPE_SOLDS).setModel(TipoDAO.comboModel());
     }
 
+    /*
     private void showHistory(String strParam) {
         TableModel tbModel = null;
         if (strParam.trim().isEmpty()) {
@@ -54,13 +55,12 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         tablesHistorial.get(HISTORIAL_VENTAS).setRowHeight(30);
 
     }
+    */
 
     private void showSale(int id_venta, String fecha_venta) {
         TableModel tbModel = null;
         tbModel = VentaTipoDAO.tableModel(id_venta, fecha_venta);
-
         tablesHistorial.get(VENTA).setModel(tbModel);
-        tablesHistorial.get(VENTA).setRowHeight(30);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
                 } else {
                     selectedIndexHistorial = -1;
-                    showHistory("");
+                    tablesHistorial.get(HISTORIAL_VENTAS).setModel(VentaDAO.tableModel());
                     tablesHistorial.get(VENTA).setModel(new TableModel());
                 }
 

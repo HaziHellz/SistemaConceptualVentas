@@ -5,6 +5,9 @@
 package papeleria.view;
 
 import controller.HistorialController;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JTable;
 
 /**
  *
@@ -18,11 +21,18 @@ public class GUI extends javax.swing.JFrame {
     public GUI() {
         initComponents();
         historial();
+        
         this.setLocationRelativeTo(this);
     }
     
     private void historial(){
-        HistorialController controller = new HistorialController(tblHistorialVentas);
+        List<JTable> tablesHistorial = new ArrayList();
+        tablesHistorial.add(tblHistorialVentas);
+        tablesHistorial.add(tblHistorialVenta);
+        
+        HistorialController controller = new HistorialController(tablesHistorial);
+        tblHistorialVentas.addMouseListener(controller);
+        
         
     }
 
@@ -61,7 +71,7 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblHistorialVentas = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tblHistorialVenta = new javax.swing.JTable();
         txtQuantitySolds = new javax.swing.JTextField();
         cbxTypesSolds = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
@@ -83,6 +93,7 @@ public class GUI extends javax.swing.JFrame {
         cbxTypeSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbxTypeSolds.setPreferredSize(new java.awt.Dimension(72, 23));
 
+        tblObjectList.getTableHeader().setReorderingAllowed(false);
         tblObjectList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -94,6 +105,7 @@ public class GUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblObjectList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tblObjectList);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -156,6 +168,7 @@ public class GUI extends javax.swing.JFrame {
 
         cbxProviderFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -167,6 +180,7 @@ public class GUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(jTable1);
 
         cbxYear.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -229,6 +243,7 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Gastos", jPanel2);
 
+        tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
         tblHistorialVentas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -243,19 +258,17 @@ public class GUI extends javax.swing.JFrame {
         tblHistorialVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(tblHistorialVentas);
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        tblHistorialVenta.getTableHeader().setReorderingAllowed(false);
+        tblHistorialVenta.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jTable3.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane4.setViewportView(jTable3);
+        tblHistorialVenta.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane4.setViewportView(tblHistorialVenta);
 
         cbxTypesSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -384,8 +397,8 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable3;
     private javax.swing.JMenu menu;
+    private javax.swing.JTable tblHistorialVenta;
     private javax.swing.JTable tblHistorialVentas;
     private javax.swing.JTable tblObjectList;
     private javax.swing.JTextField txtPrice;

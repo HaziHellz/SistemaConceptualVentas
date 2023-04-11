@@ -20,6 +20,8 @@ import static papeleria.model.Conexion.*;
  */
 public class VentaDAO {
     
+    private static VentaDAO ventaDAO;
+    
    public static TableModel tableModel() {
         Connection conn = null;
         Statement stmt = null;
@@ -56,13 +58,13 @@ public class VentaDAO {
             return tableModel;
         }
     }
-//   
-//   public static VentaDAO getInstance() {
-//        if (modelProduct == null) {
-//            modelProduct = new ProductDAO();
-//        }
-//        return modelProduct;
-//    }
+   
+   public static VentaDAO getInstance() {
+        if (ventaDAO == null) {
+            ventaDAO = new VentaDAO();
+        }
+        return ventaDAO;
+    }
 //
 //    public static void insert(ProductDTO product) {
 //        Connection conn = null;

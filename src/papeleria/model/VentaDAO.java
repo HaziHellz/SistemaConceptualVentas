@@ -10,9 +10,12 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import static papeleria.model.Conexion.*;
 
 /**
@@ -23,7 +26,7 @@ public class VentaDAO {
 
     private static VentaDAO ventaDAO;
 
-    public static TableModel tableModel() {
+    public static TableModel tableModel(String año, String mes, String registrada, String tipo) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -32,20 +35,31 @@ public class VentaDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = true");
+            String query = "";
+            
+            if (tipo.equals("Todo")) {
+                query = "SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta && k.existe = true) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%'";
+            }else{
+                query = "SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, v.cantidad_tipo as Total FROM venta p, venta_tipo v where v.existe = true && p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' && v.id_tipo like (select id_tipo from tipo where nombre_tipo like '" + tipo + "')";
+            }
+            
+            rs = stmt.executeQuery(query);
             metaData = rs.getMetaData();
             //metaData = Conexion.consulta("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = true");
             int columns = metaData.getColumnCount();
             for (int i = 1; i <= columns; i++) {
                 tableModel.addColumn(metaData.getColumnLabel(i));
             }
+            int ooo = 0;
             while (rs.next()) {
+                ooo+=1;
                 Object[] fila = new Object[columns];
                 for (int i = 0; i < columns; i++) {
                     fila[i] = rs.getObject(i + 1);
                 }
                 tableModel.addRow(fila);
             }
+            System.out.println(ooo);
 
         } catch (SQLException e) {
             e.printStackTrace(System.out);
@@ -60,7 +74,97 @@ public class VentaDAO {
             return tableModel;
         }
     }
+    
+    public static DefaultComboBoxModel comboModelAño(){
+        DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Timestamp firstSale = null;
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        int firstYear, lastYear;
+        
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select min(fecha_venta) from venta");
+            
+            while (rs.next()) {
+                firstSale = (Timestamp) rs.getObject(1);
+            }
+            System.out.println(firstSale.toString());
+            
+            firstYear = firstSale.getYear() + 1900;
+            lastYear = now.getYear() + 1900;
+            
+            String[] años = new String[lastYear - firstYear + 1];
+            
+            for (int i = 0; i < años.length; i++) {
+                años[i] = String.valueOf(firstYear + i);
+            }
+            
+            modelFechas = new javax.swing.DefaultComboBoxModel<>(años);
+            modelFechas.setSelectedItem(lastYear);
 
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return modelFechas;
+        }
+        
+    }
+    
+    public static DefaultComboBoxModel comboModelMeses(JComboBox año){
+        DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Timestamp firstSale = null;
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        int firstMonth, lastMonth;
+        List<Object> meses = new ArrayList();
+        
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select distinct substring(fecha_venta, 1 , 7) from venta where fecha_venta like '" + año.getSelectedItem().toString() + "-%'");
+            int q = 0;
+            while (rs.next()) {
+                q+=1;
+                meses.add((rs.getObject(1).toString()).substring(5, 7));
+            }
+            System.out.println(q);
+            System.out.println(meses.size());
+            String[] cantidadMeses = new String[meses.size()];
+            
+            for (int i = 0; i < cantidadMeses.length; i++) {
+                cantidadMeses[i] = String.valueOf(meses.get(i));
+            }
+            
+            modelFechas = new javax.swing.DefaultComboBoxModel<>(cantidadMeses);
+            //modelFechas.setSelectedItem(lastYear);
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return modelFechas;
+        }
+        
+    }
     
 
     public static VentaDAO getInstance() {

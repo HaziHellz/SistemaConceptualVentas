@@ -35,14 +35,19 @@ public class GUI extends javax.swing.JFrame {
         tablesHistorial.add(tblHistorialVenta);
         
         List<JComboBox> combos = new ArrayList();
-        combos.add(cbxYearFilter);
-        combos.add(cbxMonthFilter);
-        combos.add(cbxDeleted);
+        combos.add(cbxYearFilterSolds);
+        combos.add(cbxMonthFilterSolds);
+        combos.add(cbxDeletedSolds);
         combos.add(cbxTypeSpendsFilterSolds);
         combos.add(cbxTypesSolds);
         
         HistorialController controller = new HistorialController(tablesHistorial, combos);
         tblHistorialVentas.addMouseListener(controller);
+        cbxYearFilterSolds.addActionListener(controller);
+        cbxMonthFilterSolds.addActionListener(controller);
+        cbxTypesSolds.addActionListener(controller);
+        cbxDeletedSolds.addActionListener(controller);
+        cbxTypeSpendsFilterSolds.addActionListener(controller);
         
         
     }
@@ -100,7 +105,7 @@ public class GUI extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         cbxYearFilterSolds = new javax.swing.JComboBox<>();
         cbxMonthFilterSolds = new javax.swing.JComboBox<>();
-        cbxDeleted = new javax.swing.JComboBox<>();
+        cbxDeletedSolds = new javax.swing.JComboBox<>();
         cbxTypeSpendsFilterSolds = new javax.swing.JComboBox<>();
         btnAcceptHistory = new javax.swing.JButton();
         btnDeleteHistory = new javax.swing.JButton();
@@ -170,10 +175,11 @@ public class GUI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxTypeSale, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSell, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbxTypeSale, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSell, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -271,7 +277,14 @@ public class GUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("Gastos", jPanel2);
 
         tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
-        tblHistorialVentas.setModel(VentaDAO.tableModel());
+        tblHistorialVentas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         tblHistorialVentas.setRowHeight(30);
         tblHistorialVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(tblHistorialVentas);
@@ -293,11 +306,12 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel2.setText("Filtros");
 
-        cbxYearFilterSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
 
-        cbxMonthFilterSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
+        );
 
-        cbxDeleted.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxDeletedSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registradas", "Eliminadas" }));
 
         cbxTypeSpendsFilterSolds.setModel(TipoDAO.comboModelTodo());
 
@@ -319,11 +333,11 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxYearFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxYearFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxMonthFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxMonthFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxDeleted, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxDeletedSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cbxTypeSpendsFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -345,7 +359,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(cbxMonthFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxYearFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(cbxDeleted, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxDeletedSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxTypeSpendsFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtQuantitySolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxTypesSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -400,7 +414,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton btnAcceptHistory;
     private javax.swing.JButton btnDeleteHistory;
     private javax.swing.JButton btnSell;
-    private javax.swing.JComboBox<String> cbxDeleted;
+    private javax.swing.JComboBox<String> cbxDeletedSolds;
     private javax.swing.JComboBox<String> cbxMonth;
     private javax.swing.JComboBox<String> cbxMonthFilter;
     private javax.swing.JComboBox<String> cbxMonthFilterSolds;

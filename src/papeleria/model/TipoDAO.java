@@ -24,21 +24,19 @@ public class TipoDAO {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        ResultSetMetaData metaData;
         DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
-            metaData = rs.getMetaData();
-            
+         
             int rows = 0;
             List<Object> name = new ArrayList();
             
             while (rs.next()) {
                 rows += 1;
                 name.add(rs.getObject(1));
-                System.out.println(rows);
+                //System.out.println(rows);
             }
             
             String[] types = new String[rows];
@@ -79,18 +77,22 @@ public class TipoDAO {
             int rows = 0;
             List<Object> name = new ArrayList();
             
+            //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
             while (rs.next()) {
                 rows += 1;
                 name.add(rs.getObject(1));
-                System.out.println(rows);
             }
             
+            
             String[] types = new String[rows+1];
+            
+            //AGREGA LA OPCION TODO
             types[0] = "Todo";
+            //AGREGA EL NOMBRE AL ARREGLO
             for (int i = 0; i < rows; i++) {
                 types[i+1] = (String) name.get(i);
             }
-            
+            //CREA EL MODELO PARA COMBO BOX CON EL ARREGLO
             cbxModel = new javax.swing.DefaultComboBoxModel<>(types);
 
         } catch (SQLException e) {

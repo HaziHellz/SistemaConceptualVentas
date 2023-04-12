@@ -28,7 +28,7 @@ public class VentaTipoDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT (select nombre_tipo from tipo t where t.id_tipo = v.id_tipo) as Concepto, cantidad_tipo as Cantidad FROM venta_tipo v where v.id_venta = " + id_venta + " && v.fecha_venta = '" + fecha_venta + "'");
+            rs = stmt.executeQuery("SELECT (select nombre_tipo from tipo t where t.id_tipo = v.id_tipo) as Concepto, cantidad_tipo as Cantidad FROM venta_tipo v where v.id_venta = " + id_venta + " && v.fecha_venta = '" + fecha_venta + "' && v.existe = true");
             metaData = rs.getMetaData();
             int columns = metaData.getColumnCount();
             for (int i = 1; i <= columns; i++) {

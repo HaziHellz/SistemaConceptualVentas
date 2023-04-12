@@ -27,19 +27,25 @@ public class HistorialController extends MouseAdapter implements ActionListener,
     private final int HISTORIAL_VENTAS = 0;
     private final int VENTA = 1;
     private final int TYPE_SOLDS = 4;
-    
+
+    private final int CBX_YEAR_FILTER = 0;
+    private final int CBX_MONTH_FILTER = 1;
+    private final int CBX_DELETED = 2;
+    private final int CBX_TYPE_SPENDS_FILTER_SOLDS = 3;
+    private final int CBX_TYPES_SOLDS = 4;
+
     private List<JTable> tablesHistorial;
     private List<JComboBox> combos;
-    
+
     private int selectedIndexHistorial = -1;
 
     public HistorialController(List<JTable> tablesHistorial, List<JComboBox> combos) {
         this.tablesHistorial = tablesHistorial;
         this.combos = combos;
-        //showHistory("");
+        resetTables();
     }
-    
-    private void loadCombos(){
+
+    private void loadCombos() {
         combos.get(TYPE_SOLDS).setModel(TipoDAO.comboModel());
     }
 
@@ -55,8 +61,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         tablesHistorial.get(HISTORIAL_VENTAS).setRowHeight(30);
 
     }
-    */
-
+     */
     private void showSale(int id_venta, String fecha_venta) {
         TableModel tbModel = null;
         tbModel = VentaTipoDAO.tableModel(id_venta, fecha_venta);
@@ -73,17 +78,46 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
                 } else {
                     selectedIndexHistorial = -1;
-                    tablesHistorial.get(HISTORIAL_VENTAS).setModel(VentaDAO.tableModel());
-                    tablesHistorial.get(VENTA).setModel(new TableModel());
+                    resetTables();
                 }
 
             }
 
         }
     }
+    
+    private void resetTables() {
+        tablesHistorial.get(HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), registrada(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
+        tablesHistorial.get(VENTA).setModel(new TableModel());
+    }
+    
+    
+    
+    private String registrada(){
+        if (combos.get(CBX_DELETED).getSelectedItem().toString().equals("Registradas")) {
+            return "true";
+        }else{
+            return "false";
+        }
+    }
+    
 
     @Override
     public void actionPerformed(ActionEvent e) {
+
+        if (e.getSource() instanceof JComboBox) {
+            JComboBox source = (JComboBox) e.getSource();
+            if (source.equals(combos.get(CBX_YEAR_FILTER))) {
+                combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
+                //tablesHistorial.get(HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()));
+            } else if (source.equals(combos.get(CBX_MONTH_FILTER))) {
+
+            }
+
+            if (!source.equals(combos.get(CBX_TYPES_SOLDS))) {
+                resetTables();
+            }
+        }
 
     }
 

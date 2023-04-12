@@ -104,10 +104,12 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="txtPrice" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cbxTypeSale" alignment="1" min="-2" pref="23" max="-2" attributes="0"/>
-                          <Component id="btnSell" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="txtPrice" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="btnSell" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jPanel3" max="32767" attributes="0"/>
@@ -437,11 +439,11 @@
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxYearFilterSolds" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxYearFilterSolds" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxMonthFilterSolds" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxMonthFilterSolds" min="-2" pref="75" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxDeleted" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxDeletedSolds" min="-2" pref="100" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="cbxTypeSpendsFilterSolds" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
@@ -470,7 +472,7 @@
                           <Component id="cbxMonthFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxYearFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbxDeleted" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                          <Component id="cbxDeletedSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxTypeSpendsFilterSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="txtQuantitySolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                           <Component id="cbxTypesSolds" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
@@ -502,8 +504,8 @@
               <SubComponents>
                 <Component class="javax.swing.JTable" name="tblHistorialVentas">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="VentaDAO.tableModel()" type="code"/>
+                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                      <Table columnCount="0" rowCount="0"/>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
@@ -587,13 +589,8 @@
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxYearFilterSolds">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="VentaDAO.comboModelA&#xf1;o()" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -602,27 +599,20 @@
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxMonthFilterSolds">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="VentaDAO.comboModelMeses(cbxYearFilterSolds)&#xd;&#xa;" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JComboBox" name="cbxDeleted">
+            <Component class="javax.swing.JComboBox" name="cbxDeletedSolds">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
+                  <StringArray count="2">
+                    <StringItem index="0" value="Registradas"/>
+                    <StringItem index="1" value="Eliminadas"/>
                   </StringArray>
                 </Property>
               </Properties>

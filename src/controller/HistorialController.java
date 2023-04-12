@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import papeleria.model.TableModel;
 import papeleria.model.TipoDAO;
@@ -33,20 +34,28 @@ public class HistorialController extends MouseAdapter implements ActionListener,
     private final int CBX_DELETED = 2;
     private final int CBX_TYPE_SPENDS_FILTER_SOLDS = 3;
     private final int CBX_TYPES_SOLDS = 4;
-
+    private JLabel ventaDiaria;
+    
     private List<JTable> tablesHistorial;
     private List<JComboBox> combos;
 
     private int selectedIndexHistorial = -1;
 
-    public HistorialController(List<JTable> tablesHistorial, List<JComboBox> combos) {
+    public HistorialController(List<JTable> tablesHistorial, List<JComboBox> combos, JLabel ventaDiaria) {
         this.tablesHistorial = tablesHistorial;
         this.combos = combos;
+        this.ventaDiaria = ventaDiaria;
+        actualizarVentaDiaria();
         resetTables();
+    }
+    
+    private void actualizarVentaDiaria(){
+        ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
     }
 
     private void loadCombos() {
         combos.get(TYPE_SOLDS).setModel(TipoDAO.comboModel());
+        
     }
 
     /*
@@ -110,12 +119,11 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             if (source.equals(combos.get(CBX_YEAR_FILTER))) {
                 combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
                 //tablesHistorial.get(HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()));
-            } else if (source.equals(combos.get(CBX_MONTH_FILTER))) {
-
-            }
+            } 
 
             if (!source.equals(combos.get(CBX_TYPES_SOLDS))) {
                 resetTables();
+                actualizarVentaDiaria();
             }
         }
 

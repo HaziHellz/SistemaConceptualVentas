@@ -36,13 +36,14 @@ public class VentaDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             String query = "";
-            
+
             if (tipo.equals("Todo")) {
-                query = "SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta && k.existe = true) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%'";
-            }else{
-                query = "SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, v.cantidad_tipo as Total FROM venta p, venta_tipo v where v.existe = true && p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' && v.id_tipo like (select id_tipo from tipo where nombre_tipo like '" + tipo + "')";
+                query = "SELECT distinct p.id_venta as 'Numero de Venta Mensual', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta && k.existe = true) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%'";
+            } else {
+                query = "SELECT distinct p.id_venta as 'Numero de Venta Mensual', p.fecha_venta as Fecha, v.cantidad_tipo as " + tipo + " FROM venta p, venta_tipo v where v.existe = true && p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' && v.id_tipo like (select id_tipo from tipo where nombre_tipo like '" + tipo + "')";
             }
             
+            //System.out.println("QUERY TABLE: " + query);
             rs = stmt.executeQuery(query);
             metaData = rs.getMetaData();
             //metaData = Conexion.consulta("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = true");
@@ -50,16 +51,13 @@ public class VentaDAO {
             for (int i = 1; i <= columns; i++) {
                 tableModel.addColumn(metaData.getColumnLabel(i));
             }
-            int ooo = 0;
             while (rs.next()) {
-                ooo+=1;
                 Object[] fila = new Object[columns];
                 for (int i = 0; i < columns; i++) {
                     fila[i] = rs.getObject(i + 1);
                 }
                 tableModel.addRow(fila);
             }
-            System.out.println(ooo);
 
         } catch (SQLException e) {
             e.printStackTrace(System.out);
@@ -74,8 +72,8 @@ public class VentaDAO {
             return tableModel;
         }
     }
-    
-    public static DefaultComboBoxModel comboModelAño(){
+
+    public static DefaultComboBoxModel comboModelAño() {
         DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
         Connection conn = null;
         Statement stmt = null;
@@ -83,26 +81,25 @@ public class VentaDAO {
         Timestamp firstSale = null;
         Timestamp now = new Timestamp(System.currentTimeMillis());
         int firstYear, lastYear;
-        
+
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select min(fecha_venta) from venta");
-            
+
             while (rs.next()) {
                 firstSale = (Timestamp) rs.getObject(1);
             }
-            System.out.println(firstSale.toString());
-            
+
             firstYear = firstSale.getYear() + 1900;
             lastYear = now.getYear() + 1900;
-            
+
             String[] años = new String[lastYear - firstYear + 1];
-            
+
             for (int i = 0; i < años.length; i++) {
                 años[i] = String.valueOf(firstYear + i);
             }
-            
+
             modelFechas = new javax.swing.DefaultComboBoxModel<>(años);
             modelFechas.setSelectedItem(lastYear);
 
@@ -118,36 +115,34 @@ public class VentaDAO {
             }
             return modelFechas;
         }
-        
+
     }
-    
-    public static DefaultComboBoxModel comboModelMeses(JComboBox año){
+
+    public static DefaultComboBoxModel comboModelMeses(JComboBox año) {
         DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         Timestamp firstSale = null;
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        int firstMonth, lastMonth;
         List<Object> meses = new ArrayList();
-        
+
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select distinct substring(fecha_venta, 1 , 7) from venta where fecha_venta like '" + año.getSelectedItem().toString() + "-%'");
             int q = 0;
             while (rs.next()) {
-                q+=1;
+                q += 1;
                 meses.add((rs.getObject(1).toString()).substring(5, 7));
             }
-            System.out.println(q);
-            System.out.println(meses.size());
+
             String[] cantidadMeses = new String[meses.size()];
-            
+
             for (int i = 0; i < cantidadMeses.length; i++) {
                 cantidadMeses[i] = String.valueOf(meses.get(i));
             }
-            
+
             modelFechas = new javax.swing.DefaultComboBoxModel<>(cantidadMeses);
             //modelFechas.setSelectedItem(lastYear);
 
@@ -163,9 +158,8 @@ public class VentaDAO {
             }
             return modelFechas;
         }
-        
+
     }
-    
 
     public static VentaDAO getInstance() {
         if (ventaDAO == null) {
@@ -173,94 +167,74 @@ public class VentaDAO {
         }
         return ventaDAO;
     }
-//
-//    public static void insert(ProductDTO product) {
-//        Connection conn = null;
-//        PreparedStatement stmt = null;
-//        try {
-//            conn = getConnection();
-//            conn.setAutoCommit(false);
-//            stmt = conn.prepareStatement("INSERT INTO producto(nombre_producto, precio, en_oferta, cantidad_stock) VALUES (?,?,?,?)");
-//            stmt.setString(1, product.getNameProduct());
-//            stmt.setDouble(2, product.getPrice());
-//            stmt.setBoolean(3, product.isOffert());
-//            stmt.setInt(4, product.getStock());
-//            stmt.executeUpdate();
-//            conn.commit();
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.out);
-//            try {
-//                conn.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace(System.out);
-//            }
-//        } finally {
-//            try {
-//                close(stmt);
-//                close(conn);
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.out);
-//            }
-//        }
-//    }
-//
-//    public static void update(ProductDTO product) {
-//        Connection conn = null;
-//        PreparedStatement stmt = null;
-//        try {
-//            conn = getConnection();
-//            conn.setAutoCommit(false);
-//            stmt = conn.prepareStatement("UPDATE producto SET nombre_producto = ?, precio = ?, en_oferta = ?, cantidad_stock = ? WHERE id_producto = ?");
-//            stmt.setString(1, product.getNameProduct());
-//            stmt.setDouble(2, product.getPrice());
-//            stmt.setInt(3, product.isOffert() ? 1 : 0);
-//            stmt.setInt(4, product.getStock());
-//            stmt.setInt(5, product.getIdProduct());
-//            int a = stmt.executeUpdate();
-//            conn.commit();
-//        } catch (SQLException e) {
-//            try {
-//                conn.rollback();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.out);
-//            }
-//            e.printStackTrace(System.out);
-//        } finally {
-//            try {
-//                close(stmt);
-//                close(conn);
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.out);
-//            }
-//        }
-//    }
-//
-//    public static void delete(int idProduct) {
-//        Connection conn = null;
-//        PreparedStatement stmt = null;
-//        try {
-//            conn = getConnection();
-//            conn.setAutoCommit(false);
-//            stmt = conn.prepareStatement("DELETE FROM producto WHERE id_producto = ?");
-//            stmt.setInt(1, idProduct);
-//            stmt.executeUpdate();
-//            conn.commit();
-//        } catch (SQLException e) {
-//            try {
-//                conn.rollback();
-//            } catch (SQLException e1) {
-//                e1.printStackTrace(System.out);
-//            }
-//            e.printStackTrace(System.out);
-//        } finally {
-//            try {
-//                close(stmt);
-//                close(conn);
-//            } catch (Exception e) {
-//            }
-//        }
-//    }
 
+    public static String ventaDiaria(String año, String mes, String tipo) {
+        String query = "";
+        String result = "";
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        double totalDia = 0;
+        double totalMes = 0;
+        //System.out.println("año: " + año + " mes: " + mes);
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            if (Integer.parseInt(año) == now.getYear() + 1900 && Integer.parseInt(mes) == now.getMonth() + 1) {
+                if (tipo.equals("Todo")) {
+                    //query = "select sum(cantidad_tipo) from venta_tipo where fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
+                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
+                    //System.out.println("TODO: " + query);
+                } else {
+                    //query = "select sum(cantidad_tipo) from venta_tipo where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
+                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && vt.existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
+                    //System.out.println("TODO: " + query);
+                }
+
+                rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    // firstSale = (Timestamp) rs.getObject(1);
+                    totalDia = (double) rs.getObject(1);
+                    //System.out.println("TOTAL DIA: " + totalDia);
+                }
+                result += "Dia: $" + totalDia + " / ";
+            }
+
+            if (tipo.equals("Todo")) {
+                query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-%' && vt.existe = true && v.id_venta = vt.id_venta && vt.fecha_venta = v.fecha_venta && v.existe_venta = true";
+                //System.out.println("TODO: " + query);
+            } else {
+                query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-%' && vt.existe = true && v.id_venta = vt.id_venta && vt.fecha_venta = v.fecha_venta && v.existe_venta = true;";
+                //System.out.println("TIPO: " + query);
+            }
+
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                // firstSale = (Timestamp) rs.getObject(1);
+                totalMes = (double) rs.getObject(1);
+                //System.out.println("TOTAL MES: " + totalMes);
+            }
+            
+            result += "Mes: " + totalMes;
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return result;
+        }
+    }
+    /*
     public static TableModel searchWithLike(String strParam) {
         TableModel tableModel = new TableModel();
         Connection conn = null;
@@ -303,38 +277,6 @@ public class VentaDAO {
             return tableModel;
         }
 
-    }
-//
-//    public static List<ProductDTO> getProducts() {
-//        Connection conn = null;
-//        PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//        TableModel tableModel = new TableModel();
-//        List<ProductDTO> productos = new ArrayList();
-//
-//        try {
-//            conn = ConnectionSys.getConnection();
-//            stmt = conn.prepareStatement("SELECT nombre_producto, cantidad_stock from producto");
-//            rs = stmt.executeQuery();
-//
-//            while (rs.next()) {
-//                productos.add(new ProductDTO.ProductDTOBuilder()
-//                        .nameProduct(rs.getString("nombre_producto"))
-//                        .stock(rs.getInt("cantidad_stock")).build()
-//                );
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.out);
-//        } finally {
-//            try {
-//                close(rs);
-//                close(stmt);
-//                close(conn);
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.out);
-//            }
-//            return productos;
-//        }
+    }*/
 
-//    }
 }

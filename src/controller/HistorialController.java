@@ -63,7 +63,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         this.ventaDiaria = ventaDiaria;
         this.txtPrecio = txtPrecio;
         this.buttons = buttonsHistorial;
-
         actualizarVentaDiaria();
         resetTableHistorial();
     }
@@ -110,8 +109,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                         buttons.get(BTN_ACCEPT).setEnabled(true);
                         buttons.get(BTN_DELETE_SALE).setEnabled(true);
                     } else {
-                        selectedIndexHistorial = -1;
-                        resetTableHistorial();
+                        aplicarFiltros();
                     }
 
                 } else if (source.equals(tablesHistorial.get(TBL_VENTA))) {
@@ -125,7 +123,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                         nuevo = false;
                     } else {
                         selectedIndexVentaHistorial = -1;
-                        resetTableVenta();
+                        resetFormVenta();
                     }
 
                 }
@@ -216,8 +214,8 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             }
 
             if (!source.equals(combos.get(CBX_TYPES_SOLDS))) {
-                resetTableHistorial();
                 actualizarVentaDiaria();
+                aplicarFiltros();
             }
         }
 
@@ -265,17 +263,13 @@ public class HistorialController extends MouseAdapter implements ActionListener,
     }
 
     private boolean editarItem() {
-
         tablesHistorial.get(TBL_VENTA).setValueAt(txtPrecio.getText(), selectedIndexVentaHistorial, 1);
-
         tablesHistorial.get(TBL_VENTA).setValueAt(combos.get(CBX_TYPES_SOLDS).getSelectedItem(), selectedIndexVentaHistorial, 0);
-
-        resetTableVenta();
-
+        resetFormVenta();
         return true;
     }
 
-    private void resetTableVenta() {
+    private void resetFormVenta() {
         refreshItemsVentas();
         nuevo = true;
         defecto = true;
@@ -313,5 +307,13 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 defecto = false;
             }
         }
+    }
+
+    private void aplicarFiltros() {
+        selectedIndexHistorial = -1;
+        selectedIndexVentaHistorial = -1;
+        nuevo = true;
+        defecto = true;
+        resetTableHistorial();
     }
 }

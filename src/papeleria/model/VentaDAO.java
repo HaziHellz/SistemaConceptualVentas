@@ -42,7 +42,7 @@ public class VentaDAO {
             } else {
                 query = "SELECT distinct p.id_venta as 'Numero de Venta Mensual', p.fecha_venta as Fecha, v.cantidad_tipo as " + tipo + " FROM venta p, venta_tipo v where v.existe = true && p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' && v.id_tipo like (select id_tipo from tipo where nombre_tipo like '" + tipo + "') order by Fecha desc";
             }
-            
+
             //System.out.println("QUERY TABLE: " + query);
             rs = stmt.executeQuery(query);
             metaData = rs.getMetaData();
@@ -182,26 +182,6 @@ public class VentaDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             Timestamp now = new Timestamp(System.currentTimeMillis());
-            if (Integer.parseInt(año) == now.getYear() + 1900 && Integer.parseInt(mes) == now.getMonth() + 1) {
-                if (tipo.equals("Todo")) {
-                    //query = "select sum(cantidad_tipo) from venta_tipo where fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
-                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
-                    //System.out.println("TODO: " + query);
-                } else {
-                    //query = "select sum(cantidad_tipo) from venta_tipo where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
-                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && vt.existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
-                    //System.out.println("TODO: " + query);
-                }
-
-                rs = stmt.executeQuery(query);
-
-                while (rs.next()) {
-                    // firstSale = (Timestamp) rs.getObject(1);
-                    totalDia = (double) rs.getObject(1);
-                    //System.out.println("TOTAL DIA: " + totalDia);
-                }
-                result += "Dia: $" + totalDia + " / ";
-            }
 
             if (tipo.equals("Todo")) {
                 query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-%' && vt.existe = true && v.id_venta = vt.id_venta && vt.fecha_venta = v.fecha_venta && v.existe_venta = true";
@@ -218,8 +198,27 @@ public class VentaDAO {
                 totalMes = (double) rs.getObject(1);
                 //System.out.println("TOTAL MES: " + totalMes);
             }
-            
             result += "Mes: " + totalMes;
+
+            if (Integer.parseInt(año) == now.getYear() + 1900 && Integer.parseInt(mes) == now.getMonth() + 1) {
+                if (tipo.equals("Todo")) {
+                    //query = "select sum(cantidad_tipo) from venta_tipo where fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
+                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
+                    //System.out.println("TODO: " + query);
+                } else {
+                    //query = "select sum(cantidad_tipo) from venta_tipo where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
+                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && vt.existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
+                    //System.out.println("TODO: " + query);
+                }
+
+                rs = stmt.executeQuery(query);
+
+                while (rs.next()) {
+                    totalDia = (double) rs.getObject(1);
+                    //System.out.println("TOTAL DIA: " + totalDia);
+                }
+                result += " / " + "Dia: $" + totalDia;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace(System.out);

@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import static papeleria.model.Conexion.close;
 
 /**
@@ -53,6 +55,41 @@ public class VentaTipoDAO {
                 ex.printStackTrace(System.out);
             }
             return tableModel;
+        }
+    }
+    
+    public static List<Object[]> getVenta(int id_venta, String fecha_venta){
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ResultSetMetaData metaData;
+        List<Object[]> venta = new ArrayList();
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("SELECT (select nombre_tipo from tipo t where t.id_tipo = v.id_tipo) as Concepto, cantidad_tipo as Cantidad FROM venta_tipo v where v.id_venta = " + id_venta + " && v.fecha_venta = '" + fecha_venta + "' && v.existe = true");
+            metaData = rs.getMetaData();
+            int columns = metaData.getColumnCount();
+            
+            while (rs.next()) {
+                Object[] item = new Object[columns];
+                for (int i = 0; i < columns; i++) {
+                    item[i] = rs.getObject(i + 1);
+                }
+                venta.add(item);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return venta;
         }
     }
     

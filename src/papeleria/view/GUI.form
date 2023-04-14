@@ -431,25 +431,20 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="jScrollPane4" min="-2" pref="260" max="-2" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="btnDeleteHistory" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="btnAcceptHistory" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="jScrollPane4" alignment="0" pref="260" max="32767" attributes="0"/>
+                          <Component id="btnDeleteItemHistory" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="txtQuantitySolds" min="-2" pref="77" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxTypesSolds" min="-2" pref="100" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="btnAcceptHistory" alignment="0" max="32767" attributes="0"/>
+                          <Component id="btnDeleteSaleHistory" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxYearFilterSolds" min="-2" pref="100" max="-2" attributes="0"/>
@@ -488,10 +483,11 @@
                           <Group type="102" attributes="0">
                               <Component id="jScrollPane4" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="btnAcceptHistory" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnDeleteHistory" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="btnDeleteItemHistory" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnDeleteSaleHistory" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnAcceptHistory" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -576,12 +572,16 @@
               </SubComponents>
             </Container>
             <Component class="javax.swing.JTextField" name="txtQuantitySolds">
+              <Properties>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxTypesSolds">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="TipoDAO.comboModel()" type="code"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -638,16 +638,24 @@
             <Component class="javax.swing.JButton" name="btnAcceptHistory">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Aceptar"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="btnDeleteHistory">
+            <Component class="javax.swing.JButton" name="btnDeleteItemHistory">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Eliminar"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lblVentaDiaria">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&quot;&quot;"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnDeleteSaleHistory">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Eliminar Venta"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
             </Component>
           </SubComponents>

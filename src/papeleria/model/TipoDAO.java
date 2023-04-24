@@ -20,6 +20,7 @@ import static papeleria.model.Conexion.close;
  */
 public class TipoDAO {
     
+    
     public static DefaultComboBoxModel comboModel() {
         Connection conn = null;
         Statement stmt = null;
@@ -107,6 +108,70 @@ public class TipoDAO {
                 ex.printStackTrace(System.out);
             }
             return cbxModel;
+        }
+
+    }
+    
+    public static int getIdTipo(String nombreTipo){
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        int idTipo = -1;
+        
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select id_tipo from tipo where existe_tipo = true && nombre_tipo = '" + nombreTipo + "'");
+            
+            
+            //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
+            while (rs.next()) {
+                idTipo = (int) rs.getObject(1);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return idTipo;
+        }
+    }
+    
+    public static List<Tipo> getTipos() {
+        List<Tipo> tipos = new ArrayList();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
+            
+            while (rs.next()) {
+                tipos.add(new Tipo.TypeBuilder().nameType((String) rs.getObject(1)).build());
+                //System.out.println(rows);
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return tipos;
         }
 
     }

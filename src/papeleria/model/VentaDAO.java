@@ -46,7 +46,6 @@ public class VentaDAO {
             //System.out.println("QUERY TABLE: " + query);
             rs = stmt.executeQuery(query);
             metaData = rs.getMetaData();
-            //metaData = Conexion.consulta("SELECT distinct p.id_venta as 'Numero de Venta Diaria', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = true");
             int columns = metaData.getColumnCount();
             for (int i = 1; i <= columns; i++) {
                 tableModel.addColumn(metaData.getColumnLabel(i));
@@ -161,6 +160,65 @@ public class VentaDAO {
 
     }
 
+    public static Venta getVenta(Timestamp fecha) {
+        Venta venta = null;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select id_venta, fecha_venta, existe_venta from venta where fecha_venta = '" + fecha + "'");
+            
+            while(rs.next()){
+                venta = new Venta.VentaBuilder().idVenta((int) rs.getObject(1)).fecha((Timestamp) rs.getObject(2)).existe((boolean) rs.getObject(3)).build();
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return venta;
+        }
+    }
+
+    public static void changeExists(Venta venta, boolean exists) {
+        //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
+        
+        
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = Conexion.getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("UPDATE `papeleria`.`venta` SET `existe_venta` = ? WHERE (`id_venta` = ?) and (`fecha_venta` = ?);");
+            stmt.setBoolean(1, exists);
+            stmt.setInt(2, venta.getIdVenta());
+            stmt.setTimestamp(3, venta.getFecha());
+            stmt.executeUpdate();
+            conn.commit();
+            
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            
+            try {
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+    }
+
     public static VentaDAO getInstance() {
         if (ventaDAO == null) {
             ventaDAO = new VentaDAO();
@@ -233,49 +291,5 @@ public class VentaDAO {
             return result;
         }
     }
-    /*
-    public static TableModel searchWithLike(String strParam) {
-        TableModel tableModel = new TableModel();
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        ResultSetMetaData metaData = null;
-        try {
-            conn = getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT SELECT p.id_venta as Venta, p.fecha_venta as Fecha FROM venta p WHERE fecha_venta LIKE '" + strParam + "%'");
-            metaData = rs.getMetaData();
-            int columns = metaData.getColumnCount();
-            for (int i = 1; i <= columns; i++) {
-                tableModel.addColumn(metaData.getColumnLabel(i));
-            }
-            while (rs.next()) {
-                Object[] fila = new Object[columns];
-                for (int i = 0; i < columns; i++) {
-                    fila[i] = rs.getObject(i + 1);
-                }
-                tableModel.addRow(fila);
-            }
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                Object obj = tableModel.getValueAt(i, columns - 3);
-                if (obj instanceof Integer) {
-                    boolean value = ((Integer) obj) == 1;
-                    tableModel.setValueAt(value, i, columns - 3);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
-        } finally {
-            try {
-                close(rs);
-                close(stmt);
-                close(conn);
-            } catch (SQLException e) {
-                e.printStackTrace(System.out);
-            }
-            return tableModel;
-        }
-
-    }*/
 
 }

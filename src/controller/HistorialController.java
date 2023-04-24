@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -23,6 +24,9 @@ import papeleria.model.TableModel;
 import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipoDAO;
+import papeleria.model.Tipo;
+import papeleria.model.Venta;
+import papeleria.model.VentaTipo;
 
 /**
  *
@@ -129,14 +133,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 }
             }
 
-//            } else if (e.getSource() instanceof JComboBox) {
-//                JComboBox source = (JComboBox) e.getSource();
-//                if (source.equals(combos.get(CBX_TYPES_SOLDS))) {
-//                    if (!nuevo) {
-//                        editarItem();
-//                    }
-//                }
-//            }
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -150,6 +146,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         buttons.get(BTN_DELETE_SALE).setEnabled(false);
         txtPrecio.setEnabled(false);
         combos.get(CBX_TYPES_SOLDS).setEnabled(false);
+        selectedIndexHistorial = -1;
     }
 
     private String registrada() {
@@ -210,32 +207,129 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             JComboBox source = (JComboBox) e.getSource();
             if (source.equals(combos.get(CBX_YEAR_FILTER))) {
                 combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
-                //tablesHistorial.get(HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()));
             }
 
             if (!source.equals(combos.get(CBX_TYPES_SOLDS))) {
                 actualizarVentaDiaria();
                 aplicarFiltros();
             }
+
+            if (source.equals(combos.get(CBX_DELETED))) {
+                if (combos.get(CBX_DELETED).getSelectedItem().equals("Registradas")) {
+                    buttons.get(BTN_DELETE_SALE).setText("Eliminar Venta");
+                } else {
+                    buttons.get(BTN_DELETE_SALE).setText("Restaurar Venta");
+                }
+            }
+
         }
 
         if (e.getSource() instanceof JButton) {
             JButton source = (JButton) e.getSource();
 
             if (source.equals(buttons.get(BTN_ACCEPT))) {
-                //TOMA LOS ITEMS EXISTENTES EN LA BASE DE DATOS
-                List<Object[]> itemsBD = VentaTipoDAO.getVenta(Integer.parseInt(tablesHistorial.get(TBL_HISTORIAL_VENTAS).getValueAt(selectedIndexHistorial, 0).toString()), tablesHistorial.get(TBL_HISTORIAL_VENTAS).getValueAt(selectedIndexHistorial, 1).toString());
+                List<Tipo> tipos = TipoDAO.getTipos();
+                //TOMA LOS TIPOS EXISTENTES EN LA BASE DE DATOS  ^^^^^^^^
+
+                //TOMA LOS ITEMS EXISTENTES DE ESA VENTA EN LA BASE DE DATOS
+                List<VentaTipo> itemsBD = VentaTipoDAO.getVenta(getSelectedVenta());
 
                 //TOMA LOS ITEMS EXISTENTES EN LA TABLA DE VENTA
-                List<Object[]> items = getItemsTableVenta();
+                List<VentaTipo> items = getItemsTableVenta_Tipo();
 
+                List<VentaTipo> datosAgrupados = new ArrayList();
+
+                //AGRUPA LAS CANTIDADES EN SU TIPO 
+                for (int i = 0; i < tipos.size(); i++) {
+                    boolean nuevoTipo = true;
+                    for (int j = 0; j < items.size(); j++) {
+                        if (items.get(j).getNombreTipo().equals(tipos.get(i).getNameType())) {
+                            if (nuevoTipo) {
+
+                                datosAgrupados.add(new VentaTipo.VentaBuilder()
+                                        .nombreTipo(tipos.get(i).getNameType())
+                                        .cantidadTipo(items.get(j).getCantidadTipo())
+                                        .idTipo(TipoDAO.getIdTipo(tipos.get(i).getNameType()))
+                                        .venta(getSelectedVenta())
+                                        .build());
+
+                                datosAgrupados.get(datosAgrupados.size() - 1).getVenta().toString();
+
+                                nuevoTipo = false;
+                            } else {
+                                datosAgrupados.get(datosAgrupados.size() - 1).setCantidadTipo(datosAgrupados.get(datosAgrupados.size() - 1).getCantidadTipo() + items.get(j).getCantidadTipo());
+                            }
+                        }
+                    }
+                }
+
+                //VERIFICA QUE SE HAYAN RECOGIDO CORRECTAMENTE LOS DATOS DE LA BD
+//                for (int i = 0; i < itemsBD.size(); i++) {
+//                    System.out.println(itemsBD.get(i).toString());;
+//                }
+                //ELIMINA EN LA BD LOS TIPOS QUE NO EXISTAN EN LOS DATOS AGRUPADOS DE LA VENTA EDITADA
+                for (int i = 0; i < itemsBD.size(); i++) {
+                    boolean existeTipoEnItemsYBD = false;
+                    for (int j = 0; j < datosAgrupados.size(); j++) {
+                        if (itemsBD.get(i).getNombreTipo().equals(datosAgrupados.get(j).getNombreTipo())) {
+                            existeTipoEnItemsYBD = true;
+                        }
+                    }
+                    if (!existeTipoEnItemsYBD) {
+                        VentaTipoDAO.delete(itemsBD.get(i));
+                    }
+
+                }
+
+                //REALIZA LOS CAMBIOS EN LA BASE DE DATOS
+                for (int i = 0; i < datosAgrupados.size(); i++) {
+                    boolean existeEnBD = false;
+                    for (int j = 0; j < itemsBD.size(); j++) {
+                        if (datosAgrupados.get(i).getIdTipo() == itemsBD.get(j).getIdTipo()) {
+                            existeEnBD = true;
+                        }
+                    }
+                    //ACTUALIZA LA CANTIDAD DEL TIPO A LA VENTA QUE CORRESPONDE
+                    if (existeEnBD) {
+                        VentaTipoDAO.update(datosAgrupados.get(i));
+                    } else {
+                        //AGREGA EL TIPO Y LA CANTIDAD A LA VENTA QUE CORRESPONDE
+                        VentaTipoDAO.insert(datosAgrupados.get(i));
+                    }
+                }
+
+                //VERIFICA QUE ESTEN AGRUPADAS CORRECTAMENTE
+//                for (int i = 0; i < datosAgrupados.size(); i++) {
+//                    System.out.println(datosAgrupados.get(i).toString());
+//                }
+                actualizarVentaDiaria();
+                resetTableHistorial();
+                resetFormVenta();
             }
             if (source.equals(buttons.get(BTN_DELETE_ITEM))) {
                 deleteItemVenta();
+                selectedIndexVentaHistorial = -1;
+            }
+
+            if (source.equals(buttons.get(BTN_DELETE_SALE))) {
+                if (buttons.get(BTN_DELETE_SALE).getText().equals("Eliminar Venta")) {
+                    VentaDAO.changeExists(getSelectedVenta(), false);
+                } else {
+                    VentaDAO.changeExists(getSelectedVenta(), true);
+                }
+                actualizarVentaDiaria();
+                resetTableHistorial();
+                resetFormVenta();
+                
+                
             }
 
         }
 
+    }
+
+    private Venta getSelectedVenta() {
+        return VentaDAO.getVenta((Timestamp) tablesHistorial.get(TBL_HISTORIAL_VENTAS).getValueAt(selectedIndexHistorial, 1));
     }
 
     @Override
@@ -276,6 +370,21 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         txtPrecio.setText("");
         buttons.get(BTN_DELETE_ITEM).setEnabled(false);
         selectedIndexVentaHistorial = -1;
+    }
+
+    private List<VentaTipo> getItemsTableVenta_Tipo() {
+        int rows = tablesHistorial.get(TBL_VENTA).getRowCount();
+        List<VentaTipo> items = new ArrayList();
+        for (int i = 0; i < rows; i++) {
+            //items.add(new Object[]{tablesHistorial.get(TBL_VENTA).getValueAt(i, 0), tablesHistorial.get(TBL_VENTA).getValueAt(i, 1)});
+            items.add(new VentaTipo.VentaBuilder()
+                    .nombreTipo((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0))
+                    .cantidadTipo(Double.parseDouble(tablesHistorial.get(TBL_VENTA).getValueAt(i, 1).toString()))
+                    .build());
+
+        }
+        //System.out.println(items.size());
+        return items;
     }
 
     private List<Object[]> getItemsTableVenta() {

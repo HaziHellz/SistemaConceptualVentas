@@ -58,6 +58,7 @@ public class GUI extends javax.swing.JFrame {
         txtQuantitySolds.addKeyListener(controller);
         btnDeleteItemHistory.addActionListener(controller);
         btnAcceptHistory.addActionListener(controller);
+        btnDeleteSaleHistory.addActionListener(controller);
     }
     
     private void venta(){

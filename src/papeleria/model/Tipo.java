@@ -8,13 +8,13 @@ package papeleria.model;
  *
  * @author heber
  */
-public class Type {
+public class Tipo {
 
     private int idType;
     private String nameType;
     private boolean exists;
 
-    public Type(TypeBuilder build) {
+    public Tipo(TypeBuilder build) {
         this.idType = build.idType;
         this.nameType = build.nameType;
         this.exists = build.exists;
@@ -72,8 +72,8 @@ public class Type {
             return this;
         }
 
-        public Type build() {
-            return new Type(this);
+        public Tipo build() {
+            return new Tipo(this);
         }
 
     }

@@ -243,13 +243,12 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 for (int i = 0; i < tipos.size(); i++) {
                     boolean nuevoTipo = true;
                     for (int j = 0; j < items.size(); j++) {
-                        if (items.get(j).getNombreTipo().equals(tipos.get(i).getNameType())) {
+                        if (items.get(j).getTipo().getNombreTipo().equals(tipos.get(i).getNombreTipo())) {
                             if (nuevoTipo) {
 
                                 datosAgrupados.add(new VentaTipo.VentaBuilder()
-                                        .nombreTipo(tipos.get(i).getNameType())
                                         .cantidadTipo(items.get(j).getCantidadTipo())
-                                        .idTipo(TipoDAO.getIdTipo(tipos.get(i).getNameType()))
+                                        .tipo(TipoDAO.getTipo(tipos.get(i).getNombreTipo()))
                                         .venta(getSelectedVenta())
                                         .build());
 
@@ -271,7 +270,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 for (int i = 0; i < itemsBD.size(); i++) {
                     boolean existeTipoEnItemsYBD = false;
                     for (int j = 0; j < datosAgrupados.size(); j++) {
-                        if (itemsBD.get(i).getNombreTipo().equals(datosAgrupados.get(j).getNombreTipo())) {
+                        if (itemsBD.get(i).getTipo().getNombreTipo().equals(datosAgrupados.get(j).getTipo().getNombreTipo())) {
                             existeTipoEnItemsYBD = true;
                         }
                     }
@@ -285,7 +284,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 for (int i = 0; i < datosAgrupados.size(); i++) {
                     boolean existeEnBD = false;
                     for (int j = 0; j < itemsBD.size(); j++) {
-                        if (datosAgrupados.get(i).getIdTipo() == itemsBD.get(j).getIdTipo()) {
+                        if (datosAgrupados.get(i).getTipo().getIdTipo() == itemsBD.get(j).getTipo().getIdTipo()) {
                             existeEnBD = true;
                         }
                     }
@@ -336,7 +335,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
     public void keyTyped(KeyEvent e) {
         if (e.getSource().equals(txtPrecio)) {
             InputController.validarNumero(e, txtPrecio.getText());
-            if ('\n' == e.getKeyChar()) {
+            if ('\n' == e.getKeyChar() && !txtPrecio.getText().isEmpty()) {
                 if (nuevo) {
                     agregarItem();
                 } else {
@@ -378,7 +377,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         for (int i = 0; i < rows; i++) {
             //items.add(new Object[]{tablesHistorial.get(TBL_VENTA).getValueAt(i, 0), tablesHistorial.get(TBL_VENTA).getValueAt(i, 1)});
             items.add(new VentaTipo.VentaBuilder()
-                    .nombreTipo((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0))
+                    .tipo(TipoDAO.getTipo((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0)))
                     .cantidadTipo(Double.parseDouble(tablesHistorial.get(TBL_VENTA).getValueAt(i, 1).toString()))
                     .build());
 

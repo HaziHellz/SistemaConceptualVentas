@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import static papeleria.model.Conexion.close;
-
+import papeleria.model.TipoDAO;
 /**
  *
  * @author heber
@@ -69,7 +69,7 @@ public class VentaTipoDAO {
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO `papeleria`.`venta_tipo` (`id_venta`, `id_tipo`, `cantidad_tipo`, `fecha_venta`) VALUES ( ?, ?, ?, ?);");
             stmt.setInt(1, ventaTipo.getVenta().getIdVenta());
-            stmt.setInt(2, ventaTipo.getIdTipo());
+            stmt.setInt(2, ventaTipo.getTipo().getIdTipo());
             stmt.setDouble(3, ventaTipo.getCantidadTipo());
             stmt.setTimestamp(4, ventaTipo.getVenta().getFecha());
             stmt.executeUpdate();
@@ -100,7 +100,7 @@ public class VentaTipoDAO {
             stmt = conn.prepareStatement("DELETE FROM `papeleria`.`venta_tipo` WHERE (`id_venta` = ?) and (`fecha_venta` = ?) and (`id_tipo` = ?)");
             stmt.setInt(1, ventaTipo.getVenta().getIdVenta());
             stmt.setTimestamp(2, ventaTipo.getVenta().getFecha());
-            stmt.setInt(3, ventaTipo.getIdTipo());
+            stmt.setInt(3, ventaTipo.getTipo().getIdTipo());
             stmt.executeUpdate();
             conn.commit();
             
@@ -129,7 +129,7 @@ public class VentaTipoDAO {
             stmt.setDouble(1, ventaTipo.getCantidadTipo());
             stmt.setInt(2, ventaTipo.getVenta().getIdVenta());
             stmt.setTimestamp(3, ventaTipo.getVenta().getFecha());
-            stmt.setInt(4, ventaTipo.getIdTipo());
+            stmt.setInt(4, ventaTipo.getTipo().getIdTipo());
             stmt.executeUpdate();
             conn.commit();
         } catch (SQLException e) {
@@ -165,7 +165,7 @@ public class VentaTipoDAO {
                 for (int i = 0; i < columns; i++) {
                     item[i] = rs.getObject(i + 1);
                 }
-                ventaTipos.add(new VentaTipo.VentaBuilder().cantidadTipo((double) item[1]).nombreTipo((String) item[0]).idTipo((int) item[2]).venta(venta).build());
+                ventaTipos.add(new VentaTipo.VentaBuilder().cantidadTipo((double) item[1]).venta(venta).tipo(TipoDAO.getTipo((String) item[0])).build());
             }
             
         } catch (SQLException e) {

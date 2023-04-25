@@ -12,21 +12,15 @@ import java.sql.Timestamp;
  */
 public class VentaTipo {
 
-    private String nombreTipo;
     private double cantidadTipo;
-    private int idTipo;
     private Venta venta;
+    private Tipo tipo;
 
     public VentaTipo(VentaBuilder build) {
-        this.nombreTipo = build.nombreTipo;
         this.cantidadTipo = build.cantidadTipo;
-        this.idTipo = build.idTipo;
         this.venta = build.venta;
+        this.tipo = build.tipo;
         
-    }
-
-    public void setIdTipo(int idTipo) {
-        this.idTipo = idTipo;
     }
 
     public Venta getVenta() {
@@ -37,17 +31,12 @@ public class VentaTipo {
         this.venta = venta;
     }
 
-
-    public int getIdTipo() {
-        return idTipo;
+    public Tipo getTipo() {
+        return tipo;
     }
 
-    public String getNombreTipo() {
-        return nombreTipo;
-    }
-
-    public void setNombreTipo(String nombreTipo) {
-        this.nombreTipo = nombreTipo;
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
     }
 
     public double getCantidadTipo() {
@@ -62,33 +51,27 @@ public class VentaTipo {
     public String toString() {
         System.out.println(venta.getIdVenta());
         System.out.println(venta.getFecha());
-        return  "ID Venta: " + venta.getIdVenta() + "      FechaVenta: " + venta.getFecha() + "ID Tipo: " + idTipo + "     Nombre Tipo: " + nombreTipo + ",    CantidadTipo: " + cantidadTipo;
+        return "ID Venta: " + venta.getIdVenta() + "      FechaVenta: " + venta.getFecha() + "ID Tipo: " + tipo.getIdTipo() + "     Nombre Tipo: " + tipo.getNombreTipo() + ",    CantidadTipo: " + cantidadTipo;
     }
 
     public static class VentaBuilder {
 
         private double cantidadTipo;
-        private String nombreTipo;
-        private int idTipo;
+        private Tipo tipo;
         private Venta venta;
-        
-        public VentaBuilder venta(Venta venta){
+
+        public VentaBuilder venta(Venta venta) {
             this.venta = venta;
+            return this;
+        }
+
+        public VentaBuilder tipo(Tipo tipo) {
+            this.tipo = tipo;
             return this;
         }
 
         public VentaBuilder cantidadTipo(double cantidadTipo) {
             this.cantidadTipo = cantidadTipo;
-            return this;
-        }
-
-        public VentaBuilder nombreTipo(String nombreTipo) {
-            this.nombreTipo = nombreTipo;
-            return this;
-        }
-
-        public VentaBuilder idTipo(int idTipo) {
-            this.idTipo = idTipo;
             return this;
         }
 

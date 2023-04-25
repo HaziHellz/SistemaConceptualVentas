@@ -10,30 +10,30 @@ package papeleria.model;
  */
 public class Tipo {
 
-    private int idType;
-    private String nameType;
+    private int idTipo;
+    private String nombreTipo;
     private boolean exists;
 
-    public Tipo(TypeBuilder build) {
-        this.idType = build.idType;
-        this.nameType = build.nameType;
+    public Tipo(TipoBuilder build) {
+        this.idTipo = build.idType;
+        this.nombreTipo = build.nameType;
         this.exists = build.exists;
     }
 
-    public int getIdType() {
-        return idType;
+    public int getIdTipo() {
+        return idTipo;
     }
 
-    public void setIdType(int idType) {
-        this.idType = idType;
+    public void setIdTipo(int idTipo) {
+        this.idTipo = idTipo;
     }
 
-    public String getNameType() {
-        return nameType;
+    public String getNombreTipo() {
+        return nombreTipo;
     }
 
-    public void setNameType(String nameType) {
-        this.nameType = nameType;
+    public void setNombreTipo(String nombreTipo) {
+        this.nombreTipo = nombreTipo;
     }
 
     public boolean isExists() {
@@ -47,27 +47,27 @@ public class Tipo {
     @Override
     public String toString(){
         StringBuilder string = new StringBuilder();
-        string.append("Type{ ").append("idType= ").append(idType).append(", nameType= ").append(nameType).append(", exists= ").append(exists).append("}");
+        string.append("Type{ ").append("idType= ").append(idTipo).append(", nameType= ").append(nombreTipo).append(", exists= ").append(exists).append("}");
         return string.toString();
     }
 
-    public static class TypeBuilder {
+    public static class TipoBuilder {
 
         private int idType;
         private String nameType;
         private boolean exists;
 
-        public TypeBuilder idType(int idType) {
+        public TipoBuilder idType(int idType) {
             this.idType = idType;
             return this;
         }
 
-        public TypeBuilder nameType(String nameType) {
+        public TipoBuilder nameType(String nameType) {
             this.nameType = nameType;
             return this;
         }
 
-        public TypeBuilder exists(boolean exists) {
+        public TipoBuilder exists(boolean exists) {
             this.exists = exists;
             return this;
         }

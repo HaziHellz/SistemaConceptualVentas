@@ -5,11 +5,13 @@
 package papeleria.view;
 
 import controller.HistorialController;
+import controller.OpcionesController;
 import controller.VentasController;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JMenuItem;
 import javax.swing.JTable;
 import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
@@ -25,52 +27,53 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
-        historial();
-        
         this.setLocationRelativeTo(this);
+        this.setTitle("Sistema Conceptual");
+        Thread historial = new Thread(new Historial());
+        historial.start();
+        
+        opciones();
     }
+
     
-    private void historial(){
-        List<JTable> tablesHistorial = new ArrayList();
-        tablesHistorial.add(tblHistorialVentas);
-        tablesHistorial.add(tblHistorialVenta);
+    private void opciones() {
+
+        List<JMenuItem> componentes = new ArrayList();
+        componentes.add(btnMenuConceptos);
+        componentes.add(btnMenuProveedores);
+        componentes.add(btnMenuExportar);
+        componentes.add(btnMenuSalir);
         
-        List<JComboBox> combos = new ArrayList();
-        combos.add(cbxYearFilterSolds);
-        combos.add(cbxMonthFilterSolds);
-        combos.add(cbxDeletedSolds);
-        combos.add(cbxTypeSpendsFilterSolds);
-        combos.add(cbxTypesSolds);
+        List<JComboBox> cbx = new ArrayList();
+        cbx.add(cbxTypeSale);
+        cbx.add(cbxTypeFilterSolds);
+        cbx.add(cbxTypesSolds);
+        cbx.add(cbxTypeSpends);
+        cbx.add(cbxTypeSpendsFilter);
+        cbx.add(cbxProvider);
+        cbx.add(cbxProviderFilter);
         
-        List<JButton> buttonsHistorial = new ArrayList();
-        buttonsHistorial.add(btnDeleteItemHistory);
-        buttonsHistorial.add(btnDeleteSaleHistory);
-        buttonsHistorial.add(btnAcceptHistory);
+        OpcionesController controller = new OpcionesController(componentes, cbx);
         
-        HistorialController controller = new HistorialController(tablesHistorial, combos, lblVentaDiaria, txtQuantitySolds, buttonsHistorial);
-        tblHistorialVentas.addMouseListener(controller);
-        tblHistorialVenta.addMouseListener(controller);
-        cbxYearFilterSolds.addActionListener(controller);
-        cbxMonthFilterSolds.addActionListener(controller);
-        cbxTypesSolds.addItemListener(controller);
-        cbxDeletedSolds.addActionListener(controller);
-        cbxTypeSpendsFilterSolds.addActionListener(controller);
-        txtQuantitySolds.addKeyListener(controller);
-        btnDeleteItemHistory.addActionListener(controller);
-        btnAcceptHistory.addActionListener(controller);
-        btnDeleteSaleHistory.addActionListener(controller);
+        btnMenuConceptos.addActionListener(controller);
+        btnMenuProveedores.addActionListener(controller);
+        btnMenuExportar.addActionListener(controller);
+        btnMenuSalir.addActionListener(controller);
+
     }
-    
-    private void venta(){
+
+    private void venta() {
         List<Object> componentes = new ArrayList();
-        
+
         componentes.add(txtPrice);
         componentes.add(cbxTypeSale);
         componentes.add(btnSell);
         componentes.add(tblObjectList);
-        
+
         VentasController controller = new VentasController(componentes);
         
+        cbxTypeSale.addActionListener(controller);
+
     }
 
     /**
@@ -115,23 +118,23 @@ public class GUI extends javax.swing.JFrame {
         cbxYearFilterSolds = new javax.swing.JComboBox<>();
         cbxMonthFilterSolds = new javax.swing.JComboBox<>();
         cbxDeletedSolds = new javax.swing.JComboBox<>();
-        cbxTypeSpendsFilterSolds = new javax.swing.JComboBox<>();
+        cbxTypeFilterSolds = new javax.swing.JComboBox<>();
         btnAcceptHistory = new javax.swing.JButton();
         btnDeleteItemHistory = new javax.swing.JButton();
         lblVentaDiaria = new javax.swing.JLabel();
         btnDeleteSaleHistory = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
+        btnMenuConceptos = new javax.swing.JMenuItem();
+        btnMenuProveedores = new javax.swing.JMenuItem();
+        btnMenuExportar = new javax.swing.JMenuItem();
+        btnMenuSalir = new javax.swing.JMenuItem();
 
         jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        cbxTypeSale.setModel(TipoDAO.comboModel());
+        cbxTypeSale.setModel(TipoDAO.comboModel("Conceptos"));
         cbxTypeSale.setPreferredSize(new java.awt.Dimension(72, 23));
 
         tblObjectList.getTableHeader().setReorderingAllowed(false);
@@ -195,7 +198,7 @@ public class GUI extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.addTab("Ventas", jPanel1);
+        jTabbedPane1.addTab("Ingresos", jPanel1);
 
         cbxMonthFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -203,13 +206,16 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel1.setText("Filtros");
 
-        cbxProvider.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxProvider.setModel(TipoDAO.comboModel("Proveedores")
+        );
 
-        cbxTypeSpends.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxTypeSpends.setModel(TipoDAO.comboModel("Conceptos"));
 
-        cbxTypeSpendsFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxTypeSpendsFilter.setModel(TipoDAO.comboModel("Conceptos")
+        );
 
-        cbxProviderFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxProviderFilter.setModel(TipoDAO.comboModel("Proveedores")
+        );
 
         jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -315,7 +321,7 @@ public class GUI extends javax.swing.JFrame {
 
         txtQuantitySolds.setEnabled(false);
 
-        cbxTypesSolds.setModel(TipoDAO.comboModel());
+        cbxTypesSolds.setModel(TipoDAO.comboModel("Conceptos"));
         cbxTypesSolds.setEnabled(false);
 
         jLabel2.setText("Filtros");
@@ -327,7 +333,7 @@ public class GUI extends javax.swing.JFrame {
 
         cbxDeletedSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registradas", "Eliminadas" }));
 
-        cbxTypeSpendsFilterSolds.setModel(TipoDAO.comboModelTodo());
+        cbxTypeFilterSolds.setModel(TipoDAO.comboModelTodo());
 
         btnAcceptHistory.setText("Aceptar");
         btnAcceptHistory.setEnabled(false);
@@ -366,7 +372,7 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxDeletedSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbxTypeSpendsFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxTypeFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblVentaDiaria, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
@@ -381,7 +387,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(cbxYearFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(cbxDeletedSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbxTypeSpendsFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbxTypeFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtQuantitySolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbxTypesSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblVentaDiaria))
@@ -399,21 +405,21 @@ public class GUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTabbedPane1.addTab("Historial Ventas", jPanel4);
+        jTabbedPane1.addTab("Historial de Ingreso", jPanel4);
 
         menu.setText("Opciones");
 
-        jMenuItem1.setText("Conceptos");
-        menu.add(jMenuItem1);
+        btnMenuConceptos.setText("Conceptos");
+        menu.add(btnMenuConceptos);
 
-        jMenuItem5.setText("Proveedores");
-        menu.add(jMenuItem5);
+        btnMenuProveedores.setText("Proveedores");
+        menu.add(btnMenuProveedores);
 
-        jMenuItem3.setText("Exportar");
-        menu.add(jMenuItem3);
+        btnMenuExportar.setText("Exportar");
+        menu.add(btnMenuExportar);
 
-        jMenuItem4.setText("Salir");
-        menu.add(jMenuItem4);
+        btnMenuSalir.setText("Salir");
+        menu.add(btnMenuSalir);
 
         jMenuBar1.add(menu);
 
@@ -433,11 +439,51 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private class Historial implements Runnable {
+
+        @Override
+        public void run() {
+            List<JTable> tablesHistorial = new ArrayList();
+            tablesHistorial.add(tblHistorialVentas);
+            tablesHistorial.add(tblHistorialVenta);
+
+            List<JComboBox> combos = new ArrayList();
+            combos.add(cbxYearFilterSolds);
+            combos.add(cbxMonthFilterSolds);
+            combos.add(cbxDeletedSolds);
+            combos.add(cbxTypeFilterSolds);
+            combos.add(cbxTypesSolds);
+
+            List<JButton> buttonsHistorial = new ArrayList();
+            buttonsHistorial.add(btnDeleteItemHistory);
+            buttonsHistorial.add(btnDeleteSaleHistory);
+            buttonsHistorial.add(btnAcceptHistory);
+
+            HistorialController controller = new HistorialController(tablesHistorial, combos, lblVentaDiaria, txtQuantitySolds, buttonsHistorial);
+            tblHistorialVentas.addMouseListener(controller);
+            tblHistorialVentas.addKeyListener(controller);
+            tblHistorialVenta.addMouseListener(controller);
+            cbxYearFilterSolds.addActionListener(controller);
+            cbxMonthFilterSolds.addActionListener(controller);
+            cbxTypesSolds.addItemListener(controller);
+            cbxDeletedSolds.addActionListener(controller);
+            cbxTypeFilterSolds.addActionListener(controller);
+            txtQuantitySolds.addKeyListener(controller);
+            btnDeleteItemHistory.addActionListener(controller);
+            btnAcceptHistory.addActionListener(controller);
+            btnDeleteSaleHistory.addActionListener(controller);
+        }
+
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAcceptHistory;
     private javax.swing.JButton btnDeleteItemHistory;
     private javax.swing.JButton btnDeleteSaleHistory;
+    private javax.swing.JMenuItem btnMenuConceptos;
+    private javax.swing.JMenuItem btnMenuExportar;
+    private javax.swing.JMenuItem btnMenuProveedores;
+    private javax.swing.JMenuItem btnMenuSalir;
     private javax.swing.JButton btnSell;
     private javax.swing.JComboBox<String> cbxDeletedSolds;
     private javax.swing.JComboBox<String> cbxMonth;
@@ -445,10 +491,10 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbxMonthFilterSolds;
     private javax.swing.JComboBox<String> cbxProvider;
     private javax.swing.JComboBox<String> cbxProviderFilter;
+    private javax.swing.JComboBox<String> cbxTypeFilterSolds;
     private javax.swing.JComboBox<String> cbxTypeSale;
     private javax.swing.JComboBox<String> cbxTypeSpends;
     private javax.swing.JComboBox<String> cbxTypeSpendsFilter;
-    private javax.swing.JComboBox<String> cbxTypeSpendsFilterSolds;
     private javax.swing.JComboBox<String> cbxTypesSolds;
     private javax.swing.JComboBox<String> cbxYear;
     private javax.swing.JComboBox<String> cbxYearFilter;
@@ -456,11 +502,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -481,3 +523,37 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTextField txtQuantitySpends;
     // End of variables declaration//GEN-END:variables
 }
+
+/*
+    private void historial() {
+        List<JTable> tablesHistorial = new ArrayList();
+        tablesHistorial.add(tblHistorialVentas);
+        tablesHistorial.add(tblHistorialVenta);
+
+        List<JComboBox> combos = new ArrayList();
+        combos.add(cbxYearFilterSolds);
+        combos.add(cbxMonthFilterSolds);
+        combos.add(cbxDeletedSolds);
+        combos.add(cbxTypeSpendsFilterSolds);
+        combos.add(cbxTypesSolds);
+
+        List<JButton> buttonsHistorial = new ArrayList();
+        buttonsHistorial.add(btnDeleteItemHistory);
+        buttonsHistorial.add(btnDeleteSaleHistory);
+        buttonsHistorial.add(btnAcceptHistory);
+
+        HistorialController controller = new HistorialController(tablesHistorial, combos, lblVentaDiaria, txtQuantitySolds, buttonsHistorial);
+        tblHistorialVentas.addMouseListener(controller);
+        tblHistorialVentas.addKeyListener(controller);
+        tblHistorialVenta.addMouseListener(controller);
+        cbxYearFilterSolds.addActionListener(controller);
+        cbxMonthFilterSolds.addActionListener(controller);
+        cbxTypesSolds.addItemListener(controller);
+        cbxDeletedSolds.addActionListener(controller);
+        cbxTypeSpendsFilterSolds.addActionListener(controller);
+        txtQuantitySolds.addKeyListener(controller);
+        btnDeleteItemHistory.addActionListener(controller);
+        btnAcceptHistory.addActionListener(controller);
+        btnDeleteSaleHistory.addActionListener(controller);
+    }
+*/

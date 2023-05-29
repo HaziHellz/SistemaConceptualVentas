@@ -4,15 +4,18 @@
  */
 package controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
+import papeleria.model.TipoDAO;
 
 /**
  *
  * @author heber
  */
-public class VentasController {
+public class VentasController implements ActionListener{
 
     private int TXT_PRICE = 0;
     private int CBX_TYPE_SALE = 1;
@@ -23,6 +26,11 @@ public class VentasController {
 
     public VentasController(List<Object> componentes) {
         this.componentes = componentes;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+   
     }
 
 }

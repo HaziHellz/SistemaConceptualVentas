@@ -69,7 +69,7 @@ public class VentaTipoDAO {
             conn.setAutoCommit(false);
             stmt = conn.prepareStatement("INSERT INTO `papeleria`.`venta_tipo` (`id_venta`, `id_tipo`, `cantidad_tipo`, `fecha_venta`) VALUES ( ?, ?, ?, ?);");
             stmt.setInt(1, ventaTipo.getVenta().getIdVenta());
-            stmt.setInt(2, ventaTipo.getTipo().getIdTipo());
+            stmt.setInt(2, ventaTipo.getTipo().getIdBase());
             stmt.setDouble(3, ventaTipo.getCantidadTipo());
             stmt.setTimestamp(4, ventaTipo.getVenta().getFecha());
             stmt.executeUpdate();
@@ -100,7 +100,7 @@ public class VentaTipoDAO {
             stmt = conn.prepareStatement("DELETE FROM `papeleria`.`venta_tipo` WHERE (`id_venta` = ?) and (`fecha_venta` = ?) and (`id_tipo` = ?)");
             stmt.setInt(1, ventaTipo.getVenta().getIdVenta());
             stmt.setTimestamp(2, ventaTipo.getVenta().getFecha());
-            stmt.setInt(3, ventaTipo.getTipo().getIdTipo());
+            stmt.setInt(3, ventaTipo.getTipo().getIdBase());
             stmt.executeUpdate();
             conn.commit();
             
@@ -129,7 +129,7 @@ public class VentaTipoDAO {
             stmt.setDouble(1, ventaTipo.getCantidadTipo());
             stmt.setInt(2, ventaTipo.getVenta().getIdVenta());
             stmt.setTimestamp(3, ventaTipo.getVenta().getFecha());
-            stmt.setInt(4, ventaTipo.getTipo().getIdTipo());
+            stmt.setInt(4, ventaTipo.getTipo().getIdBase());
             stmt.executeUpdate();
             conn.commit();
         } catch (SQLException e) {

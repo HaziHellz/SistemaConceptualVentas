@@ -14,7 +14,7 @@ public class VentaTipo {
 
     private double cantidadTipo;
     private Venta venta;
-    private Tipo tipo;
+    private Base tipo;
 
     public VentaTipo(VentaBuilder build) {
         this.cantidadTipo = build.cantidadTipo;
@@ -31,11 +31,11 @@ public class VentaTipo {
         this.venta = venta;
     }
 
-    public Tipo getTipo() {
+    public Base getTipo() {
         return tipo;
     }
 
-    public void setTipo(Tipo tipo) {
+    public void setTipo(Base tipo) {
         this.tipo = tipo;
     }
 
@@ -51,13 +51,13 @@ public class VentaTipo {
     public String toString() {
         System.out.println(venta.getIdVenta());
         System.out.println(venta.getFecha());
-        return "ID Venta: " + venta.getIdVenta() + "      FechaVenta: " + venta.getFecha() + "ID Tipo: " + tipo.getIdTipo() + "     Nombre Tipo: " + tipo.getNombreTipo() + ",    CantidadTipo: " + cantidadTipo;
+        return "ID Venta: " + venta.getIdVenta() + "      FechaVenta: " + venta.getFecha() + "ID Tipo: " + tipo.getIdBase() + "     Nombre Tipo: " + tipo.getNombreBase() + ",    CantidadTipo: " + cantidadTipo;
     }
 
     public static class VentaBuilder {
 
         private double cantidadTipo;
-        private Tipo tipo;
+        private Base tipo;
         private Venta venta;
 
         public VentaBuilder venta(Venta venta) {
@@ -65,7 +65,7 @@ public class VentaTipo {
             return this;
         }
 
-        public VentaBuilder tipo(Tipo tipo) {
+        public VentaBuilder tipo(Base tipo) {
             this.tipo = tipo;
             return this;
         }

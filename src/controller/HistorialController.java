@@ -24,7 +24,7 @@ import papeleria.model.TableModel;
 import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipoDAO;
-import papeleria.model.Tipo;
+import papeleria.model.Base;
 import papeleria.model.Venta;
 import papeleria.model.VentaTipo;
 
@@ -75,24 +75,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
     }
 
-    private void loadCombos() {
-        combos.get(TYPE_SOLDS).setModel(TipoDAO.comboModel());
-
-    }
-
-    /*
-    private void showHistory(String strParam) {
-        TableModel tbModel = null;
-        if (strParam.trim().isEmpty()) {
-            tbModel = VentaDAO.tableModel();
-        } else {
-            tbModel = VentaDAO.searchWithLike(strParam);
-        }
-        tablesHistorial.get(HISTORIAL_VENTAS).setModel(tbModel);
-        tablesHistorial.get(HISTORIAL_VENTAS).setRowHeight(30);
-
-    }
-     */
     private void showSale(int id_venta, String fecha_venta) {
         TableModel tbModel = null;
         tbModel = VentaTipoDAO.tableModel(id_venta, fecha_venta);
@@ -105,17 +87,8 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             if (e.getSource() instanceof JTable) {
                 JTable source = (JTable) e.getSource();
                 if (source.equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
-                    if (selectedIndexHistorial != source.getSelectedRow()) {
-                        selectedIndexHistorial = source.getSelectedRow();
-                        showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
-                        txtPrecio.setEnabled(true);
-                        combos.get(CBX_TYPES_SOLDS).setEnabled(true);
-                        buttons.get(BTN_ACCEPT).setEnabled(true);
-                        buttons.get(BTN_DELETE_SALE).setEnabled(true);
-                    } else {
-                        aplicarFiltros();
-                    }
-
+                    //TOMA LA VENTA EN SELECCION
+                    getSelectedItemHistorial(source);
                 } else if (source.equals(tablesHistorial.get(TBL_VENTA))) {
                     if (selectedIndexVentaHistorial != source.getSelectedRow()) {
                         selectedIndexVentaHistorial = source.getSelectedRow();
@@ -228,7 +201,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             JButton source = (JButton) e.getSource();
 
             if (source.equals(buttons.get(BTN_ACCEPT))) {
-                List<Tipo> tipos = TipoDAO.getTipos();
+                List<Base> tipos = TipoDAO.getTipos();
                 //TOMA LOS TIPOS EXISTENTES EN LA BASE DE DATOS  ^^^^^^^^
 
                 //TOMA LOS ITEMS EXISTENTES DE ESA VENTA EN LA BASE DE DATOS
@@ -243,12 +216,12 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 for (int i = 0; i < tipos.size(); i++) {
                     boolean nuevoTipo = true;
                     for (int j = 0; j < items.size(); j++) {
-                        if (items.get(j).getTipo().getNombreTipo().equals(tipos.get(i).getNombreTipo())) {
+                        if (items.get(j).getTipo().getNombreBase().equals(tipos.get(i).getNombreBase())) {
                             if (nuevoTipo) {
 
                                 datosAgrupados.add(new VentaTipo.VentaBuilder()
                                         .cantidadTipo(items.get(j).getCantidadTipo())
-                                        .tipo(TipoDAO.getTipo(tipos.get(i).getNombreTipo()))
+                                        .tipo(TipoDAO.getTipo(tipos.get(i).getNombreBase()))
                                         .venta(getSelectedVenta())
                                         .build());
 
@@ -270,7 +243,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 for (int i = 0; i < itemsBD.size(); i++) {
                     boolean existeTipoEnItemsYBD = false;
                     for (int j = 0; j < datosAgrupados.size(); j++) {
-                        if (itemsBD.get(i).getTipo().getNombreTipo().equals(datosAgrupados.get(j).getTipo().getNombreTipo())) {
+                        if (itemsBD.get(i).getTipo().getNombreBase().equals(datosAgrupados.get(j).getTipo().getNombreBase())) {
                             existeTipoEnItemsYBD = true;
                         }
                     }
@@ -284,7 +257,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 for (int i = 0; i < datosAgrupados.size(); i++) {
                     boolean existeEnBD = false;
                     for (int j = 0; j < itemsBD.size(); j++) {
-                        if (datosAgrupados.get(i).getTipo().getIdTipo() == itemsBD.get(j).getTipo().getIdTipo()) {
+                        if (datosAgrupados.get(i).getTipo().getIdBase() == itemsBD.get(j).getTipo().getIdBase()) {
                             existeEnBD = true;
                         }
                     }
@@ -319,8 +292,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                 actualizarVentaDiaria();
                 resetTableHistorial();
                 resetFormVenta();
-                
-                
+
             }
 
         }
@@ -342,7 +314,9 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     editarItem();
                 }
             }
+
         }
+
     }
 
     @Override
@@ -352,7 +326,26 @@ public class HistorialController extends MouseAdapter implements ActionListener,
 
     @Override
     public void keyReleased(KeyEvent e) {
+        if (e.getSource().equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
+            JTable source = (JTable) e.getSource();
+            getSelectedItemHistorial(source);
+        }
+    }
+    
+    private void getSelectedItemHistorial(JTable source){
+        if (source.equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
+                if (selectedIndexHistorial != source.getSelectedRow()) {
+                    selectedIndexHistorial = source.getSelectedRow();
+                    showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
+                    txtPrecio.setEnabled(true);
+                    combos.get(CBX_TYPES_SOLDS).setEnabled(true);
+                    buttons.get(BTN_ACCEPT).setEnabled(true);
+                    buttons.get(BTN_DELETE_SALE).setEnabled(true);
+                } else {
+                    aplicarFiltros();
+                }
 
+            }
     }
 
     private boolean editarItem() {

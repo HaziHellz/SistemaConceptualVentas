@@ -18,14 +18,17 @@ import java.sql.Statement;
 public class Conexion {
 
     private static final String DB_NAME = "papeleria";
+    //private static final String URL = "jdbc:mysql://localhost:3306/" + DB_NAME + "?useSSL=false&useTimezone=true";
+    //private static final String URL = "jdbc:mysql://10.75.42.23:3306/" + DB_NAME + "?useSSL=false&useTimezone=true";
     private static final String URL = "jdbc:mysql://localhost:3306/" + DB_NAME + "?useSSL=false&useTimezone=true";
-
+    
     public Conexion() {
 
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, "root", "admin");
+        //return DriverManager.getConnection(URL, "root", "admin");
+        return DriverManager.getConnection(URL, "Cliente", "Ananava7211");
     }
 
     public static void close(Connection conn) throws SQLException {

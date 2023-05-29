@@ -21,15 +21,21 @@ import static papeleria.model.Conexion.close;
 public class TipoDAO {
     
     
-    public static DefaultComboBoxModel comboModel() {
+    public static DefaultComboBoxModel comboModel(String titulo) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
         try {
+            
+            if (titulo.equals("Conceptos")) {
+                titulo = "tipo";
+            }else{
+                titulo = "proveedor";
+            }
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
+            rs = stmt.executeQuery("select nombre_" + titulo + " from " + titulo + " where existe_" + titulo  + " = true");
          
             int rows = 0;
             List<Object> name = new ArrayList();
@@ -112,43 +118,11 @@ public class TipoDAO {
 
     }
     
-    public static int getIdTipo(String nombreTipo){
+    public static Base getTipo(String nombreTipo){
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        int idTipo = -1;
-        
-        try {
-            conn = Conexion.getConnection();
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("select id_tipo from tipo where existe_tipo = true && nombre_tipo = '" + nombreTipo + "'");
-            
-            
-            //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
-            while (rs.next()) {
-                idTipo = (int) rs.getObject(1);
-            }
-            
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
-        } finally {
-            
-            try {
-                close(rs);
-                close(stmt);
-                close(conn);
-            } catch (SQLException ex) {
-                ex.printStackTrace(System.out);
-            }
-            return idTipo;
-        }
-    }
-    
-    public static Tipo getTipo(String nombreTipo){
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        Tipo tipo = null;
+        Base tipo = null;
         
         try {
             conn = Conexion.getConnection();
@@ -158,7 +132,7 @@ public class TipoDAO {
             
             //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
             while (rs.next()) {
-                tipo = new Tipo.TipoBuilder().idType((int) rs.getObject(1)).nameType((String) rs.getObject(2)).exists((boolean) rs.getObject(3)).build();
+                tipo = new Base.TipoBuilder().idBase((int) rs.getObject(1)).nameBase((String) rs.getObject(2)).exists((boolean) rs.getObject(3)).build();
             }
             
         } catch (SQLException e) {
@@ -176,8 +150,8 @@ public class TipoDAO {
         }
     }
     
-    public static List<Tipo> getTipos() {
-        List<Tipo> tipos = new ArrayList();
+    public static List<Base> getTipos() {
+        List<Base> tipos = new ArrayList();
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -187,7 +161,7 @@ public class TipoDAO {
             rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
             
             while (rs.next()) {
-                tipos.add(new Tipo.TipoBuilder().nameType((String) rs.getObject(1)).build());
+                tipos.add(new Base.TipoBuilder().nameBase((String) rs.getObject(1)).build());
                 //System.out.println(rows);
             }
             

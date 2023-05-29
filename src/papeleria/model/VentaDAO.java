@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -38,9 +37,9 @@ public class VentaDAO {
             String query = "";
 
             if (tipo.equals("Todo")) {
-                query = "SELECT distinct p.id_venta as 'Numero de Venta Mensual', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta && k.existe = true) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' order by Fecha desc";
+                query = "SELECT distinct p.id_venta as 'Numero de Ingreso Mensual', p.fecha_venta as Fecha, (select sum(cantidad_tipo) from venta_tipo k where k.id_venta = p.id_venta && k.fecha_venta = p.fecha_venta && k.existe = true) as Total FROM venta p, venta_tipo v where p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' order by Fecha desc";
             } else {
-                query = "SELECT distinct p.id_venta as 'Numero de Venta Mensual', p.fecha_venta as Fecha, v.cantidad_tipo as " + tipo + " FROM venta p, venta_tipo v where v.existe = true && p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' && v.id_tipo like (select id_tipo from tipo where nombre_tipo like '" + tipo + "') order by Fecha desc";
+                query = "SELECT distinct p.id_venta as 'Numero de Ingreso Mensual', p.fecha_venta as Fecha, v.cantidad_tipo as " + tipo + " FROM venta p, venta_tipo v where v.existe = true && p.id_venta = v.id_venta && p.fecha_venta = v.fecha_venta && p.existe_venta = " + registrada + " && p.fecha_venta like '" + año + "-" + mes + "%' && v.id_tipo like (select id_tipo from tipo where nombre_tipo like '" + tipo + "') order by Fecha desc";
             }
 
             //System.out.println("QUERY TABLE: " + query);

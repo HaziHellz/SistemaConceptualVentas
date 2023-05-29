@@ -8,32 +8,32 @@ package papeleria.model;
  *
  * @author heber
  */
-public class Tipo {
+public class Base {
 
-    private int idTipo;
-    private String nombreTipo;
+    private int idBase;
+    private String nombreBase;
     private boolean exists;
 
-    public Tipo(TipoBuilder build) {
-        this.idTipo = build.idType;
-        this.nombreTipo = build.nameType;
+    public Base(TipoBuilder build) {
+        this.idBase = build.idBase;
+        this.nombreBase = build.nameBase;
         this.exists = build.exists;
     }
 
-    public int getIdTipo() {
-        return idTipo;
+    public int getIdBase() {
+        return idBase;
     }
 
-    public void setIdTipo(int idTipo) {
-        this.idTipo = idTipo;
+    public void setIdBase(int idBase) {
+        this.idBase = idBase;
     }
 
-    public String getNombreTipo() {
-        return nombreTipo;
+    public String getNombreBase() {
+        return nombreBase;
     }
 
-    public void setNombreTipo(String nombreTipo) {
-        this.nombreTipo = nombreTipo;
+    public void setNombreBase(String nombreBase) {
+        this.nombreBase = nombreBase;
     }
 
     public boolean isExists() {
@@ -47,23 +47,23 @@ public class Tipo {
     @Override
     public String toString(){
         StringBuilder string = new StringBuilder();
-        string.append("Type{ ").append("idType= ").append(idTipo).append(", nameType= ").append(nombreTipo).append(", exists= ").append(exists).append("}");
+        string.append("Base{ ").append("idBase= ").append(idBase).append(", nameBase= ").append(nombreBase).append(", exists= ").append(exists).append("}");
         return string.toString();
     }
 
     public static class TipoBuilder {
 
-        private int idType;
-        private String nameType;
+        private int idBase;
+        private String nameBase;
         private boolean exists;
 
-        public TipoBuilder idType(int idType) {
-            this.idType = idType;
+        public TipoBuilder idBase(int idBase) {
+            this.idBase = idBase;
             return this;
         }
 
-        public TipoBuilder nameType(String nameType) {
-            this.nameType = nameType;
+        public TipoBuilder nameBase(String nameBase) {
+            this.nameBase = nameBase;
             return this;
         }
 
@@ -72,8 +72,8 @@ public class Tipo {
             return this;
         }
 
-        public Tipo build() {
-            return new Tipo(this);
+        public Base build() {
+            return new Base(this);
         }
 
     }

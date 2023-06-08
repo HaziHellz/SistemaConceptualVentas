@@ -29,9 +29,10 @@ public class GUI extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(this);
         this.setTitle("Sistema Conceptual");
-        Thread historial = new Thread(new Historial());
+        Historial historialController = new Historial();
+        Thread historial = new Thread(historialController);
         historial.start();
-        
+        venta(historialController);
         opciones();
     }
 
@@ -62,18 +63,20 @@ public class GUI extends javax.swing.JFrame {
 
     }
 
-    private void venta() {
+    private void venta(Historial historial) {
         List<Object> componentes = new ArrayList();
 
         componentes.add(txtPrice);
         componentes.add(cbxTypeSale);
         componentes.add(btnSell);
         componentes.add(tblObjectList);
+        componentes.add(lblTotal);
 
-        VentasController controller = new VentasController(componentes);
+        VentasController controller = new VentasController(componentes, historial);
         
         cbxTypeSale.addActionListener(controller);
-
+        btnSell.addActionListener(controller);
+        txtPrice.addKeyListener(controller);
     }
 
     /**
@@ -93,6 +96,7 @@ public class GUI extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblObjectList = new javax.swing.JTable();
+        lblTotal = new javax.swing.JLabel();
         btnSell = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         cbxMonthFilter = new javax.swing.JComboBox<>();
@@ -140,32 +144,58 @@ public class GUI extends javax.swing.JFrame {
         tblObjectList.getTableHeader().setReorderingAllowed(false);
         tblObjectList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Concepto", "Cantidad"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblObjectList.setRowHeight(30);
         tblObjectList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblObjectList.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblObjectList);
+        if (tblObjectList.getColumnModel().getColumnCount() > 0) {
+            tblObjectList.getColumnModel().getColumn(0).setResizable(false);
+            tblObjectList.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        lblTotal.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        lblTotal.setText("Total: ");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblTotal)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTotal)
                 .addContainerGap())
         );
 
@@ -439,8 +469,18 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private class Historial implements Runnable {
-
+    public class Historial implements Runnable {
+        HistorialController historial;
+        
+        public void actualizarVista(){
+            historial.actualizarVentaDiaria();
+            historial.resetTableHistorial();
+        }
+        
+        public HistorialController getHistorial(){
+            return historial;
+        }
+        
         @Override
         public void run() {
             List<JTable> tablesHistorial = new ArrayList();
@@ -460,6 +500,8 @@ public class GUI extends javax.swing.JFrame {
             buttonsHistorial.add(btnAcceptHistory);
 
             HistorialController controller = new HistorialController(tablesHistorial, combos, lblVentaDiaria, txtQuantitySolds, buttonsHistorial);
+            historial = controller;
+            
             tblHistorialVentas.addMouseListener(controller);
             tblHistorialVentas.addKeyListener(controller);
             tblHistorialVenta.addMouseListener(controller);
@@ -513,6 +555,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblVentaDiaria;
     private javax.swing.JMenu menu;
     private javax.swing.JTable tblHistorialVenta;

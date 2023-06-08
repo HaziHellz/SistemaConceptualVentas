@@ -128,7 +128,7 @@ public class VentaDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select distinct substring(fecha_venta, 1 , 7) from venta where fecha_venta like '" + año.getSelectedItem().toString() + "-%'");
+            rs = stmt.executeQuery("select distinct substring(fecha_venta, 1 , 7) from venta where fecha_venta like '" + año.getSelectedItem().toString() + "-%' order by fecha_venta desc");
             int q = 0;
             while (rs.next()) {
                 q += 1;
@@ -169,11 +169,11 @@ public class VentaDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select id_venta, fecha_venta, existe_venta from venta where fecha_venta = '" + fecha + "'");
-            
-            while(rs.next()){
+
+            while (rs.next()) {
                 venta = new Venta.VentaBuilder().idVenta((int) rs.getObject(1)).fecha((Timestamp) rs.getObject(2)).existe((boolean) rs.getObject(3)).build();
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -190,11 +190,10 @@ public class VentaDAO {
 
     public static void changeExists(Venta venta, boolean exists) {
         //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
-        
-        
+
         Connection conn = null;
         PreparedStatement stmt = null;
-        
+
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
@@ -204,11 +203,11 @@ public class VentaDAO {
             stmt.setTimestamp(3, venta.getFecha());
             stmt.executeUpdate();
             conn.commit();
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-            
+
             try {
                 close(stmt);
                 close(conn);
@@ -258,21 +257,24 @@ public class VentaDAO {
             result += "Mes: " + totalMes;
 
             if (Integer.parseInt(año) == now.getYear() + 1900 && Integer.parseInt(mes) == now.getMonth() + 1) {
+
                 if (tipo.equals("Todo")) {
-                    //query = "select sum(cantidad_tipo) from venta_tipo where fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
-                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
+                    query = "select sum(cantidad_tipo) from venta_tipo vt inner join venta v on v.id_venta = vt.id_venta where v.fecha_venta = vt.fecha_venta && existe_venta = true && vt.fecha_venta like '" + año + "-" + mes + "-%" + now.getDate() + " %';";
+                    //query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
                     //System.out.println("TODO: " + query);
                 } else {
                     //query = "select sum(cantidad_tipo) from venta_tipo where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
-                    query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && vt.existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
+                    //query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && vt.existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
                     //System.out.println("TODO: " + query);
+                    query = "select sum(cantidad_tipo) from venta_tipo vt inner join venta v on v.id_venta = vt.id_venta where v.fecha_venta = vt.fecha_venta && existe_venta = true && vt.fecha_venta like '" + año + "-" + mes + "-%" + now.getDate() + " %' && id_tipo = '" + TipoDAO.getTipo(tipo).getIdBase() + "';";
                 }
 
                 rs = stmt.executeQuery(query);
 
                 while (rs.next()) {
+                    //System.out.println(query);
                     totalDia = (double) rs.getObject(1);
-                    //System.out.println("TOTAL DIA: " + totalDia);
+
                 }
                 result += " / " + "Dia: $" + totalDia;
             }
@@ -291,4 +293,69 @@ public class VentaDAO {
         }
     }
 
+    public static int idSiguienteVentaDelMes() {
+        String query = "";
+        int result = 1;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            query = "select max(id_venta) from venta where year(fecha_venta) = " + (now.getYear() + 1900) + " && month(fecha_venta) = " + (now.getMonth() + 1) + ";";
+
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                // firstSale = (Timestamp) rs.getObject(1);
+                result = (Integer) rs.getObject(1) + 1;
+                //System.out.println("TOTAL MES: " + totalMes);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return result;
+        }
+
+    }
+
+    public static void insert(Venta venta) {
+        //INSERT INTO `papeleria`.`venta` (`id_venta`, `fecha_venta`, `existe_venta`) VALUES ('1', '2023-06-23 17:55:16', '1');
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+
+        try {
+            conn = Conexion.getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.prepareStatement("INSERT INTO `papeleria`.`venta` (`id_venta`, `fecha_venta`, `existe_venta`) VALUES ( ? , ?, ?)");
+            stmt.setBoolean(3, true);
+            stmt.setInt(1, venta.getIdVenta());
+            stmt.setTimestamp(2, venta.getFecha());
+            stmt.executeUpdate();
+            conn.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+
+            try {
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+    }
 }

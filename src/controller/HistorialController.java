@@ -71,8 +71,9 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         resetTableHistorial();
     }
 
-    private void actualizarVentaDiaria() {
+    public void actualizarVentaDiaria() {
         ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
+        ventaDiaria.setVisible(true);
     }
 
     private void showSale(int id_venta, String fecha_venta) {
@@ -111,7 +112,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         }
     }
 
-    private void resetTableHistorial() {
+    public void resetTableHistorial() {
         tablesHistorial.get(TBL_HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), registrada(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
         tablesHistorial.get(TBL_VENTA).setModel(new TableModel());
         buttons.get(BTN_DELETE_ITEM).setEnabled(false);

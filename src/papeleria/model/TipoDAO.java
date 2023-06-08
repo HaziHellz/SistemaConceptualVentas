@@ -158,10 +158,10 @@ public class TipoDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
+            rs = stmt.executeQuery("select nombre_tipo, id_tipo from tipo where existe_tipo = true");
             
             while (rs.next()) {
-                tipos.add(new Base.TipoBuilder().nameBase((String) rs.getObject(1)).build());
+                tipos.add(new Base.TipoBuilder().nameBase((String) rs.getObject(1)).idBase((Integer) rs.getObject(2)).build());
                 //System.out.println(rows);
             }
             

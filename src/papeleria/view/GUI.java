@@ -77,6 +77,9 @@ public class GUI extends javax.swing.JFrame {
         cbxTypeSale.addActionListener(controller);
         btnSell.addActionListener(controller);
         txtPrice.addKeyListener(controller);
+        tblObjectList.addKeyListener(controller);
+        tblObjectList.addMouseListener(controller);
+        
     }
 
     /**

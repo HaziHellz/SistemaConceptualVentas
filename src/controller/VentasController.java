@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,7 @@ import papeleria.view.GUI;
  *
  * @author heber
  */
-public class VentasController implements ActionListener, KeyListener {
+public class VentasController extends MouseAdapter implements ActionListener, KeyListener {
 
     private int TXT_PRICE = 0;
     private int CBX_TYPE_SALE = 1;
@@ -39,6 +41,8 @@ public class VentasController implements ActionListener, KeyListener {
     private int LBL_TOTAL = 4;
 
     private double total = 0;
+    private boolean nuevo = true;
+    private int index = -1;
 
     private List<Object> componentes;
     private GUI.Historial historialController;
@@ -67,6 +71,36 @@ public class VentasController implements ActionListener, KeyListener {
         calcularTotal(items);
     }
 
+    private void deleteItemVenta() {
+        TableModel tableModel = new TableModel();
+        List<Object[]> items = getItemsTableVenta();
+        tableModel.addColumn("Concepto");
+        tableModel.addColumn("Cantidad");
+        for (int i = 0; i < ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount(); i++) {
+            if (index != i) {
+                tableModel.addRow(items.get(i));
+            }
+        }
+        ((JTable) componentes.get(TBL_OBJECT_LIST)).setModel(tableModel);
+        nuevo = true;
+        ((JTextField) componentes.get(TXT_PRICE)).setText("");
+    }
+
+    private void refreshTable(JTable itemsTable) {
+        TableModel tableModel = new TableModel();
+        List<Object[]> items = getItemsTableVenta();
+        tableModel.addColumn("Concepto");
+        tableModel.addColumn("Cantidad");
+        for (int i = 0; i < ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount(); i++) {
+            tableModel.addRow(items.get(i));
+        }
+        itemsTable.setModel(tableModel);
+        ((JTextField) componentes.get(TXT_PRICE)).setText("");
+        ((JComboBox) componentes.get(CBX_TYPE_SALE)).setSelectedIndex(0);
+        index = -1;
+        nuevo = true;
+    }
+
     private void calcularTotal(List<Object[]> items) {
         total = 0;
 
@@ -77,8 +111,18 @@ public class VentasController implements ActionListener, KeyListener {
         ((JLabel) componentes.get(LBL_TOTAL)).setText("Total: " + total);
     }
 
+    private double calcularTotalDouble(List<Object[]> items) {
+        total = 0;
+
+        for (int i = 0; i < items.size(); i++) {
+            total += getDouble((String) items.get(i)[1]);
+        }
+
+        return total;
+    }
+
     //SEPARA Y CONVIERTE LA ENTRADA STRING EN DOUBLE EN MULTIPLICACIONES POR EJEMPLO PARA ENTRADA 20X3 LA SALIDA SERIA 60
-    private double getDouble(String numero){
+    private double getDouble(String numero) {
         boolean ladoUno = true;
         String numeroUno = "";
         String numeroDos = "";
@@ -86,21 +130,21 @@ public class VentasController implements ActionListener, KeyListener {
             if (ladoUno) {
                 if (!(numero.charAt(i) == 'x' || numero.charAt(i) == 'X')) {
                     numeroUno += numero.charAt(i);
-                }else{
+                } else {
                     ladoUno = false;
                 }
-            }else{
+            } else {
                 numeroDos += numero.charAt(i);
             }
         }
-        
+
         if (!ladoUno) {
-            return Double.parseDouble(numeroUno)*Double.parseDouble(numeroDos);
-        }else{
+            return Double.parseDouble(numeroUno) * Double.parseDouble(numeroDos);
+        } else {
             return Double.parseDouble(numeroUno);
         }
     }
-    
+
     private List<Object[]> getItemsTableVenta() {
         int rows = ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount();
         List<Object[]> items = new ArrayList();
@@ -116,11 +160,7 @@ public class VentasController implements ActionListener, KeyListener {
         if (e.getSource() instanceof JButton) {
             JButton source = (JButton) e.getSource();
             if (source.equals(componentes.get(BTN_SELL))) {
-                //try{
                 vender();
-                // }catch(Exception ex){
-                //      System.err.print(ex.toString());
-                //  }
             }
         }
     }
@@ -133,10 +173,27 @@ public class VentasController implements ActionListener, KeyListener {
             InputController.validarNumeroCompuesto(e, source.getText());
 
             if (e.getKeyChar() == '\n') {
-                agregarItem();
+                if (nuevo) {
+                    if (((JTextField) componentes.get(TXT_PRICE)).getText().isEmpty()) {
+                        vender();
+                    } else {
+                        agregarItem();
+                    }
+                } else {
+                    editarItem();
+                }
             }
 
         }
+
+        if (e.getSource() instanceof JTable) {
+            if (e.getKeyChar() == '\n') {
+                refreshTable((JTable) e.getSource());
+                index = -1;
+
+            }
+        }
+
     }
 
     @Override
@@ -146,22 +203,58 @@ public class VentasController implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        //POR HACEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRR
+        if (e.getSource() instanceof JTable) {
+            JTable source = (JTable) e.getSource();
+            if (index != source.getSelectedRow()) {
+                index = source.getSelectedRow();
+                getDatos();
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_TAB) {
+                ((JTextField) componentes.get(TXT_PRICE)).requestFocus();
+            }
 
+            if (e.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                deleteItemVenta();
+            }
+
+        }
     }
 
     private void vender() {
+
         Venta venta = new Venta.VentaBuilder().idVenta(VentaDAO.idSiguienteVentaDelMes()).fecha(new Timestamp(System.currentTimeMillis())).existe(true).build();
 
         List<VentaTipo> ventaTipos = agruparItems(venta);
 
         if (ventaTipos.size() > 0) {
-            VentaDAO.insert(venta);
-            for (int i = 0; i < ventaTipos.size(); i++) {
-                VentaTipoDAO.insert(ventaTipos.get(i));
+            try {
+                boolean todobien = false;
+                double total = calcularTotalDouble(getItemsTableVenta());
+                double ingresado = Double.parseDouble(JOptionPane.showInputDialog(null, "Ingresa la cantidad recibida:", total));
+                if (ingresado == total) {
+                    todobien = true;
+                } else if (ingresado > total) {
+                    JOptionPane.showMessageDialog(null, "La feria es: " + (ingresado - total), "Ingreso", JOptionPane.INFORMATION_MESSAGE);
+                    todobien = true;
+                } else {
+                    JOptionPane.showMessageDialog(null, "El dinero esta incompleto", "Cuidado!!!", JOptionPane.ERROR_MESSAGE);
+                }
+
+                if (todobien) {
+                    VentaDAO.insert(venta);
+                    for (int i = 0; i < ventaTipos.size(); i++) {
+                        VentaTipoDAO.insert(ventaTipos.get(i));
+                    }
+                    resetTable();
+                    historialController.actualizarVista();
+                }
+            } catch (java.lang.NumberFormatException numberException) {
+                JOptionPane.showMessageDialog(null, "Solo escribe numeros en la cantidad recibida", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (java.lang.NullPointerException nullPointer){
+                
             }
-            resetTable();
-            historialController.actualizarVista();
-        }else{
+
+        } else {
             JOptionPane.showMessageDialog(null, "No hay items en el ingreso", "Error al ingresar", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -190,8 +283,24 @@ public class VentasController implements ActionListener, KeyListener {
         return ventaTipos;
     }
 
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        if (e.getSource() instanceof JTable) {
+            JTable source = (JTable) e.getSource();
+
+            if (index != source.getSelectedRow()) {
+                index = source.getSelectedRow();
+                getDatos();
+            } else {
+                refreshTable(source);
+            }
+
+        }
+    }
+
     private void resetTable() {
         total = 0;
+        index = -1;
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
         ((JLabel) componentes.get(LBL_TOTAL)).setText("Total: " + total);
         ((JTable) componentes.get(TBL_OBJECT_LIST)).setModel(new javax.swing.table.DefaultTableModel(
@@ -215,6 +324,19 @@ public class VentasController implements ActionListener, KeyListener {
                 return canEdit[columnIndex];
             }
         });
+    }
+
+    private void getDatos() {
+        ((JTextField) componentes.get(TXT_PRICE)).setText(((JTable) componentes.get(TBL_OBJECT_LIST)).getValueAt(index, 1).toString());
+        ((JComboBox) componentes.get(CBX_TYPE_SALE)).setSelectedItem(((JTable) componentes.get(TBL_OBJECT_LIST)).getValueAt(index, 0).toString());
+        nuevo = false;
+    }
+
+    private void editarItem() {
+        ((JTable) componentes.get(TBL_OBJECT_LIST)).setValueAt(((JTextField) componentes.get(TXT_PRICE)).getText(), index, 1);
+        ((JTable) componentes.get(TBL_OBJECT_LIST)).setValueAt(((JComboBox) componentes.get(CBX_TYPE_SALE)).getSelectedItem(), index, 0);
+        calcularTotal(getItemsTableVenta());
+        refreshTable(((JTable) componentes.get(TBL_OBJECT_LIST)));
     }
 
 }

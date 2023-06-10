@@ -100,7 +100,11 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
             //ACTUALIZA LOS COMBOBOX DEL TIPO DE LAS OTRAS VENTANAS
             if (titulo.equals("Conceptos")) {
                 for (int i = 0; i < (combos.size()-2); i++) {
-                    combos.get(i).setModel(TipoDAO.comboModel(titulo));
+                    if (i == 1 || i == 4 || i == 6) {
+                        combos.get(i).setModel(TipoDAO.comboModelTodo());
+                    }else{
+                        combos.get(i).setModel(TipoDAO.comboModel(titulo));
+                    }
                 }
                 
             }else{
@@ -135,7 +139,6 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
                 id = TableBaseDAO.getID(titulo, (String) source.getValueAt(index, 0));
 
                 if (((JComboBox) componentes.get(CBXFILTRO)).getSelectedItem().equals("Todos")) {
-                    System.out.println("TOOOODO");
                     Base base = new Base.TipoBuilder().idBase(id).build();
                     if (TableBaseDAO.consultarExistencia(base, titulo)) {
                         habilitarEdicion();

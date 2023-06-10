@@ -4,6 +4,7 @@
  */
 package papeleria.view;
 
+import controller.GastoController;
 import controller.HistorialController;
 import controller.OpcionesController;
 import controller.VentasController;
@@ -13,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import javax.swing.JTable;
+import papeleria.model.GastoDAO;
 import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
 
@@ -62,7 +64,29 @@ public class GUI extends javax.swing.JFrame {
         btnMenuSalir.addActionListener(controller);
 
     }
-
+    
+    private void gasto(){
+        List<JComboBox> combos = new ArrayList();
+        combos.add(cbxProvider);
+        combos.add(cbxTypeSpends);
+        combos.add(cbxYear);
+        combos.add(cbxMonth);
+        combos.add(cbxYearFilter);
+        combos.add(cbxMonthFilter);
+        combos.add(cbxProviderFilter);
+        combos.add(cbxTypeSpendsFilter);
+        
+        List<Object> componentes = new ArrayList();
+        componentes.add(txtQuantitySpends);
+        componentes.add(btnAcceptSpend);
+        componentes.add(btnDeleteSpend);
+        componentes.add(tblSpends);
+        
+        GastoController controller = new GastoController(combos, componentes);
+        
+        
+    }
+    
     private void venta(Historial historial) {
         List<Object> componentes = new ArrayList();
 
@@ -111,9 +135,11 @@ public class GUI extends javax.swing.JFrame {
         cbxTypeSpendsFilter = new javax.swing.JComboBox<>();
         cbxProviderFilter = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblSpends = new javax.swing.JTable();
         cbxYear = new javax.swing.JComboBox<>();
         cbxMonth = new javax.swing.JComboBox<>();
+        btnAcceptSpend = new javax.swing.JButton();
+        btnDeleteSpend = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblHistorialVentas = new javax.swing.JTable();
@@ -233,9 +259,14 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Ingresos", jPanel1);
 
-        cbxMonthFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        try{
+            cbxMonthFilter.setModel(GastoDAO.comboModelMeses(cbxYearFilter)
+            );
+        }catch(NullPointerException ex){
 
-        cbxYearFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        }
+
+        cbxYearFilter.setModel(GastoDAO.comboModelAño());
 
         jLabel1.setText("Filtros");
 
@@ -244,14 +275,14 @@ public class GUI extends javax.swing.JFrame {
 
         cbxTypeSpends.setModel(TipoDAO.comboModel("Conceptos"));
 
-        cbxTypeSpendsFilter.setModel(TipoDAO.comboModel("Conceptos")
+        cbxTypeSpendsFilter.setModel(TipoDAO.comboModelTodo("Conceptos")
         );
 
-        cbxProviderFilter.setModel(TipoDAO.comboModel("Proveedores")
+        cbxProviderFilter.setModel(TipoDAO.comboModelTodo("Proveedor")
         );
 
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblSpends.getTableHeader().setReorderingAllowed(false);
+        tblSpends.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -262,15 +293,19 @@ public class GUI extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jTable1.setRowHeight(30);
-        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane2.setViewportView(jTable1);
+        tblSpends.setRowHeight(30);
+        tblSpends.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane2.setViewportView(tblSpends);
 
         cbxYear.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbxYear.setVisible(false);
 
         cbxMonth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbxMonth.setVisible(false);
+
+        btnAcceptSpend.setText("Aceptar");
+
+        btnDeleteSpend.setText("Eliminar");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -290,7 +325,11 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAcceptSpend)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDeleteSpend)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 108, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxYearFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -309,7 +348,9 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(cbxMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAcceptSpend)
+                        .addComponent(btnDeleteSpend))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxYearFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -361,12 +402,16 @@ public class GUI extends javax.swing.JFrame {
 
         cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
 
-        cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
-        );
+        try{
+            cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
+            );
+        }catch(NullPointerException ex){
+
+        }
 
         cbxDeletedSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registradas", "Eliminadas" }));
 
-        cbxTypeFilterSolds.setModel(TipoDAO.comboModelTodo());
+        cbxTypeFilterSolds.setModel(TipoDAO.comboModelTodo("Conceptos"));
 
         btnAcceptHistory.setText("Aceptar");
         btnAcceptHistory.setEnabled(false);
@@ -523,8 +568,10 @@ public class GUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAcceptHistory;
+    private javax.swing.JButton btnAcceptSpend;
     private javax.swing.JButton btnDeleteItemHistory;
     private javax.swing.JButton btnDeleteSaleHistory;
+    private javax.swing.JButton btnDeleteSpend;
     private javax.swing.JMenuItem btnMenuConceptos;
     private javax.swing.JMenuItem btnMenuExportar;
     private javax.swing.JMenuItem btnMenuProveedores;
@@ -557,13 +604,13 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblVentaDiaria;
     private javax.swing.JMenu menu;
     private javax.swing.JTable tblHistorialVenta;
     private javax.swing.JTable tblHistorialVentas;
     private javax.swing.JTable tblObjectList;
+    private javax.swing.JTable tblSpends;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtQuantitySolds;
     private javax.swing.JTextField txtQuantitySpends;

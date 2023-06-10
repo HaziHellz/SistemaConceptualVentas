@@ -248,7 +248,11 @@
                               <Component id="cbxYear" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxMonth" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="265" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnAcceptSpend" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="btnDeleteSpend" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="108" max="32767" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxYearFilter" min="-2" max="-2" attributes="0"/>
@@ -272,6 +276,8 @@
                           <Group type="103" alignment="0" groupAlignment="3" attributes="0">
                               <Component id="cbxMonth" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                               <Component id="cbxYear" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                              <Component id="btnAcceptSpend" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnDeleteSpend" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="cbxMonthFilter" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
@@ -294,28 +300,20 @@
           <SubComponents>
             <Component class="javax.swing.JComboBox" name="cbxMonthFilter">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="GastoDAO.comboModelMeses(cbxYearFilter)&#xa;    " type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="}catch(NullPointerException ex){&#xa;&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try{"/>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxYearFilter">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="GastoDAO.comboModelA&#xf1;o()" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -352,7 +350,7 @@
             <Component class="javax.swing.JComboBox" name="cbxTypeSpendsFilter">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="TipoDAO.comboModel(&quot;Conceptos&quot;)&#xd;&#xa;" type="code"/>
+                  <Connection code="TipoDAO.comboModelTodo(&quot;Conceptos&quot;)&#xd;&#xa;" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -362,7 +360,7 @@
             <Component class="javax.swing.JComboBox" name="cbxProviderFilter">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="TipoDAO.comboModel(&quot;Proveedores&quot;)&#xd;&#xa;" type="code"/>
+                  <Connection code="TipoDAO.comboModelTodo(&quot;Proveedor&quot;)&#xa;    " type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -376,7 +374,7 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="jTable1">
+                <Component class="javax.swing.JTable" name="tblSpends">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="4" rowCount="4">
@@ -390,7 +388,7 @@
                     <Property name="selectionMode" type="int" value="0"/>
                   </Properties>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jTable1.getTableHeader().setReorderingAllowed(false);"/>
+                    <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="tblSpends.getTableHeader().setReorderingAllowed(false);"/>
                   </AuxValues>
                 </Component>
               </SubComponents>
@@ -426,6 +424,16 @@
                 <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="cbxMonth.setVisible(false);"/>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnAcceptSpend">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Aceptar"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnDeleteSpend">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Eliminar"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
@@ -617,10 +625,12 @@
             <Component class="javax.swing.JComboBox" name="cbxMonthFilterSolds">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="VentaDAO.comboModelMeses(cbxYearFilterSolds)&#xd;&#xa;" type="code"/>
+                  <Connection code="VentaDAO.comboModelMeses(cbxYearFilterSolds)&#xa;    " type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="}catch(NullPointerException ex){&#xa;&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try{"/>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
@@ -640,7 +650,7 @@
             <Component class="javax.swing.JComboBox" name="cbxTypeFilterSolds">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="TipoDAO.comboModelTodo()" type="code"/>
+                  <Connection code="TipoDAO.comboModelTodo(&quot;Conceptos&quot;)" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>

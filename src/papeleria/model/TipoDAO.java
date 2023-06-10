@@ -69,16 +69,23 @@ public class TipoDAO {
 
     }
     
-    public static DefaultComboBoxModel comboModelTodo() {
+    public static DefaultComboBoxModel comboModelTodo(String titulo) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         ResultSetMetaData metaData;
         DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
+        
+        if (titulo.equals("Conceptos")) {
+                titulo = "tipo";
+            }else{
+                titulo = "proveedor";
+            }
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select nombre_tipo from tipo where existe_tipo = true");
+            rs = stmt.executeQuery("select nombre_" + titulo + " from " + titulo + " where existe_" + titulo + " = true");
             metaData = rs.getMetaData();
             
             int rows = 0;

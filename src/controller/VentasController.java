@@ -76,13 +76,15 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         List<Object[]> items = getItemsTableVenta();
         tableModel.addColumn("Concepto");
         tableModel.addColumn("Cantidad");
-        for (int i = 0; i < ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount(); i++) {
-            if (index != i) {
+        items.remove(index);
+        for (int i = 0; i < items.size(); i++) {
+            //if (index != i) {
                 tableModel.addRow(items.get(i));
-            }
+            //}
         }
         ((JTable) componentes.get(TBL_OBJECT_LIST)).setModel(tableModel);
         nuevo = true;
+        calcularTotal(items);
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
     }
 
@@ -96,6 +98,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         }
         itemsTable.setModel(tableModel);
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
+        ((JTextField) componentes.get(TXT_PRICE)).requestFocus();
         ((JComboBox) componentes.get(CBX_TYPE_SALE)).setSelectedIndex(0);
         index = -1;
         nuevo = true;
@@ -183,7 +186,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
                     editarItem();
                 }
             }
-
+            
         }
 
         if (e.getSource() instanceof JTable) {
@@ -203,7 +206,6 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
 
     @Override
     public void keyReleased(KeyEvent e) {
-        //POR HACEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRR
         if (e.getSource() instanceof JTable) {
             JTable source = (JTable) e.getSource();
             if (index != source.getSelectedRow()) {
@@ -234,10 +236,10 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
                 if (ingresado == total) {
                     todobien = true;
                 } else if (ingresado > total) {
-                    JOptionPane.showMessageDialog(null, "La feria es: " + (ingresado - total), "Ingreso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">La feria es: " + (ingresado - total ) + "</p><br>", "Ingreso", JOptionPane.INFORMATION_MESSAGE);
                     todobien = true;
                 } else {
-                    JOptionPane.showMessageDialog(null, "El dinero esta incompleto", "Cuidado!!!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">El dinero esta incompleto</p><br>", "Cuidado!!!", JOptionPane.ERROR_MESSAGE);
                 }
 
                 if (todobien) {
@@ -249,13 +251,13 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
                     historialController.actualizarVista();
                 }
             } catch (java.lang.NumberFormatException numberException) {
-                JOptionPane.showMessageDialog(null, "Solo escribe numeros en la cantidad recibida", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">Escribe solo la cantidad recibida</p><br>", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (java.lang.NullPointerException nullPointer){
                 
             }
 
         } else {
-            JOptionPane.showMessageDialog(null, "No hay items en el ingreso", "Error al ingresar", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">No hay items en el ingreso</p><br>", "Error al ingresar", JOptionPane.ERROR_MESSAGE);
         }
     }
 

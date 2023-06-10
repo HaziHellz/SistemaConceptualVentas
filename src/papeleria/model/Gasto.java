@@ -1,0 +1,107 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package papeleria.model;
+
+import java.sql.Timestamp;
+
+/**
+ *
+ * @author heber
+ */
+public class Gasto {
+
+    int idGasto;
+    int idTipo;
+    int idProveedor;
+    Timestamp fecha;
+    double cantidad;
+
+    public Gasto (GastoBuilder builder){
+        this.idGasto = builder.idGasto;
+        this.idTipo = builder.idTipo;
+        this.idProveedor = builder.idProveedor;
+        this.fecha = builder.fecha;
+        this.cantidad = builder.cantidad;
+    }
+
+    public int getIdGasto() {
+        return idGasto;
+    }
+
+    public void setIdGasto(int idGasto) {
+        this.idGasto = idGasto;
+    }
+
+    public int getIdTipo() {
+        return idTipo;
+    }
+
+    public void setIdTipo(int idTipo) {
+        this.idTipo = idTipo;
+    }
+
+    public int getIdProveedor() {
+        return idProveedor;
+    }
+
+    public void setIdProveedor(int idProveedor) {
+        this.idProveedor = idProveedor;
+    }
+
+    public Timestamp getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(Timestamp fecha) {
+        this.fecha = fecha;
+    }
+
+    public double getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(double cantidad) {
+        this.cantidad = cantidad;
+    }
+    
+    public static class GastoBuilder {
+
+        int idGasto;
+        int idTipo;
+        int idProveedor;
+        Timestamp fecha;
+        double cantidad;
+
+        public GastoBuilder id(int id) {
+            this.idGasto = id;
+            return this;
+        }
+
+        public GastoBuilder idTipo(int idTipo) {
+            this.idTipo = idTipo;
+            return this;
+        }
+
+        public GastoBuilder idProveedor(int idProveedor) {
+            this.idProveedor = idProveedor;
+            return this;
+        }
+
+        public GastoBuilder fecha(Timestamp fecha) {
+            this.fecha = fecha;
+            return this;
+        }
+
+        public GastoBuilder cantidad(double cantidad) {
+            this.cantidad = cantidad;
+            return this;
+        }
+
+        public Gasto build (){
+            return new Gasto(this);
+        }
+        
+    }
+}

@@ -121,8 +121,8 @@ public class VentaDAO {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        Timestamp firstSale = null;
-        Timestamp now = new Timestamp(System.currentTimeMillis());
+        //Timestamp firstSale = null;
+        //Timestamp now = new Timestamp(System.currentTimeMillis());
         List<Object> meses = new ArrayList();
 
         try {
@@ -266,7 +266,7 @@ public class VentaDAO {
                     //query = "select sum(cantidad_tipo) from venta_tipo where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && existe = true";
                     //query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-" + now.getDate() + "%' && vt.existe = true && v.id_venta = vt.id_venta && v.existe_venta = true;";
                     //System.out.println("TODO: " + query);
-                    query = "select sum(cantidad_tipo) from venta_tipo vt inner join venta v on v.id_venta = vt.id_venta where v.fecha_venta = vt.fecha_venta && existe_venta = true && vt.fecha_venta like '" + año + "-" + mes + "-%" + now.getDate() + " %' && id_tipo = '" + TipoDAO.getTipo(tipo).getIdBase() + "';";
+                    query = "select sum(cantidad_tipo) from venta_tipo vt inner join venta v on v.id_venta = vt.id_venta where v.fecha_venta = vt.fecha_venta && existe_venta = true && vt.fecha_venta like '" + año + "-" + mes + "-%" + now.getDate() + " %' && id_tipo = '" + TableBaseDAO.getNombre(tipo, "tipo").getIdBase() + "';";
                 }
 
                 rs = stmt.executeQuery(query);

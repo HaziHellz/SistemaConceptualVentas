@@ -15,7 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import javax.swing.JTable;
 import papeleria.model.GastoDAO;
-import papeleria.model.TipoDAO;
+import papeleria.model.TableBaseDAO;
 import papeleria.model.VentaDAO;
 
 /**
@@ -36,6 +36,7 @@ public class GUI extends javax.swing.JFrame {
         historial.start();
         venta(historialController);
         opciones();
+        gasto();
     }
 
     
@@ -84,6 +85,8 @@ public class GUI extends javax.swing.JFrame {
         
         GastoController controller = new GastoController(combos, componentes);
         
+        txtQuantitySpends.addKeyListener(controller);
+        btnAcceptSpend.addActionListener(controller);
         
     }
     
@@ -126,8 +129,8 @@ public class GUI extends javax.swing.JFrame {
         lblTotal = new javax.swing.JLabel();
         btnSell = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        cbxMonthFilter = new javax.swing.JComboBox<>();
         cbxYearFilter = new javax.swing.JComboBox<>();
+        cbxMonthFilter = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         cbxProvider = new javax.swing.JComboBox<>();
         txtQuantitySpends = new javax.swing.JTextField();
@@ -167,7 +170,9 @@ public class GUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        cbxTypeSale.setModel(TipoDAO.comboModel("Conceptos"));
+        try{
+            cbxTypeSale.setModel(TableBaseDAO.comboModel("Conceptos"));
+        }catch(NullPointerException ex){}
         cbxTypeSale.setPreferredSize(new java.awt.Dimension(72, 23));
 
         tblObjectList.getTableHeader().setReorderingAllowed(false);
@@ -260,39 +265,44 @@ public class GUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("Ingresos", jPanel1);
 
         try{
-            cbxMonthFilter.setModel(GastoDAO.comboModelMeses(cbxYearFilter)
+            cbxYearFilter.setModel(GastoDAO.comboModelAño()
             );
+        }catch(NullPointerException ex){}
+
+        try{
+            cbxMonthFilter.setModel(GastoDAO.comboModelMeses(cbxYearFilter));
         }catch(NullPointerException ex){
 
         }
 
-        cbxYearFilter.setModel(GastoDAO.comboModelAño());
-
         jLabel1.setText("Filtros");
 
-        cbxProvider.setModel(TipoDAO.comboModel("Proveedores")
-        );
+        try{
+            cbxProvider.setModel(TableBaseDAO.comboModel("Proveedores")
+            );
+        }catch(NullPointerException ex){}
 
-        cbxTypeSpends.setModel(TipoDAO.comboModel("Conceptos"));
+        try{
+            cbxTypeSpends.setModel(TableBaseDAO.comboModel("Conceptos"));
+        }catch(NullPointerException ex){}
 
-        cbxTypeSpendsFilter.setModel(TipoDAO.comboModelTodo("Conceptos")
-        );
+        try{
+            cbxTypeSpendsFilter.setModel(TableBaseDAO.comboModelTodo("Conceptos")
+            );
+        }catch(NullPointerException ex){}
 
-        cbxProviderFilter.setModel(TipoDAO.comboModelTodo("Proveedor")
-        );
+        try{
+            cbxProviderFilter.setModel(TableBaseDAO.comboModelTodo("Proveedor")
+            );
+        }catch(NullPointerException ex){}
 
         tblSpends.getTableHeader().setReorderingAllowed(false);
-        tblSpends.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
+        try{
+            tblSpends.setModel(GastoDAO.tableModel(cbxYearFilter.getSelectedItem().toString(), cbxMonthFilter.getSelectedItem().toString(), cbxTypeSpendsFilter.getSelectedItem().toString(), cbxProviderFilter.getSelectedItem().toString())
+            );
+        }catch (NullPointerException ex){
+
+        }
         tblSpends.setRowHeight(30);
         tblSpends.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(tblSpends);
@@ -352,14 +362,14 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(btnAcceptSpend)
                         .addComponent(btnDeleteSpend))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxYearFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1)
                         .addComponent(cbxProvider, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtQuantitySpends, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxTypeSpends, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxProviderFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbxTypeSpendsFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbxTypeSpendsFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
                 .addContainerGap())
@@ -368,14 +378,6 @@ public class GUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("Gastos", jPanel2);
 
         tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
-        tblHistorialVentas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         tblHistorialVentas.setRowHeight(30);
         tblHistorialVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(tblHistorialVentas);
@@ -395,12 +397,16 @@ public class GUI extends javax.swing.JFrame {
 
         txtQuantitySolds.setEnabled(false);
 
-        cbxTypesSolds.setModel(TipoDAO.comboModel("Conceptos"));
+        try{
+            cbxTypesSolds.setModel(TableBaseDAO.comboModel("Conceptos"));
+        }catch(NullPointerException ex){}
         cbxTypesSolds.setEnabled(false);
 
         jLabel2.setText("Filtros");
 
-        cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
+        try{
+            cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
+        }catch(NullPointerException ex){}
 
         try{
             cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
@@ -411,7 +417,9 @@ public class GUI extends javax.swing.JFrame {
 
         cbxDeletedSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registradas", "Eliminadas" }));
 
-        cbxTypeFilterSolds.setModel(TipoDAO.comboModelTodo("Conceptos"));
+        try{
+            cbxTypeFilterSolds.setModel(TableBaseDAO.comboModelTodo("Conceptos"));
+        }catch(NullPointerException ex){}
 
         btnAcceptHistory.setText("Aceptar");
         btnAcceptHistory.setEnabled(false);

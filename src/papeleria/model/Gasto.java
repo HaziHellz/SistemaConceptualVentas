@@ -12,11 +12,11 @@ import java.sql.Timestamp;
  */
 public class Gasto {
 
-    int idGasto;
-    int idTipo;
-    int idProveedor;
-    Timestamp fecha;
-    double cantidad;
+    private int idGasto;
+    private int idTipo;
+    private int idProveedor;
+    private Timestamp fecha;
+    private double cantidad;
 
     public Gasto (GastoBuilder builder){
         this.idGasto = builder.idGasto;
@@ -30,40 +30,20 @@ public class Gasto {
         return idGasto;
     }
 
-    public void setIdGasto(int idGasto) {
-        this.idGasto = idGasto;
-    }
-
     public int getIdTipo() {
         return idTipo;
-    }
-
-    public void setIdTipo(int idTipo) {
-        this.idTipo = idTipo;
     }
 
     public int getIdProveedor() {
         return idProveedor;
     }
 
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
-    }
-
     public Timestamp getFecha() {
         return fecha;
     }
 
-    public void setFecha(Timestamp fecha) {
-        this.fecha = fecha;
-    }
-
     public double getCantidad() {
         return cantidad;
-    }
-
-    public void setCantidad(double cantidad) {
-        this.cantidad = cantidad;
     }
     
     public static class GastoBuilder {

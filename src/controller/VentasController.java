@@ -20,8 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.Base;
+import papeleria.model.TableBaseDAO;
 import papeleria.model.TableModel;
-import papeleria.model.TipoDAO;
 import papeleria.model.Venta;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipo;
@@ -108,7 +108,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         total = 0;
 
         for (int i = 0; i < items.size(); i++) {
-            total += getDouble((String) items.get(i)[1]);
+            total += InputController.getDouble((String) items.get(i)[1]);
         }
 
         ((JLabel) componentes.get(LBL_TOTAL)).setText("Total: " + total);
@@ -118,35 +118,12 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         total = 0;
 
         for (int i = 0; i < items.size(); i++) {
-            total += getDouble((String) items.get(i)[1]);
+            total += InputController.getDouble((String) items.get(i)[1]);
         }
 
         return total;
     }
 
-    //SEPARA Y CONVIERTE LA ENTRADA STRING EN DOUBLE EN MULTIPLICACIONES POR EJEMPLO PARA ENTRADA 20X3 LA SALIDA SERIA 60
-    private double getDouble(String numero) {
-        boolean ladoUno = true;
-        String numeroUno = "";
-        String numeroDos = "";
-        for (int i = 0; i < numero.length(); i++) {
-            if (ladoUno) {
-                if (!(numero.charAt(i) == 'x' || numero.charAt(i) == 'X')) {
-                    numeroUno += numero.charAt(i);
-                } else {
-                    ladoUno = false;
-                }
-            } else {
-                numeroDos += numero.charAt(i);
-            }
-        }
-
-        if (!ladoUno) {
-            return Double.parseDouble(numeroUno) * Double.parseDouble(numeroDos);
-        } else {
-            return Double.parseDouble(numeroUno);
-        }
-    }
 
     private List<Object[]> getItemsTableVenta() {
         int rows = ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount();
@@ -264,7 +241,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
     private List<VentaTipo> agruparItems(Venta venta) {
         List<Object[]> items = getItemsTableVenta();
 
-        List<Base> tipos = TipoDAO.getTipos();
+        List<Base> tipos = TableBaseDAO.getTipos();
         List<VentaTipo> ventaTipos = new ArrayList();
 
         for (int i = 0; i < tipos.size(); i++) {
@@ -272,10 +249,10 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
             for (int j = 0; j < items.size(); j++) {
                 if (tipos.get(i).getNombreBase().equals(items.get(j)[0])) {
                     if (!creado) {
-                        ventaTipos.add(new VentaTipo.VentaBuilder().venta(venta).cantidadTipo(getDouble((String) items.get(j)[1])).tipo(tipos.get(i)).build());
+                        ventaTipos.add(new VentaTipo.VentaBuilder().venta(venta).cantidadTipo(InputController.getDouble((String) items.get(j)[1])).tipo(tipos.get(i)).build());
                         creado = true;
                     } else {
-                        ventaTipos.get(ventaTipos.size() - 1).setCantidadTipo(ventaTipos.get(ventaTipos.size() - 1).getCantidadTipo() + getDouble((String) items.get(j)[1]));
+                        ventaTipos.get(ventaTipos.size() - 1).setCantidadTipo(ventaTipos.get(ventaTipos.size() - 1).getCantidadTipo() + InputController.getDouble((String) items.get(j)[1]));
                     }
 
                 }

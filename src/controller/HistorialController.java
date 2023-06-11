@@ -21,10 +21,10 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.TableModel;
-import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipoDAO;
 import papeleria.model.Base;
+import papeleria.model.TableBaseDAO;
 import papeleria.model.Venta;
 import papeleria.model.VentaTipo;
 
@@ -202,7 +202,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             JButton source = (JButton) e.getSource();
 
             if (source.equals(buttons.get(BTN_ACCEPT))) {
-                List<Base> tipos = TipoDAO.getTipos();
+                List<Base> tipos = TableBaseDAO.getTipos();
                 //TOMA LOS TIPOS EXISTENTES EN LA BASE DE DATOS  ^^^^^^^^
 
                 //TOMA LOS ITEMS EXISTENTES DE ESA VENTA EN LA BASE DE DATOS
@@ -222,7 +222,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
 
                                 datosAgrupados.add(new VentaTipo.VentaBuilder()
                                         .cantidadTipo(items.get(j).getCantidadTipo())
-                                        .tipo(TipoDAO.getTipo(tipos.get(i).getNombreBase()))
+                                        .tipo(TableBaseDAO.getNombre(tipos.get(i).getNombreBase(), "tipo"))
                                         .venta(getSelectedVenta())
                                         .build());
 
@@ -371,7 +371,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         for (int i = 0; i < rows; i++) {
             //items.add(new Object[]{tablesHistorial.get(TBL_VENTA).getValueAt(i, 0), tablesHistorial.get(TBL_VENTA).getValueAt(i, 1)});
             items.add(new VentaTipo.VentaBuilder()
-                    .tipo(TipoDAO.getTipo((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0)))
+                    .tipo(TableBaseDAO.getNombre((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0), "tipo"))
                     .cantidadTipo(Double.parseDouble(tablesHistorial.get(TBL_VENTA).getValueAt(i, 1).toString()))
                     .build());
 

@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 import papeleria.view.BaseTable;
+import papeleria.view.Export;
 
 /**
  *
@@ -25,6 +26,7 @@ public class OpcionesController implements ActionListener {
     private List<JMenuItem> componentes; //CONTIENE LOS BOTONES DEL MENU
     private List<JComboBox> combos;
     private BaseTable baseTable = new BaseTable("Componentes", combos);
+    private Export export= new Export();
 
     public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx) {
         this.componentes = componentes;
@@ -46,8 +48,13 @@ public class OpcionesController implements ActionListener {
             baseTable.setVisible(true);
             //SI ES PRESIONADO EL BOTON EXPORTAR VVVVVV
         } else if (e.getSource().equals(componentes.get(EXPORTAR))) {
-
-            //SI ES PRESIONADO EL BOTON SALIR VVVVVV
+            if (baseTable.isVisible()) {
+                baseTable.dispose();
+            }
+            if (!export.isVisible()) {
+                export.setVisible(true);
+            }
+            
         } else if (e.getSource().equals(componentes.get(SALIR))) {
             System.exit(0);
         }

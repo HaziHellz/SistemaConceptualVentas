@@ -69,6 +69,8 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
 
         calcularTotal(items);
+        
+        VentaDAO.getDate();
     }
 
     private void deleteItemVenta() {
@@ -201,7 +203,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
 
     private void vender() {
 
-        Venta venta = new Venta.VentaBuilder().idVenta(VentaDAO.idSiguienteVentaDelMes()).fecha(new Timestamp(System.currentTimeMillis())).existe(true).build();
+        Venta venta = new Venta.VentaBuilder().idVenta(VentaDAO.idSiguienteVentaDelMes()).fecha(VentaDAO.getDate()).existe(true).build();
 
         List<VentaTipo> ventaTipos = agruparItems(venta);
 

@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,11 +70,27 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         this.buttons = buttonsHistorial;
         actualizarVentaDiaria();
         resetTableHistorial();
+        
+    }
+
+    public void actualizarCombos() {
+        try {
+            Date date = new Date(System.currentTimeMillis());
+            // System.out.println(combos.get(CBX_MONTH_FILTER).getItemAt(combos.get(CBX_MONTH_FILTER).getModel().getSize()-1).toString());
+            if ((date.getMonth() + 1) > Integer.parseInt(combos.get(CBX_MONTH_FILTER).getItemAt(combos.get(CBX_MONTH_FILTER).getModel().getSize() - 1).toString())) {
+                System.out.println("SE ACTUALIZAN LOS COMBOOOS");
+                combos.get(CBX_YEAR_FILTER).setModel(VentaDAO.comboModelAño());
+                combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
+            }
+
+        } catch (NullPointerException ex) {
+        }
     }
 
     public void actualizarVentaDiaria() {
         ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
         ventaDiaria.setVisible(true);
+
     }
 
     private void showSale(int id_venta, String fecha_venta) {
@@ -236,10 +253,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     }
                 }
 
-                //VERIFICA QUE SE HAYAN RECOGIDO CORRECTAMENTE LOS DATOS DE LA BD
-//                for (int i = 0; i < itemsBD.size(); i++) {
-//                    System.out.println(itemsBD.get(i).toString());;
-//                }
                 //ELIMINA EN LA BD LOS TIPOS QUE NO EXISTAN EN LOS DATOS AGRUPADOS DE LA VENTA EDITADA
                 for (int i = 0; i < itemsBD.size(); i++) {
                     boolean existeTipoEnItemsYBD = false;
@@ -271,10 +284,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     }
                 }
 
-                //VERIFICA QUE ESTEN AGRUPADAS CORRECTAMENTE
-//                for (int i = 0; i < datosAgrupados.size(); i++) {
-//                    System.out.println(datosAgrupados.get(i).toString());
-//                }
                 actualizarVentaDiaria();
                 resetTableHistorial();
                 resetFormVenta();
@@ -332,21 +341,21 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             getSelectedItemHistorial(source);
         }
     }
-    
-    private void getSelectedItemHistorial(JTable source){
-        if (source.equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
-                if (selectedIndexHistorial != source.getSelectedRow()) {
-                    selectedIndexHistorial = source.getSelectedRow();
-                    showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
-                    txtPrecio.setEnabled(true);
-                    combos.get(CBX_TYPES_SOLDS).setEnabled(true);
-                    buttons.get(BTN_ACCEPT).setEnabled(true);
-                    buttons.get(BTN_DELETE_SALE).setEnabled(true);
-                } else {
-                    aplicarFiltros();
-                }
 
+    private void getSelectedItemHistorial(JTable source) {
+        if (source.equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
+            if (selectedIndexHistorial != source.getSelectedRow()) {
+                selectedIndexHistorial = source.getSelectedRow();
+                showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
+                txtPrecio.setEnabled(true);
+                combos.get(CBX_TYPES_SOLDS).setEnabled(true);
+                buttons.get(BTN_ACCEPT).setEnabled(true);
+                buttons.get(BTN_DELETE_SALE).setEnabled(true);
+            } else {
+                aplicarFiltros();
             }
+
+        }
     }
 
     private boolean editarItem() {

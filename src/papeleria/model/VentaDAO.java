@@ -358,4 +358,32 @@ public class VentaDAO {
             }
         }
     }
+    
+    public static Timestamp getDate() {
+        Timestamp date = null;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select current_timestamp()");
+            rs.next();
+            date = rs.getTimestamp(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return date;
+        }
+    }
+    
 }

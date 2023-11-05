@@ -62,7 +62,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jTabbedPane1" alignment="0" max="32767" attributes="0"/>
+          <Component id="jTabbedPane1" alignment="0" pref="963" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -143,7 +143,7 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane1" alignment="1" pref="998" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" alignment="1" pref="951" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   <Component id="lblTotal" min="-2" max="-2" attributes="0"/>
@@ -156,7 +156,7 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jScrollPane1" pref="470" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="501" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="lblTotal" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -218,7 +218,7 @@
             </Container>
             <Component class="javax.swing.JButton" name="btnSell">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Vender"/>
+                <Property name="text" type="java.lang.String" value="Ingresar"/>
               </Properties>
             </Component>
           </SubComponents>
@@ -246,19 +246,21 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxTypeSpends" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxYear" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxYear" min="-2" pref="72" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxMonth" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxMonth" min="-2" pref="50" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnAcceptSpend" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnDeleteSpend" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="108" max="32767" attributes="0"/>
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="lblSpends" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace pref="17" max="32767" attributes="0"/>
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxYearFilter" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="cbxMonthFilter" min="-2" max="-2" attributes="0"/>
+                              <Component id="cbxMonthFilter" min="-2" pref="50" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="cbxProviderFilter" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -279,6 +281,7 @@
                               <Component id="cbxYear" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                               <Component id="btnAcceptSpend" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btnDeleteSpend" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lblSpends" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="cbxYearFilter" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
@@ -292,7 +295,7 @@
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="508" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" pref="539" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -407,13 +410,8 @@
             </Container>
             <Component class="javax.swing.JComboBox" name="cbxYear">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="GastoDAO.comboModelA&#xf1;o()" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -423,13 +421,8 @@
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxMonth">
               <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="GastoDAO.comboModelActualMeses(cbxYear)&#xd;&#xa;" type="code"/>
                 </Property>
               </Properties>
               <AuxValues>
@@ -445,7 +438,19 @@
             <Component class="javax.swing.JButton" name="btnDeleteSpend">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Eliminar"/>
+                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="lblSpends">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="GastoDAO.gastoDelMes(cbxYearFilter.getSelectedItem().toString(), cbxMonthFilter.getSelectedItem().toString(), cbxTypeSpendsFilter.getSelectedItem().toString(), cbxProviderFilter.getSelectedItem().toString())&#xa;    " type="code"/>
+                </Property>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="}catch(NullPointerException ex){&#xa;&#xa;}"/>
+                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="try{"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
@@ -489,7 +494,7 @@
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="lblVentaDiaria" min="-2" pref="230" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane3" pref="732" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -511,7 +516,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane3" pref="508" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="539" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="jScrollPane4" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>

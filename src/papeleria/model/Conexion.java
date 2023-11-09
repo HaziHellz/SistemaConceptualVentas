@@ -27,7 +27,7 @@ public class Conexion {
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, "root", "cde5namh030511HTSVRBA1bj21");
-        //return DriverManager.getConnection(URL, "Cliente", "Ananava7211");
+    //    return DriverManager.getConnection(URL, "Cliente", "Ananava7211");
     }
 
     public static void close(Connection conn) throws SQLException {

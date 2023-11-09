@@ -8,11 +8,14 @@ import controller.GastoController;
 import controller.HistorialController;
 import controller.OpcionesController;
 import controller.VentasController;
+import java.awt.Dimension;
+import java.awt.MenuBar;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import papeleria.model.GastoDAO;
 import papeleria.model.TableBaseDAO;
@@ -46,7 +49,12 @@ public class GUI extends javax.swing.JFrame {
         componentes.add(btnMenuConceptos);
         componentes.add(btnMenuProveedores);
         componentes.add(btnMenuExportar);
-        componentes.add(btnMenuSalir);
+        
+        List<JPanel> modificadores = new ArrayList();
+        modificadores.add(btnMenuMinimizar);
+        modificadores.add(btnMenuMaximizar);
+        modificadores.add(btnMenuCerrar);
+        
         
         List<JComboBox> cbx = new ArrayList();
         cbx.add(cbxTypeSale);
@@ -57,12 +65,16 @@ public class GUI extends javax.swing.JFrame {
         cbx.add(cbxProvider);
         cbx.add(cbxProviderFilter);
         
-        OpcionesController controller = new OpcionesController(componentes, cbx);
+        OpcionesController controller = new OpcionesController(componentes, cbx, this, modificadores);
         
+        toGrab.addMouseListener(controller);
+        toGrab.addMouseMotionListener(controller);
         btnMenuConceptos.addActionListener(controller);
         btnMenuProveedores.addActionListener(controller);
         btnMenuExportar.addActionListener(controller);
-        btnMenuSalir.addActionListener(controller);
+        btnMenuCerrar.addMouseListener(controller);
+       // btnMenuMaximizar.addMouseListener(controller);
+        btnMenuMinimizar.addMouseListener(controller);
 
     }
     
@@ -127,7 +139,6 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem2 = new javax.swing.JMenuItem();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         cbxTypeSale = new javax.swing.JComboBox<>();
@@ -169,22 +180,29 @@ public class GUI extends javax.swing.JFrame {
         btnDeleteItemHistory = new javax.swing.JButton();
         lblVentaDiaria = new javax.swing.JLabel();
         btnDeleteSaleHistory = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuBarOpciones = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
         btnMenuConceptos = new javax.swing.JMenuItem();
         btnMenuProveedores = new javax.swing.JMenuItem();
         btnMenuExportar = new javax.swing.JMenuItem();
-        btnMenuSalir = new javax.swing.JMenuItem();
-
-        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1150, 650));
+        setBackground(new java.awt.Color(255, 255, 255));
+        setUndecorated(true);
+
+        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         try{
+            cbxTypeSale.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeSale.setForeground(new java.awt.Color(0, 0, 0));
             cbxTypeSale.setModel(TableBaseDAO.comboModel("Conceptos"));
         }catch(NullPointerException ex){}
+        cbxTypeSale.setBorder(null);
         cbxTypeSale.setPreferredSize(new java.awt.Dimension(72, 23));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         tblObjectList.getTableHeader().setReorderingAllowed(false);
         tblObjectList.setModel(new javax.swing.table.DefaultTableModel(
@@ -229,7 +247,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1040, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1103, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(lblTotal)))
@@ -238,13 +256,16 @@ public class GUI extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblTotal)
                 .addContainerGap())
         );
 
+        btnSell.setBackground(new java.awt.Color(240, 240, 240));
+        btnSell.setForeground(new java.awt.Color(0, 0, 0));
         btnSell.setText("Ingresar");
+        btnSell.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -275,12 +296,18 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Ingresos", jPanel1);
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
         try{
+            cbxYearFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxYearFilter.setForeground(new java.awt.Color(0, 0, 0));
             cbxYearFilter.setModel(GastoDAO.comboModelAño()
             );
         }catch(NullPointerException ex){}
 
         try{
+            cbxMonthFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxMonthFilter.setForeground(new java.awt.Color(0, 0, 0));
             cbxMonthFilter.setModel(GastoDAO.comboModelMeses(cbxYearFilter));
         }catch(NullPointerException ex){
 
@@ -289,20 +316,28 @@ public class GUI extends javax.swing.JFrame {
         jLabel1.setText("Filtros");
 
         try{
+            cbxProvider.setBackground(new java.awt.Color(240, 240, 240));
+            cbxProvider.setForeground(new java.awt.Color(0, 0, 0));
             cbxProvider.setModel(TableBaseDAO.comboModel("Proveedores")
             );
         }catch(NullPointerException ex){}
 
         try{
+            cbxTypeSpends.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeSpends.setForeground(new java.awt.Color(0, 0, 0));
             cbxTypeSpends.setModel(TableBaseDAO.comboModel("Conceptos"));
         }catch(NullPointerException ex){}
 
         try{
+            cbxTypeSpendsFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeSpendsFilter.setForeground(new java.awt.Color(0, 0, 0));
             cbxTypeSpendsFilter.setModel(TableBaseDAO.comboModelTodo("Conceptos")
             );
         }catch(NullPointerException ex){}
 
         try{
+            cbxProviderFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxProviderFilter.setForeground(new java.awt.Color(0, 0, 0));
             cbxProviderFilter.setModel(TableBaseDAO.comboModelTodo("Proveedor")
             );
         }catch(NullPointerException ex){}
@@ -318,15 +353,23 @@ public class GUI extends javax.swing.JFrame {
         tblSpends.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(tblSpends);
 
+        cbxYear.setBackground(new java.awt.Color(240, 240, 240));
+        cbxYear.setForeground(new java.awt.Color(0, 0, 0));
         cbxYear.setModel(GastoDAO.comboModelAño());
         cbxYear.setVisible(false);
 
+        cbxMonth.setBackground(new java.awt.Color(240, 240, 240));
+        cbxMonth.setForeground(new java.awt.Color(0, 0, 0));
         cbxMonth.setModel(GastoDAO.comboModelActualMeses(cbxYear)
         );
         cbxMonth.setVisible(false);
 
+        btnAcceptSpend.setBackground(new java.awt.Color(240, 240, 240));
+        btnAcceptSpend.setForeground(new java.awt.Color(0, 0, 0));
         btnAcceptSpend.setText("Aceptar");
 
+        btnDeleteSpend.setBackground(new java.awt.Color(240, 240, 240));
+        btnDeleteSpend.setForeground(new java.awt.Color(0, 0, 0));
         btnDeleteSpend.setText("Eliminar");
         btnDeleteSpend.setEnabled(false);
 
@@ -361,7 +404,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(btnDeleteSpend)
                         .addGap(18, 18, 18)
                         .addComponent(lblSpends)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxYearFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -394,11 +437,13 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(cbxTypeSpendsFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Gastos", jPanel2);
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
         tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
         tblHistorialVentas.setRowHeight(30);
@@ -421,6 +466,8 @@ public class GUI extends javax.swing.JFrame {
         txtQuantitySolds.setEnabled(false);
 
         try{
+            cbxTypesSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypesSolds.setForeground(new java.awt.Color(0, 0, 0));
             cbxTypesSolds.setModel(TableBaseDAO.comboModel("Conceptos"));
         }catch(NullPointerException ex){}
         cbxTypesSolds.setEnabled(false);
@@ -428,30 +475,44 @@ public class GUI extends javax.swing.JFrame {
         jLabel2.setText("Filtros");
 
         try{
+            cbxYearFilterSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxYearFilterSolds.setForeground(new java.awt.Color(0, 0, 0));
             cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
         }catch(NullPointerException ex){}
 
         try{
+            cbxMonthFilterSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxMonthFilterSolds.setForeground(new java.awt.Color(0, 0, 0));
             cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
             );
         }catch(NullPointerException ex){
 
         }
 
+        cbxDeletedSolds.setBackground(new java.awt.Color(240, 240, 240));
+        cbxDeletedSolds.setForeground(new java.awt.Color(0, 0, 0));
         cbxDeletedSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registradas", "Eliminadas" }));
 
         try{
+            cbxTypeFilterSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeFilterSolds.setForeground(new java.awt.Color(0, 0, 0));
             cbxTypeFilterSolds.setModel(TableBaseDAO.comboModelTodo("Conceptos"));
         }catch(NullPointerException ex){}
 
+        btnAcceptHistory.setBackground(new java.awt.Color(240, 240, 240));
+        btnAcceptHistory.setForeground(new java.awt.Color(0, 0, 0));
         btnAcceptHistory.setText("Aceptar");
         btnAcceptHistory.setEnabled(false);
 
+        btnDeleteItemHistory.setBackground(new java.awt.Color(240, 240, 240));
+        btnDeleteItemHistory.setForeground(new java.awt.Color(0, 0, 0));
         btnDeleteItemHistory.setText("Eliminar");
         btnDeleteItemHistory.setEnabled(false);
 
         lblVentaDiaria.setText("\"\"");
 
+        btnDeleteSaleHistory.setBackground(new java.awt.Color(240, 240, 240));
+        btnDeleteSaleHistory.setForeground(new java.awt.Color(0, 0, 0));
         btnDeleteSaleHistory.setText("Eliminar Venta");
         btnDeleteSaleHistory.setEnabled(false);
 
@@ -502,7 +563,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(lblVentaDiaria))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jScrollPane4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -516,23 +577,65 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Historial de Ingreso", jPanel4);
 
-        menu.setText("Opciones");
+        jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
+        jMenuBarOpciones.setForeground(new java.awt.Color(204, 204, 204));
+        jMenuBarOpciones.setBorderPainted(false);
+        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(172, 35));
+
+        menu.setBackground(new java.awt.Color(240, 240, 240));
+        menu.setForeground(new java.awt.Color(255, 255, 255));
+        menu.setText("Configuracion");
+        menu.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        menu.setMaximumSize(new java.awt.Dimension(120, 32767));
+        menu.setMinimumSize(new java.awt.Dimension(120, 35));
+        menu.setPreferredSize(new java.awt.Dimension(120, 22));
 
         btnMenuConceptos.setText("Conceptos");
+        btnMenuConceptos.setMaximumSize(new java.awt.Dimension(120, 32767));
+        btnMenuConceptos.setMinimumSize(new java.awt.Dimension(120, 0));
+        btnMenuConceptos.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuConceptos);
 
         btnMenuProveedores.setText("Proveedores");
+        btnMenuProveedores.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuProveedores);
 
         btnMenuExportar.setText("Exportar");
+        btnMenuExportar.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuExportar);
 
-        btnMenuSalir.setText("Salir");
-        menu.add(btnMenuSalir);
+        jMenuBarOpciones.add(menu);
+        toGrab = new javax.swing.JPanel();
+        btnMenuMinimizar = new javax.swing.JPanel();
+        btnMenuMaximizar = new javax.swing.JPanel();
+        btnMenuCerrar = new javax.swing.JPanel();
+        //1115, 640
+        toGrab.setBackground(new java.awt.Color(153,153,153));
+        toGrab.setPreferredSize(new java.awt.Dimension(940, 35));
+        toGrab.setMaximumSize(new java.awt.Dimension(940, 35));
+        jMenuBarOpciones.add(toGrab);
 
-        jMenuBar1.add(menu);
+        btnMenuMinimizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/minimize-icon.png")))); // NOI18N
+        btnMenuMinimizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(35, 35));
+        jMenuBarOpciones.add(btnMenuMinimizar);
 
-        setJMenuBar(jMenuBar1);
+        btnMenuMaximizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); // NOI18N
+        btnMenuMaximizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(35, 35));
+        //jMenuBarOpciones.add(btnMenuMaximizar);
+
+        btnMenuCerrar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/close-icon.png")))); // NOI18N
+        btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(35, 35));
+        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(35, 35));
+        jMenuBarOpciones.add(btnMenuCerrar);
+
+        //jMenuBarOpciones.add(btnMenuMinimizar);
+
+        setJMenuBar(jMenuBarOpciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -598,7 +701,11 @@ public class GUI extends javax.swing.JFrame {
         }
 
     }
-
+    
+    private javax.swing.JPanel toGrab;
+    private javax.swing.JPanel btnMenuMinimizar;
+    private javax.swing.JPanel btnMenuMaximizar;
+    private javax.swing.JPanel btnMenuCerrar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAcceptHistory;
     private javax.swing.JButton btnAcceptSpend;
@@ -608,7 +715,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem btnMenuConceptos;
     private javax.swing.JMenuItem btnMenuExportar;
     private javax.swing.JMenuItem btnMenuProveedores;
-    private javax.swing.JMenuItem btnMenuSalir;
     private javax.swing.JButton btnSell;
     private javax.swing.JComboBox<String> cbxDeletedSolds;
     private javax.swing.JComboBox<String> cbxMonth;
@@ -626,8 +732,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbxYearFilterSolds;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuBar jMenuBarOpciones;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

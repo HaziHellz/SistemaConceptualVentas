@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
@@ -23,7 +25,7 @@ import papeleria.view.GUI;
  *
  * @author heber
  */
-public class OpcionesController implements MouseListener, MouseMotionListener, ActionListener {
+public class OpcionesController implements WindowListener, MouseListener, MouseMotionListener, ActionListener {
 
     //SE DEFINE EL INDEX DE CADA BOTON
     private int CONCEPTOS = 0;
@@ -31,12 +33,13 @@ public class OpcionesController implements MouseListener, MouseMotionListener, A
     private int EXPORTAR = 2;
     private int MINIMIZAR = 0;
     private int MAXIMIZAR = 1;
+    private boolean defaultSize = true;
     private int SALIR = 2;
+    private int TOGRAB = 3;
     private int xMouse;
     private int yMouse;
     private GUI gui;
 
-    
     private List<JMenuItem> componentes; //CONTIENE LOS BOTONES DEL MENU
     private List<JComboBox> combos;
     private List<JPanel> modificadores;
@@ -74,14 +77,27 @@ public class OpcionesController implements MouseListener, MouseMotionListener, A
 
         }
     }
-    
-    public void maximizarVentana(){
-        gui.setExtendedState(GUI.MAXIMIZED_BOTH);
+
+    public void maximizarVentana() {
+        if (defaultSize) {
+            gui.setExtendedState(GUI.MAXIMIZED_BOTH);
+            modificadores.get(MAXIMIZAR).removeAll();
+            modificadores.get(MAXIMIZAR).add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/re-scale-icon.png")))); 
+            gui.setLocation(0, 0);
+            defaultSize = false;
+        }else{
+            gui.setExtendedState(GUI.NORMAL);
+            gui.setSize(1115, 700);
+            modificadores.get(MAXIMIZAR).removeAll();
+            modificadores.get(MAXIMIZAR).add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); 
+            defaultSize = true;
+        }
+
     }
-    
-    public void minimizarVentana(){
-        gui.setExtendedState(1);
- 
+
+    public void minimizarVentana() {
+        gui.setExtendedState(GUI.ICONIFIED);
+      
     }
 
     @Override
@@ -104,8 +120,7 @@ public class OpcionesController implements MouseListener, MouseMotionListener, A
                 minimizarVentana();
             } else if (boton.equals(modificadores.get(MAXIMIZAR))) {
                 maximizarVentana();
-            }
-            else if (boton.equals(modificadores.get(SALIR))) {
+            } else if (boton.equals(modificadores.get(SALIR))) {
                 System.exit(0);
             }
         }
@@ -127,9 +142,9 @@ public class OpcionesController implements MouseListener, MouseMotionListener, A
         if (e.getSource() instanceof JPanel) {
             if (e.getSource().equals(modificadores.get(SALIR))) {
                 modificadores.get(SALIR).setBackground(Color.red);
-            } else if(e.getSource().equals(modificadores.get(MINIMIZAR))){
+            } else if (e.getSource().equals(modificadores.get(MINIMIZAR))) {
                 modificadores.get(MINIMIZAR).setBackground(Color.lightGray);
-            } else if(e.getSource().equals(modificadores.get(MAXIMIZAR))){
+            } else if (e.getSource().equals(modificadores.get(MAXIMIZAR))) {
                 modificadores.get(MAXIMIZAR).setBackground(Color.lightGray);
             }
         }
@@ -139,13 +154,53 @@ public class OpcionesController implements MouseListener, MouseMotionListener, A
     public void mouseExited(MouseEvent e) {
         if (e.getSource() instanceof JPanel) {
             if (e.getSource().equals(modificadores.get(SALIR))) {
-                modificadores.get(SALIR).setBackground(new java.awt.Color(153,153,153));
-            } else if(e.getSource().equals(modificadores.get(MAXIMIZAR))){
-                modificadores.get(MAXIMIZAR).setBackground(new java.awt.Color(153,153,153));
-            } else if(e.getSource().equals(modificadores.get(MINIMIZAR))){
-                modificadores.get(MINIMIZAR).setBackground(new java.awt.Color(153,153,153));
+                modificadores.get(SALIR).setBackground(new java.awt.Color(153, 153, 153));
+            } else if (e.getSource().equals(modificadores.get(MAXIMIZAR))) {
+                modificadores.get(MAXIMIZAR).setBackground(new java.awt.Color(153, 153, 153));
+                
+            } else if (e.getSource().equals(modificadores.get(MINIMIZAR))) {
+                modificadores.get(MINIMIZAR).setBackground(new java.awt.Color(153, 153, 153));
             }
         }
+    }
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    
+    }
+
+    @Override
+    public void windowClosing(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+    
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+        
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+        if (defaultSize) {
+            gui.setExtendedState(GUI.NORMAL);
+            gui.setSize(1115, 700);
+            
+        } else{
+            gui.setExtendedState(GUI.MAXIMIZED_BOTH );
+            
+        }
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
     }
 
 }

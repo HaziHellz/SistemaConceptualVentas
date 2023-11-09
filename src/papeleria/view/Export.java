@@ -55,6 +55,7 @@ public class Export extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         cbxMonth = new javax.swing.JComboBox<>();
         jButton2 = new javax.swing.JButton();
+        btnCerrarExportar = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -107,11 +108,26 @@ public class Export extends javax.swing.JFrame {
         jButton2.setText("Exportar");
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, -1, -1));
 
+        btnCerrarExportar.setPreferredSize(new java.awt.Dimension(45, 35));
+
+        javax.swing.GroupLayout btnCerrarExportarLayout = new javax.swing.GroupLayout(btnCerrarExportar);
+        btnCerrarExportar.setLayout(btnCerrarExportarLayout);
+        btnCerrarExportarLayout.setHorizontalGroup(
+            btnCerrarExportarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
+        btnCerrarExportarLayout.setVerticalGroup(
+            btnCerrarExportarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 30, Short.MAX_VALUE)
+        );
+
+        jPanel1.add(btnCerrarExportar, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 0, 40, 30));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 489, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,6 +173,7 @@ public class Export extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel btnCerrarExportar;
     private javax.swing.JComboBox<String> cbxConcepto;
     private javax.swing.JComboBox<String> cbxMonth;
     private javax.swing.JComboBox<String> cbxYear;

@@ -8,8 +8,6 @@ import controller.GastoController;
 import controller.HistorialController;
 import controller.OpcionesController;
 import controller.VentasController;
-import java.awt.Dimension;
-import java.awt.MenuBar;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -54,7 +52,7 @@ public class GUI extends javax.swing.JFrame {
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuMaximizar);
         modificadores.add(btnMenuCerrar);
-        
+        modificadores.add(toGrab);
         
         List<JComboBox> cbx = new ArrayList();
         cbx.add(cbxTypeSale);
@@ -67,13 +65,14 @@ public class GUI extends javax.swing.JFrame {
         
         OpcionesController controller = new OpcionesController(componentes, cbx, this, modificadores);
         
+        this.addWindowListener(controller);
         toGrab.addMouseListener(controller);
         toGrab.addMouseMotionListener(controller);
         btnMenuConceptos.addActionListener(controller);
         btnMenuProveedores.addActionListener(controller);
         btnMenuExportar.addActionListener(controller);
         btnMenuCerrar.addMouseListener(controller);
-       // btnMenuMaximizar.addMouseListener(controller);
+        btnMenuMaximizar.addMouseListener(controller);
         btnMenuMinimizar.addMouseListener(controller);
 
     }
@@ -189,6 +188,8 @@ public class GUI extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(1115, 700));
+        setSize(new java.awt.Dimension(1115, 1115));
 
         jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -256,7 +257,7 @@ public class GUI extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblTotal)
                 .addContainerGap())
@@ -437,7 +438,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(cbxTypeSpendsFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -563,7 +564,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(lblVentaDiaria))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jScrollPane4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -578,9 +579,11 @@ public class GUI extends javax.swing.JFrame {
         jTabbedPane1.addTab("Historial de Ingreso", jPanel4);
 
         jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
+        jMenuBarOpciones.setBorder(null);
         jMenuBarOpciones.setForeground(new java.awt.Color(204, 204, 204));
+        jMenuBarOpciones.setAlignmentY(0.5F);
         jMenuBarOpciones.setBorderPainted(false);
-        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(172, 35));
+        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(1115, 35));
 
         menu.setBackground(new java.awt.Color(240, 240, 240));
         menu.setForeground(new java.awt.Color(255, 255, 255));
@@ -611,26 +614,28 @@ public class GUI extends javax.swing.JFrame {
         btnMenuCerrar = new javax.swing.JPanel();
         //1115, 640
         toGrab.setBackground(new java.awt.Color(153,153,153));
-        toGrab.setPreferredSize(new java.awt.Dimension(940, 35));
-        toGrab.setMaximumSize(new java.awt.Dimension(940, 35));
+        toGrab.setPreferredSize(new java.awt.Dimension(950, 35));
+        toGrab.setMaximumSize(new java.awt.Dimension(32767, 35));
         jMenuBarOpciones.add(toGrab);
 
         btnMenuMinimizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/minimize-icon.png")))); // NOI18N
         btnMenuMinimizar.setBackground(new java.awt.Color(153,153,153));
-        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(35, 35));
-        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(45, 35));
         jMenuBarOpciones.add(btnMenuMinimizar);
 
         btnMenuMaximizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); // NOI18N
         btnMenuMaximizar.setBackground(new java.awt.Color(153,153,153));
-        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(35, 35));
-        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(35, 35));
-        //jMenuBarOpciones.add(btnMenuMaximizar);
+        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        //toGrab.add(btnMenuMaximizar);
+        jMenuBarOpciones.add(btnMenuMaximizar);
+        jMenuBarOpciones.setMaximumSize(new java.awt.Dimension(0, 0));
 
         btnMenuCerrar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/close-icon.png")))); // NOI18N
         btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
-        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(35, 35));
-        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(35, 35));
+        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(45, 35));
         jMenuBarOpciones.add(btnMenuCerrar);
 
         //jMenuBarOpciones.add(btnMenuMinimizar);

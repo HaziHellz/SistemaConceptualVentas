@@ -128,7 +128,7 @@ public class VentaDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select distinct substring(fecha_venta, 1 , 7) from venta where fecha_venta like '" + año.getSelectedItem().toString() + "-%' order by fecha_venta desc");
+            rs = stmt.executeQuery("select distinct substring(fecha_venta, 1 , 7) from venta where fecha_venta like '" + año.getSelectedItem().toString() + "-%'");
             int q = 0;
             while (rs.next()) {
                 q += 1;
@@ -153,6 +153,8 @@ public class VentaDAO {
                 close(conn);
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
+            } catch (NullPointerException ex){
+                
             }
             return modelFechas;
         }

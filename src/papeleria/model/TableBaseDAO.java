@@ -336,6 +336,7 @@ public class TableBaseDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "No se pudo establecer la conexion con la base de datos", "Error de conexion", 0);
             e.printStackTrace(System.out);
+            System.exit(0);
         } finally {
             
             try {

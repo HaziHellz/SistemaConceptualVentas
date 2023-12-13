@@ -11,12 +11,18 @@ import papeleria.view.GUI;
  * @author heber
  */
 public class Papeleria {
-
+    
+    private static String version = "0.9.8";
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         new GUI().setVisible(true);
     }
-    
+
+    public static String getVersion() {
+        return version;
+    }
+
 }

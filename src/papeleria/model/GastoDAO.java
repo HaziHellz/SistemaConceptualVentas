@@ -127,7 +127,7 @@ public class GastoDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select distinct substring(fecha_gasto, 1 , 7) from gastos where fecha_gasto like '" + año.getSelectedItem().toString() + "-%'");
+            rs = stmt.executeQuery("select distinct substring(fecha_gasto, 1 , 7) as Fecha from gastos where fecha_gasto like '" + año.getSelectedItem().toString() + "-%' order by Fecha desc");
 
             int q = 0;
 

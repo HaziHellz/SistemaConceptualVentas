@@ -68,28 +68,37 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         this.ventaDiaria = ventaDiaria;
         this.txtPrecio = txtPrecio;
         this.buttons = buttonsHistorial;
-        actualizarVentaDiaria();
-        resetTableHistorial();
-        
+        try {
+            actualizarVentaDiaria();
+            resetTableHistorial();
+        } catch (NullPointerException ex) {
+
+        }
+
     }
 
     public void actualizarCombos() {
         try {
+
             Date date = new Date(System.currentTimeMillis());
-            // System.out.println(combos.get(CBX_MONTH_FILTER).getItemAt(combos.get(CBX_MONTH_FILTER).getModel().getSize()-1).toString());
             if ((date.getMonth() + 1) > Integer.parseInt(combos.get(CBX_MONTH_FILTER).getItemAt(combos.get(CBX_MONTH_FILTER).getModel().getSize() - 1).toString())) {
-                System.out.println("SE ACTUALIZAN LOS COMBOOOS");
                 combos.get(CBX_YEAR_FILTER).setModel(VentaDAO.comboModelAño());
                 combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
             }
 
         } catch (NullPointerException ex) {
+            combos.get(CBX_YEAR_FILTER).setModel(VentaDAO.comboModelAño());
+            combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
         }
     }
 
     public void actualizarVentaDiaria() {
-        ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
-        ventaDiaria.setVisible(true);
+        try {
+            ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
+            ventaDiaria.setVisible(true);
+        } catch (NullPointerException ex) {
+
+        }
 
     }
 

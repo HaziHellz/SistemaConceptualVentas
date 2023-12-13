@@ -18,8 +18,8 @@ import java.sql.Statement;
 public class Conexion {
 
     private static final String DB_NAME = "papeleria";
-    private static final String URL = "jdbc:mysql://localhost:3306/" + DB_NAME + "?useSSL=false&useTimezone=true";
-    //private static final String URL = "jdbc:mysql://10.181.151.142:3306/" + DB_NAME + "?useSSL=false&useTimezone=true"; //PAPELERIA
+    //private static final String URL = "jdbc:mysql://localhost:3306/" + DB_NAME + "?useSSL=false&useTimezone=true";
+    private static final String URL = "jdbc:mysql://10.181.151.142:3306/" + DB_NAME + "?useSSL=false&useTimezone=true"; //PAPELERIA
     //private static final String URL = "jdbc:mysql://192.168.0.9:3306/" + DB_NAME + "?useSSL=false&useTimezone=true";
     public Conexion() {
 

@@ -40,20 +40,19 @@ public class GUI extends javax.swing.JFrame {
         gasto();
     }
 
-    
     private void opciones() {
 
         List<JMenuItem> componentes = new ArrayList();
         componentes.add(btnMenuConceptos);
         componentes.add(btnMenuProveedores);
         componentes.add(btnMenuExportar);
-        
+
         List<JPanel> modificadores = new ArrayList();
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuMaximizar);
         modificadores.add(btnMenuCerrar);
         modificadores.add(toGrab);
-        
+
         List<JComboBox> cbx = new ArrayList();
         cbx.add(cbxTypeSale);
         cbx.add(cbxTypeFilterSolds);
@@ -62,9 +61,9 @@ public class GUI extends javax.swing.JFrame {
         cbx.add(cbxTypeSpendsFilter);
         cbx.add(cbxProvider);
         cbx.add(cbxProviderFilter);
-        
+
         OpcionesController controller = new OpcionesController(componentes, cbx, this, modificadores);
-        
+
         this.addWindowListener(controller);
         toGrab.addMouseListener(controller);
         toGrab.addMouseMotionListener(controller);
@@ -76,8 +75,8 @@ public class GUI extends javax.swing.JFrame {
         btnMenuMinimizar.addMouseListener(controller);
 
     }
-    
-    private void gasto(){
+
+    private void gasto() {
         List<JComboBox> combos = new ArrayList();
         combos.add(cbxProvider);
         combos.add(cbxTypeSpends);
@@ -87,29 +86,29 @@ public class GUI extends javax.swing.JFrame {
         combos.add(cbxMonthFilter);
         combos.add(cbxProviderFilter);
         combos.add(cbxTypeSpendsFilter);
-        
+
         List<Object> componentes = new ArrayList();
         componentes.add(txtQuantitySpends);
         componentes.add(btnAcceptSpend);
         componentes.add(btnDeleteSpend);
         componentes.add(tblSpends);
         componentes.add(lblSpends);
-        
+
         GastoController controller = new GastoController(combos, componentes);
-        
+
         cbxYearFilter.addActionListener(controller);
         cbxMonthFilter.addActionListener(controller);
         cbxTypeSpendsFilter.addActionListener(controller);
         cbxProviderFilter.addActionListener(controller);
         cbxYear.addActionListener(controller);
-        
+
         tblSpends.addMouseListener(controller);
         txtQuantitySpends.addKeyListener(controller);
         btnAcceptSpend.addActionListener(controller);
         btnDeleteSpend.addActionListener(controller);
-        
+
     }
-    
+
     private void venta(Historial historial) {
         List<Object> componentes = new ArrayList();
 
@@ -120,13 +119,13 @@ public class GUI extends javax.swing.JFrame {
         componentes.add(lblTotal);
 
         VentasController controller = new VentasController(componentes, historial);
-        
+
         cbxTypeSale.addActionListener(controller);
         btnSell.addActionListener(controller);
         txtPrice.addKeyListener(controller);
         tblObjectList.addKeyListener(controller);
         tblObjectList.addMouseListener(controller);
-        
+
     }
 
     /**
@@ -230,7 +229,6 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         tblObjectList.setRowHeight(30);
-        tblObjectList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblObjectList.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblObjectList);
         if (tblObjectList.getColumnModel().getColumnCount() > 0) {
@@ -351,7 +349,6 @@ public class GUI extends javax.swing.JFrame {
 
         }
         tblSpends.setRowHeight(30);
-        tblSpends.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(tblSpends);
 
         cbxYear.setBackground(new java.awt.Color(240, 240, 240));
@@ -448,7 +445,6 @@ public class GUI extends javax.swing.JFrame {
 
         tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
         tblHistorialVentas.setRowHeight(30);
-        tblHistorialVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(tblHistorialVentas);
 
         tblHistorialVenta.getTableHeader().setReorderingAllowed(false);
@@ -461,7 +457,6 @@ public class GUI extends javax.swing.JFrame {
             }
         ));
         tblHistorialVenta.setRowHeight(30);
-        tblHistorialVenta.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane4.setViewportView(tblHistorialVenta);
 
         txtQuantitySolds.setEnabled(false);
@@ -657,19 +652,20 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public class Historial implements Runnable {
+
         HistorialController historial;
-        
-        public void actualizarVista(){
+
+        public void actualizarVista() {
+            historial.actualizarCombos();
             historial.actualizarVentaDiaria();
             historial.resetTableHistorial();
-            historial.actualizarCombos();
-            
+
         }
-        
-        public HistorialController getHistorial(){
+
+        public HistorialController getHistorial() {
             return historial;
         }
-        
+
         @Override
         public void run() {
             List<JTable> tablesHistorial = new ArrayList();
@@ -690,7 +686,8 @@ public class GUI extends javax.swing.JFrame {
 
             HistorialController controller = new HistorialController(tablesHistorial, combos, lblVentaDiaria, txtQuantitySolds, buttonsHistorial);
             historial = controller;
-            
+            historial.actualizarCombos();
+
             tblHistorialVentas.addMouseListener(controller);
             tblHistorialVentas.addKeyListener(controller);
             tblHistorialVenta.addMouseListener(controller);
@@ -706,7 +703,7 @@ public class GUI extends javax.swing.JFrame {
         }
 
     }
-    
+
     private javax.swing.JPanel toGrab;
     private javax.swing.JPanel btnMenuMinimizar;
     private javax.swing.JPanel btnMenuMaximizar;
@@ -793,4 +790,4 @@ public class GUI extends javax.swing.JFrame {
         btnAcceptHistory.addActionListener(controller);
         btnDeleteSaleHistory.addActionListener(controller);
     }
-*/
+ */

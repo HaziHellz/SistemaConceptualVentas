@@ -127,8 +127,8 @@ public class GastoDAO {
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            //rs = stmt.executeQuery("select distinct substring(fecha_gasto, 1 , 7) from gastos where fecha_gasto like '" + año.getSelectedItem().toString() + "-%' order by fecha_gasto desc");
-            rs = stmt.executeQuery("select distinct substring(fecha_gasto, 1 , 7) from gastos where fecha_gasto like '" + año.getSelectedItem().toString() + "-%'");
+            rs = stmt.executeQuery("select distinct substring(fecha_gasto, 1 , 7) as Fecha from gastos where fecha_gasto like '" + año.getSelectedItem().toString() + "-%' order by Fecha desc");
+
             int q = 0;
 
             while (rs.next()) {
@@ -286,20 +286,20 @@ public class GastoDAO {
             if (tipo.equals("Todo") && proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%';";
                 //System.out.println("TODO: " + query);
-            } else if (tipo.equals("Todo") && !proveedor.equals("Todo")) {
+            }else if(tipo.equals("Todo") && !proveedor.equals("Todo")){
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
-
-            } else if (!tipo.equals("Todo") && proveedor.equals("Todo")) {
+            
+            }else if(!tipo.equals("Todo") && proveedor.equals("Todo")){
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + ";";
-
-            } else {
+            
+            }else {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + " && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
             }
-
+            
             rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                totalMes = Double.valueOf(rs.getObject(1).toString());
+                totalMes =  Double.valueOf(rs.getObject(1).toString());
             }
             result += "Mes: " + totalMes;
 
@@ -345,8 +345,8 @@ public class GastoDAO {
             }
         }
     }
-
-    public static void delete(Gasto gasto) {
+    
+    public static void delete(Gasto gasto){
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -372,7 +372,7 @@ public class GastoDAO {
             }
         }
     }
-
+    
     public static Timestamp getDate() {
         Timestamp date = null;
         Connection conn = null;

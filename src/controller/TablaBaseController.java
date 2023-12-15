@@ -19,7 +19,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.Base;
 import papeleria.model.TableBaseDAO;
-import papeleria.model.TipoDAO;
 
 /**
  *
@@ -101,16 +100,20 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
             if (titulo.equals("Conceptos")) {
                 for (int i = 0; i < (combos.size()-2); i++) {
                     if (i == 1 || i == 4 || i == 6) {
-                        combos.get(i).setModel(TipoDAO.comboModelTodo());
+                        combos.get(i).setModel(TableBaseDAO.comboModelTodo(titulo));
                     }else{
-                        combos.get(i).setModel(TipoDAO.comboModel(titulo));
+                        combos.get(i).setModel(TableBaseDAO.comboModel(titulo));
                     }
                 }
                 
             }else{
                 //ACTUALIZA LOS COMBOBOX DEL PROVEEDOR
                 for (int i = 5; i < combos.size(); i++) {
-                    combos.get(i).setModel(TipoDAO.comboModel(titulo));
+                    if (i != 6) {
+                        combos.get(i).setModel(TableBaseDAO.comboModel(titulo));
+                    }else{
+                        combos.get(i).setModel(TableBaseDAO.comboModelTodo(titulo));
+                    }
                 }
             }
 

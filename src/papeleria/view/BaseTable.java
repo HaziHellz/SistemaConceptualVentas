@@ -4,13 +4,11 @@
  */
 package papeleria.view;
 
-import controller.OpcionesController;
 import controller.TablaBaseController;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
-import papeleria.model.TableBaseDAO;
 
 /**
  *
@@ -118,14 +116,6 @@ public class BaseTable extends javax.swing.JFrame {
                 .addComponent(btnAdd))
         );
 
-        tblConcepts.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         tblConcepts.setRowHeight(30);
         tblConcepts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tblConcepts);

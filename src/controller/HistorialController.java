@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,10 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.TableModel;
-import papeleria.model.TipoDAO;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipoDAO;
 import papeleria.model.Base;
+import papeleria.model.TableBaseDAO;
 import papeleria.model.Venta;
 import papeleria.model.VentaTipo;
 
@@ -67,13 +68,38 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         this.ventaDiaria = ventaDiaria;
         this.txtPrecio = txtPrecio;
         this.buttons = buttonsHistorial;
-        actualizarVentaDiaria();
-        resetTableHistorial();
+        try {
+            actualizarVentaDiaria();
+            resetTableHistorial();
+        } catch (NullPointerException ex) {
+
+        }
+
+    }
+
+    public void actualizarCombos() {
+        try {
+
+            Date date = new Date(System.currentTimeMillis());
+            if ((date.getMonth() + 1) > Integer.parseInt(combos.get(CBX_MONTH_FILTER).getItemAt(combos.get(CBX_MONTH_FILTER).getModel().getSize() - 1).toString())) {
+                combos.get(CBX_YEAR_FILTER).setModel(VentaDAO.comboModelAño());
+                combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
+            }
+
+        } catch (NullPointerException ex) {
+            combos.get(CBX_YEAR_FILTER).setModel(VentaDAO.comboModelAño());
+            combos.get(CBX_MONTH_FILTER).setModel(VentaDAO.comboModelMeses(combos.get(CBX_YEAR_FILTER)));
+        }
     }
 
     public void actualizarVentaDiaria() {
-        ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
-        ventaDiaria.setVisible(true);
+        try {
+            ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
+            ventaDiaria.setVisible(true);
+        } catch (NullPointerException ex) {
+
+        }
+
     }
 
     private void showSale(int id_venta, String fecha_venta) {
@@ -202,7 +228,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             JButton source = (JButton) e.getSource();
 
             if (source.equals(buttons.get(BTN_ACCEPT))) {
-                List<Base> tipos = TipoDAO.getTipos();
+                List<Base> tipos = TableBaseDAO.getTipos();
                 //TOMA LOS TIPOS EXISTENTES EN LA BASE DE DATOS  ^^^^^^^^
 
                 //TOMA LOS ITEMS EXISTENTES DE ESA VENTA EN LA BASE DE DATOS
@@ -222,7 +248,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
 
                                 datosAgrupados.add(new VentaTipo.VentaBuilder()
                                         .cantidadTipo(items.get(j).getCantidadTipo())
-                                        .tipo(TipoDAO.getTipo(tipos.get(i).getNombreBase()))
+                                        .tipo(TableBaseDAO.getNombre(tipos.get(i).getNombreBase(), "tipo"))
                                         .venta(getSelectedVenta())
                                         .build());
 
@@ -236,10 +262,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     }
                 }
 
-                //VERIFICA QUE SE HAYAN RECOGIDO CORRECTAMENTE LOS DATOS DE LA BD
-//                for (int i = 0; i < itemsBD.size(); i++) {
-//                    System.out.println(itemsBD.get(i).toString());;
-//                }
                 //ELIMINA EN LA BD LOS TIPOS QUE NO EXISTAN EN LOS DATOS AGRUPADOS DE LA VENTA EDITADA
                 for (int i = 0; i < itemsBD.size(); i++) {
                     boolean existeTipoEnItemsYBD = false;
@@ -271,10 +293,6 @@ public class HistorialController extends MouseAdapter implements ActionListener,
                     }
                 }
 
-                //VERIFICA QUE ESTEN AGRUPADAS CORRECTAMENTE
-//                for (int i = 0; i < datosAgrupados.size(); i++) {
-//                    System.out.println(datosAgrupados.get(i).toString());
-//                }
                 actualizarVentaDiaria();
                 resetTableHistorial();
                 resetFormVenta();
@@ -332,21 +350,21 @@ public class HistorialController extends MouseAdapter implements ActionListener,
             getSelectedItemHistorial(source);
         }
     }
-    
-    private void getSelectedItemHistorial(JTable source){
-        if (source.equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
-                if (selectedIndexHistorial != source.getSelectedRow()) {
-                    selectedIndexHistorial = source.getSelectedRow();
-                    showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
-                    txtPrecio.setEnabled(true);
-                    combos.get(CBX_TYPES_SOLDS).setEnabled(true);
-                    buttons.get(BTN_ACCEPT).setEnabled(true);
-                    buttons.get(BTN_DELETE_SALE).setEnabled(true);
-                } else {
-                    aplicarFiltros();
-                }
 
+    private void getSelectedItemHistorial(JTable source) {
+        if (source.equals(tablesHistorial.get(TBL_HISTORIAL_VENTAS))) {
+            if (selectedIndexHistorial != source.getSelectedRow()) {
+                selectedIndexHistorial = source.getSelectedRow();
+                showSale((int) source.getValueAt(selectedIndexHistorial, 0), String.valueOf(source.getValueAt(selectedIndexHistorial, 1)));
+                txtPrecio.setEnabled(true);
+                combos.get(CBX_TYPES_SOLDS).setEnabled(true);
+                buttons.get(BTN_ACCEPT).setEnabled(true);
+                buttons.get(BTN_DELETE_SALE).setEnabled(true);
+            } else {
+                aplicarFiltros();
             }
+
+        }
     }
 
     private boolean editarItem() {
@@ -371,7 +389,7 @@ public class HistorialController extends MouseAdapter implements ActionListener,
         for (int i = 0; i < rows; i++) {
             //items.add(new Object[]{tablesHistorial.get(TBL_VENTA).getValueAt(i, 0), tablesHistorial.get(TBL_VENTA).getValueAt(i, 1)});
             items.add(new VentaTipo.VentaBuilder()
-                    .tipo(TipoDAO.getTipo((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0)))
+                    .tipo(TableBaseDAO.getNombre((String) tablesHistorial.get(TBL_VENTA).getValueAt(i, 0), "tipo"))
                     .cantidadTipo(Double.parseDouble(tablesHistorial.get(TBL_VENTA).getValueAt(i, 1).toString()))
                     .build());
 

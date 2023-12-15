@@ -10,15 +10,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import static papeleria.model.Conexion.close;
-import papeleria.model.TipoDAO;
-/**
- *
- * @author heber
- */
+
 public class VentaTipoDAO {
     
     private static VentaTipoDAO ventaTipoDAO;
@@ -165,7 +160,7 @@ public class VentaTipoDAO {
                 for (int i = 0; i < columns; i++) {
                     item[i] = rs.getObject(i + 1);
                 }
-                ventaTipos.add(new VentaTipo.VentaBuilder().cantidadTipo((double) item[1]).venta(venta).tipo(TipoDAO.getTipo((String) item[0])).build());
+                ventaTipos.add(new VentaTipo.VentaBuilder().cantidadTipo((double) item[1]).venta(venta).tipo(TableBaseDAO.getNombre((String) item[0] , "tipo")).build());
             }
             
         } catch (SQLException e) {

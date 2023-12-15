@@ -10,7 +10,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
@@ -20,8 +19,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.Base;
+import papeleria.model.TableBaseDAO;
 import papeleria.model.TableModel;
-import papeleria.model.TipoDAO;
 import papeleria.model.Venta;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipo;
@@ -69,6 +68,8 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
 
         calcularTotal(items);
+        
+        VentaDAO.getDate();
     }
 
     private void deleteItemVenta() {
@@ -76,13 +77,15 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         List<Object[]> items = getItemsTableVenta();
         tableModel.addColumn("Concepto");
         tableModel.addColumn("Cantidad");
-        for (int i = 0; i < ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount(); i++) {
-            if (index != i) {
+        items.remove(index);
+        for (int i = 0; i < items.size(); i++) {
+            //if (index != i) {
                 tableModel.addRow(items.get(i));
-            }
+            //}
         }
         ((JTable) componentes.get(TBL_OBJECT_LIST)).setModel(tableModel);
         nuevo = true;
+        calcularTotal(items);
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
     }
 
@@ -96,6 +99,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         }
         itemsTable.setModel(tableModel);
         ((JTextField) componentes.get(TXT_PRICE)).setText("");
+        ((JTextField) componentes.get(TXT_PRICE)).requestFocus();
         ((JComboBox) componentes.get(CBX_TYPE_SALE)).setSelectedIndex(0);
         index = -1;
         nuevo = true;
@@ -105,7 +109,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         total = 0;
 
         for (int i = 0; i < items.size(); i++) {
-            total += getDouble((String) items.get(i)[1]);
+            total += InputController.getDouble((String) items.get(i)[1]);
         }
 
         ((JLabel) componentes.get(LBL_TOTAL)).setText("Total: " + total);
@@ -115,35 +119,12 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
         total = 0;
 
         for (int i = 0; i < items.size(); i++) {
-            total += getDouble((String) items.get(i)[1]);
+            total += InputController.getDouble((String) items.get(i)[1]);
         }
 
         return total;
     }
 
-    //SEPARA Y CONVIERTE LA ENTRADA STRING EN DOUBLE EN MULTIPLICACIONES POR EJEMPLO PARA ENTRADA 20X3 LA SALIDA SERIA 60
-    private double getDouble(String numero) {
-        boolean ladoUno = true;
-        String numeroUno = "";
-        String numeroDos = "";
-        for (int i = 0; i < numero.length(); i++) {
-            if (ladoUno) {
-                if (!(numero.charAt(i) == 'x' || numero.charAt(i) == 'X')) {
-                    numeroUno += numero.charAt(i);
-                } else {
-                    ladoUno = false;
-                }
-            } else {
-                numeroDos += numero.charAt(i);
-            }
-        }
-
-        if (!ladoUno) {
-            return Double.parseDouble(numeroUno) * Double.parseDouble(numeroDos);
-        } else {
-            return Double.parseDouble(numeroUno);
-        }
-    }
 
     private List<Object[]> getItemsTableVenta() {
         int rows = ((JTable) componentes.get(TBL_OBJECT_LIST)).getRowCount();
@@ -183,7 +164,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
                     editarItem();
                 }
             }
-
+            
         }
 
         if (e.getSource() instanceof JTable) {
@@ -203,7 +184,6 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
 
     @Override
     public void keyReleased(KeyEvent e) {
-        //POR HACEEEEEEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRRRRRRRRRR
         if (e.getSource() instanceof JTable) {
             JTable source = (JTable) e.getSource();
             if (index != source.getSelectedRow()) {
@@ -222,7 +202,7 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
 
     private void vender() {
 
-        Venta venta = new Venta.VentaBuilder().idVenta(VentaDAO.idSiguienteVentaDelMes()).fecha(new Timestamp(System.currentTimeMillis())).existe(true).build();
+        Venta venta = new Venta.VentaBuilder().idVenta(VentaDAO.idSiguienteVentaDelMes()).fecha(VentaDAO.getDate()).existe(true).build();
 
         List<VentaTipo> ventaTipos = agruparItems(venta);
 
@@ -234,10 +214,10 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
                 if (ingresado == total) {
                     todobien = true;
                 } else if (ingresado > total) {
-                    JOptionPane.showMessageDialog(null, "La feria es: " + (ingresado - total), "Ingreso", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">La feria es: " + (ingresado - total ) + "</p><br>", "Ingreso", JOptionPane.INFORMATION_MESSAGE);
                     todobien = true;
                 } else {
-                    JOptionPane.showMessageDialog(null, "El dinero esta incompleto", "Cuidado!!!", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">El dinero esta incompleto</p><br>", "Cuidado!!!", JOptionPane.ERROR_MESSAGE);
                 }
 
                 if (todobien) {
@@ -249,20 +229,20 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
                     historialController.actualizarVista();
                 }
             } catch (java.lang.NumberFormatException numberException) {
-                JOptionPane.showMessageDialog(null, "Solo escribe numeros en la cantidad recibida", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">Escribe solo la cantidad recibida</p><br>", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (java.lang.NullPointerException nullPointer){
                 
             }
 
         } else {
-            JOptionPane.showMessageDialog(null, "No hay items en el ingreso", "Error al ingresar", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "<html><center><p style=\"font: 15px\">No hay items en el ingreso</p><br>", "Error al ingresar", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private List<VentaTipo> agruparItems(Venta venta) {
         List<Object[]> items = getItemsTableVenta();
 
-        List<Base> tipos = TipoDAO.getTipos();
+        List<Base> tipos = TableBaseDAO.getTipos();
         List<VentaTipo> ventaTipos = new ArrayList();
 
         for (int i = 0; i < tipos.size(); i++) {
@@ -270,10 +250,10 @@ public class VentasController extends MouseAdapter implements ActionListener, Ke
             for (int j = 0; j < items.size(); j++) {
                 if (tipos.get(i).getNombreBase().equals(items.get(j)[0])) {
                     if (!creado) {
-                        ventaTipos.add(new VentaTipo.VentaBuilder().venta(venta).cantidadTipo(getDouble((String) items.get(j)[1])).tipo(tipos.get(i)).build());
+                        ventaTipos.add(new VentaTipo.VentaBuilder().venta(venta).cantidadTipo(InputController.getDouble((String) items.get(j)[1])).tipo(tipos.get(i)).build());
                         creado = true;
                     } else {
-                        ventaTipos.get(ventaTipos.size() - 1).setCantidadTipo(ventaTipos.get(ventaTipos.size() - 1).getCantidadTipo() + getDouble((String) items.get(j)[1]));
+                        ventaTipos.get(ventaTipos.size() - 1).setCantidadTipo(ventaTipos.get(ventaTipos.size() - 1).getCantidadTipo() + InputController.getDouble((String) items.get(j)[1]));
                     }
 
                 }

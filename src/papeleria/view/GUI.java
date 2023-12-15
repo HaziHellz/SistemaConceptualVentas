@@ -4,6 +4,7 @@
  */
 package papeleria.view;
 
+import controller.GastoController;
 import controller.HistorialController;
 import controller.OpcionesController;
 import controller.VentasController;
@@ -12,8 +13,10 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JTable;
-import papeleria.model.TipoDAO;
+import papeleria.model.GastoDAO;
+import papeleria.model.TableBaseDAO;
 import papeleria.model.VentaDAO;
 
 /**
@@ -34,17 +37,22 @@ public class GUI extends javax.swing.JFrame {
         historial.start();
         venta(historialController);
         opciones();
+        gasto();
     }
 
-    
     private void opciones() {
 
         List<JMenuItem> componentes = new ArrayList();
         componentes.add(btnMenuConceptos);
         componentes.add(btnMenuProveedores);
         componentes.add(btnMenuExportar);
-        componentes.add(btnMenuSalir);
-        
+
+        List<JPanel> modificadores = new ArrayList();
+        modificadores.add(btnMenuMinimizar);
+        modificadores.add(btnMenuMaximizar);
+        modificadores.add(btnMenuCerrar);
+        modificadores.add(toGrab);
+
         List<JComboBox> cbx = new ArrayList();
         cbx.add(cbxTypeSale);
         cbx.add(cbxTypeFilterSolds);
@@ -53,13 +61,51 @@ public class GUI extends javax.swing.JFrame {
         cbx.add(cbxTypeSpendsFilter);
         cbx.add(cbxProvider);
         cbx.add(cbxProviderFilter);
-        
-        OpcionesController controller = new OpcionesController(componentes, cbx);
-        
+
+        OpcionesController controller = new OpcionesController(componentes, cbx, this, modificadores);
+
+        this.addWindowListener(controller);
+        toGrab.addMouseListener(controller);
+        toGrab.addMouseMotionListener(controller);
         btnMenuConceptos.addActionListener(controller);
         btnMenuProveedores.addActionListener(controller);
         btnMenuExportar.addActionListener(controller);
-        btnMenuSalir.addActionListener(controller);
+        btnMenuCerrar.addMouseListener(controller);
+        btnMenuMaximizar.addMouseListener(controller);
+        btnMenuMinimizar.addMouseListener(controller);
+
+    }
+
+    private void gasto() {
+        List<JComboBox> combos = new ArrayList();
+        combos.add(cbxProvider);
+        combos.add(cbxTypeSpends);
+        combos.add(cbxYear);
+        combos.add(cbxMonth);
+        combos.add(cbxYearFilter);
+        combos.add(cbxMonthFilter);
+        combos.add(cbxProviderFilter);
+        combos.add(cbxTypeSpendsFilter);
+
+        List<Object> componentes = new ArrayList();
+        componentes.add(txtQuantitySpends);
+        componentes.add(btnAcceptSpend);
+        componentes.add(btnDeleteSpend);
+        componentes.add(tblSpends);
+        componentes.add(lblSpends);
+
+        GastoController controller = new GastoController(combos, componentes);
+
+        cbxYearFilter.addActionListener(controller);
+        cbxMonthFilter.addActionListener(controller);
+        cbxTypeSpendsFilter.addActionListener(controller);
+        cbxProviderFilter.addActionListener(controller);
+        cbxYear.addActionListener(controller);
+
+        tblSpends.addMouseListener(controller);
+        txtQuantitySpends.addKeyListener(controller);
+        btnAcceptSpend.addActionListener(controller);
+        btnDeleteSpend.addActionListener(controller);
 
     }
 
@@ -73,13 +119,13 @@ public class GUI extends javax.swing.JFrame {
         componentes.add(lblTotal);
 
         VentasController controller = new VentasController(componentes, historial);
-        
+
         cbxTypeSale.addActionListener(controller);
         btnSell.addActionListener(controller);
         txtPrice.addKeyListener(controller);
         tblObjectList.addKeyListener(controller);
         tblObjectList.addMouseListener(controller);
-        
+
     }
 
     /**
@@ -91,7 +137,6 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem2 = new javax.swing.JMenuItem();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         cbxTypeSale = new javax.swing.JComboBox<>();
@@ -102,8 +147,8 @@ public class GUI extends javax.swing.JFrame {
         lblTotal = new javax.swing.JLabel();
         btnSell = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        cbxMonthFilter = new javax.swing.JComboBox<>();
         cbxYearFilter = new javax.swing.JComboBox<>();
+        cbxMonthFilter = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         cbxProvider = new javax.swing.JComboBox<>();
         txtQuantitySpends = new javax.swing.JTextField();
@@ -111,9 +156,12 @@ public class GUI extends javax.swing.JFrame {
         cbxTypeSpendsFilter = new javax.swing.JComboBox<>();
         cbxProviderFilter = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblSpends = new javax.swing.JTable();
         cbxYear = new javax.swing.JComboBox<>();
         cbxMonth = new javax.swing.JComboBox<>();
+        btnAcceptSpend = new javax.swing.JButton();
+        btnDeleteSpend = new javax.swing.JButton();
+        lblSpends = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblHistorialVentas = new javax.swing.JTable();
@@ -130,19 +178,31 @@ public class GUI extends javax.swing.JFrame {
         btnDeleteItemHistory = new javax.swing.JButton();
         lblVentaDiaria = new javax.swing.JLabel();
         btnDeleteSaleHistory = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenuBarOpciones = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
         btnMenuConceptos = new javax.swing.JMenuItem();
         btnMenuProveedores = new javax.swing.JMenuItem();
         btnMenuExportar = new javax.swing.JMenuItem();
-        btnMenuSalir = new javax.swing.JMenuItem();
-
-        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+        setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(1115, 700));
+        setSize(new java.awt.Dimension(1115, 1115));
 
-        cbxTypeSale.setModel(TipoDAO.comboModel("Conceptos"));
+        jTabbedPane1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+
+        try{
+            cbxTypeSale.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeSale.setForeground(new java.awt.Color(0, 0, 0));
+            cbxTypeSale.setModel(TableBaseDAO.comboModel("Conceptos"));
+        }catch(NullPointerException ex){}
+        cbxTypeSale.setBorder(null);
         cbxTypeSale.setPreferredSize(new java.awt.Dimension(72, 23));
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         tblObjectList.getTableHeader().setReorderingAllowed(false);
         tblObjectList.setModel(new javax.swing.table.DefaultTableModel(
@@ -169,7 +229,6 @@ public class GUI extends javax.swing.JFrame {
             }
         });
         tblObjectList.setRowHeight(30);
-        tblObjectList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblObjectList.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblObjectList);
         if (tblObjectList.getColumnModel().getColumnCount() > 0) {
@@ -187,7 +246,7 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1103, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(lblTotal)))
@@ -196,13 +255,16 @@ public class GUI extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblTotal)
                 .addContainerGap())
         );
 
-        btnSell.setText("Vender");
+        btnSell.setBackground(new java.awt.Color(240, 240, 240));
+        btnSell.setForeground(new java.awt.Color(0, 0, 0));
+        btnSell.setText("Ingresar");
+        btnSell.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -233,44 +295,88 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Ingresos", jPanel1);
 
-        cbxMonthFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
-        cbxYearFilter.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        try{
+            cbxYearFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxYearFilter.setForeground(new java.awt.Color(0, 0, 0));
+            cbxYearFilter.setModel(GastoDAO.comboModelAño()
+            );
+        }catch(NullPointerException ex){}
+
+        try{
+            cbxMonthFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxMonthFilter.setForeground(new java.awt.Color(0, 0, 0));
+            cbxMonthFilter.setModel(GastoDAO.comboModelMeses(cbxYearFilter));
+        }catch(NullPointerException ex){
+
+        }
 
         jLabel1.setText("Filtros");
 
-        cbxProvider.setModel(TipoDAO.comboModel("Proveedores")
-        );
+        try{
+            cbxProvider.setBackground(new java.awt.Color(240, 240, 240));
+            cbxProvider.setForeground(new java.awt.Color(0, 0, 0));
+            cbxProvider.setModel(TableBaseDAO.comboModel("Proveedores")
+            );
+        }catch(NullPointerException ex){}
 
-        cbxTypeSpends.setModel(TipoDAO.comboModel("Conceptos"));
+        try{
+            cbxTypeSpends.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeSpends.setForeground(new java.awt.Color(0, 0, 0));
+            cbxTypeSpends.setModel(TableBaseDAO.comboModel("Conceptos"));
+        }catch(NullPointerException ex){}
 
-        cbxTypeSpendsFilter.setModel(TipoDAO.comboModel("Conceptos")
-        );
+        try{
+            cbxTypeSpendsFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeSpendsFilter.setForeground(new java.awt.Color(0, 0, 0));
+            cbxTypeSpendsFilter.setModel(TableBaseDAO.comboModelTodo("Conceptos")
+            );
+        }catch(NullPointerException ex){}
 
-        cbxProviderFilter.setModel(TipoDAO.comboModel("Proveedores")
-        );
+        try{
+            cbxProviderFilter.setBackground(new java.awt.Color(240, 240, 240));
+            cbxProviderFilter.setForeground(new java.awt.Color(0, 0, 0));
+            cbxProviderFilter.setModel(TableBaseDAO.comboModelTodo("Proveedor")
+            );
+        }catch(NullPointerException ex){}
 
-        jTable1.getTableHeader().setReorderingAllowed(false);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        jTable1.setRowHeight(30);
-        jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane2.setViewportView(jTable1);
+        tblSpends.getTableHeader().setReorderingAllowed(false);
+        try{
+            tblSpends.setModel(GastoDAO.tableModel(cbxYearFilter.getSelectedItem().toString(), cbxMonthFilter.getSelectedItem().toString(), cbxTypeSpendsFilter.getSelectedItem().toString(), cbxProviderFilter.getSelectedItem().toString())
+            );
+        }catch (NullPointerException ex){
 
-        cbxYear.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        }
+        tblSpends.setRowHeight(30);
+        jScrollPane2.setViewportView(tblSpends);
+
+        cbxYear.setBackground(new java.awt.Color(240, 240, 240));
+        cbxYear.setForeground(new java.awt.Color(0, 0, 0));
+        cbxYear.setModel(GastoDAO.comboModelAño());
         cbxYear.setVisible(false);
 
-        cbxMonth.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbxMonth.setBackground(new java.awt.Color(240, 240, 240));
+        cbxMonth.setForeground(new java.awt.Color(0, 0, 0));
+        cbxMonth.setModel(GastoDAO.comboModelActualMeses(cbxYear)
+        );
         cbxMonth.setVisible(false);
+
+        btnAcceptSpend.setBackground(new java.awt.Color(240, 240, 240));
+        btnAcceptSpend.setForeground(new java.awt.Color(0, 0, 0));
+        btnAcceptSpend.setText("Aceptar");
+
+        btnDeleteSpend.setBackground(new java.awt.Color(240, 240, 240));
+        btnDeleteSpend.setForeground(new java.awt.Color(0, 0, 0));
+        btnDeleteSpend.setText("Eliminar");
+        btnDeleteSpend.setEnabled(false);
+
+        try{
+            lblSpends.setText(GastoDAO.gastoDelMes(cbxYearFilter.getSelectedItem().toString(), cbxMonthFilter.getSelectedItem().toString(), cbxTypeSpendsFilter.getSelectedItem().toString(), cbxProviderFilter.getSelectedItem().toString())
+            );
+        }catch(NullPointerException ex){
+
+        }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -287,15 +393,21 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxTypeSpends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 265, Short.MAX_VALUE)
+                        .addComponent(cbxMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAcceptSpend)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnDeleteSpend)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblSpends)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 169, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxYearFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cbxProviderFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -309,34 +421,30 @@ public class GUI extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(cbxMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cbxYear, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAcceptSpend)
+                        .addComponent(btnDeleteSpend)
+                        .addComponent(lblSpends))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxYearFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel1)
                         .addComponent(cbxProvider, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtQuantitySpends, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxTypeSpends, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(cbxProviderFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cbxTypeSpendsFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbxTypeSpendsFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbxMonthFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jTabbedPane1.addTab("Gastos", jPanel2);
 
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+
         tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
-        tblHistorialVentas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         tblHistorialVentas.setRowHeight(30);
-        tblHistorialVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane3.setViewportView(tblHistorialVentas);
 
         tblHistorialVenta.getTableHeader().setReorderingAllowed(false);
@@ -349,33 +457,58 @@ public class GUI extends javax.swing.JFrame {
             }
         ));
         tblHistorialVenta.setRowHeight(30);
-        tblHistorialVenta.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane4.setViewportView(tblHistorialVenta);
 
         txtQuantitySolds.setEnabled(false);
 
-        cbxTypesSolds.setModel(TipoDAO.comboModel("Conceptos"));
+        try{
+            cbxTypesSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypesSolds.setForeground(new java.awt.Color(0, 0, 0));
+            cbxTypesSolds.setModel(TableBaseDAO.comboModel("Conceptos"));
+        }catch(NullPointerException ex){}
         cbxTypesSolds.setEnabled(false);
 
         jLabel2.setText("Filtros");
 
-        cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
+        try{
+            cbxYearFilterSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxYearFilterSolds.setForeground(new java.awt.Color(0, 0, 0));
+            cbxYearFilterSolds.setModel(VentaDAO.comboModelAño());
+        }catch(NullPointerException ex){}
 
-        cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
-        );
+        try{
+            cbxMonthFilterSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxMonthFilterSolds.setForeground(new java.awt.Color(0, 0, 0));
+            cbxMonthFilterSolds.setModel(VentaDAO.comboModelMeses(cbxYearFilterSolds)
+            );
+        }catch(NullPointerException ex){
 
+        }
+
+        cbxDeletedSolds.setBackground(new java.awt.Color(240, 240, 240));
+        cbxDeletedSolds.setForeground(new java.awt.Color(0, 0, 0));
         cbxDeletedSolds.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registradas", "Eliminadas" }));
 
-        cbxTypeFilterSolds.setModel(TipoDAO.comboModelTodo());
+        try{
+            cbxTypeFilterSolds.setBackground(new java.awt.Color(240, 240, 240));
+            cbxTypeFilterSolds.setForeground(new java.awt.Color(0, 0, 0));
+            cbxTypeFilterSolds.setModel(TableBaseDAO.comboModelTodo("Conceptos"));
+        }catch(NullPointerException ex){}
 
+        btnAcceptHistory.setBackground(new java.awt.Color(240, 240, 240));
+        btnAcceptHistory.setForeground(new java.awt.Color(0, 0, 0));
         btnAcceptHistory.setText("Aceptar");
         btnAcceptHistory.setEnabled(false);
 
+        btnDeleteItemHistory.setBackground(new java.awt.Color(240, 240, 240));
+        btnDeleteItemHistory.setForeground(new java.awt.Color(0, 0, 0));
         btnDeleteItemHistory.setText("Eliminar");
         btnDeleteItemHistory.setEnabled(false);
 
         lblVentaDiaria.setText("\"\"");
 
+        btnDeleteSaleHistory.setBackground(new java.awt.Color(240, 240, 240));
+        btnDeleteSaleHistory.setForeground(new java.awt.Color(0, 0, 0));
         btnDeleteSaleHistory.setText("Eliminar Venta");
         btnDeleteSaleHistory.setEnabled(false);
 
@@ -408,7 +541,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(cbxTypeFilterSolds, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lblVentaDiaria, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -426,7 +559,7 @@ public class GUI extends javax.swing.JFrame {
                     .addComponent(lblVentaDiaria))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 582, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jScrollPane4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -440,23 +573,69 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Historial de Ingreso", jPanel4);
 
-        menu.setText("Opciones");
+        jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
+        jMenuBarOpciones.setBorder(null);
+        jMenuBarOpciones.setForeground(new java.awt.Color(204, 204, 204));
+        jMenuBarOpciones.setAlignmentY(0.5F);
+        jMenuBarOpciones.setBorderPainted(false);
+        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(1115, 35));
+
+        menu.setBackground(new java.awt.Color(240, 240, 240));
+        menu.setForeground(new java.awt.Color(255, 255, 255));
+        menu.setText("Configuracion");
+        menu.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        menu.setMaximumSize(new java.awt.Dimension(120, 32767));
+        menu.setMinimumSize(new java.awt.Dimension(120, 35));
+        menu.setPreferredSize(new java.awt.Dimension(120, 22));
 
         btnMenuConceptos.setText("Conceptos");
+        btnMenuConceptos.setMaximumSize(new java.awt.Dimension(120, 32767));
+        btnMenuConceptos.setMinimumSize(new java.awt.Dimension(120, 0));
+        btnMenuConceptos.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuConceptos);
 
         btnMenuProveedores.setText("Proveedores");
+        btnMenuProveedores.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuProveedores);
 
         btnMenuExportar.setText("Exportar");
+        btnMenuExportar.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuExportar);
 
-        btnMenuSalir.setText("Salir");
-        menu.add(btnMenuSalir);
+        jMenuBarOpciones.add(menu);
+        toGrab = new javax.swing.JPanel();
+        btnMenuMinimizar = new javax.swing.JPanel();
+        btnMenuMaximizar = new javax.swing.JPanel();
+        btnMenuCerrar = new javax.swing.JPanel();
+        //1115, 640
+        toGrab.setBackground(new java.awt.Color(153,153,153));
+        toGrab.setPreferredSize(new java.awt.Dimension(950, 35));
+        toGrab.setMaximumSize(new java.awt.Dimension(32767, 35));
+        jMenuBarOpciones.add(toGrab);
 
-        jMenuBar1.add(menu);
+        btnMenuMinimizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/minimize-icon.png")))); // NOI18N
+        btnMenuMinimizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuMinimizar);
 
-        setJMenuBar(jMenuBar1);
+        btnMenuMaximizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); // NOI18N
+        btnMenuMaximizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        //toGrab.add(btnMenuMaximizar);
+        jMenuBarOpciones.add(btnMenuMaximizar);
+        jMenuBarOpciones.setMaximumSize(new java.awt.Dimension(0, 0));
+
+        btnMenuCerrar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/close-icon.png")))); // NOI18N
+        btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuCerrar);
+
+        //jMenuBarOpciones.add(btnMenuMinimizar);
+
+        setJMenuBar(jMenuBarOpciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -473,17 +652,20 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     public class Historial implements Runnable {
+
         HistorialController historial;
-        
-        public void actualizarVista(){
+
+        public void actualizarVista() {
+            historial.actualizarCombos();
             historial.actualizarVentaDiaria();
             historial.resetTableHistorial();
+
         }
-        
-        public HistorialController getHistorial(){
+
+        public HistorialController getHistorial() {
             return historial;
         }
-        
+
         @Override
         public void run() {
             List<JTable> tablesHistorial = new ArrayList();
@@ -504,7 +686,8 @@ public class GUI extends javax.swing.JFrame {
 
             HistorialController controller = new HistorialController(tablesHistorial, combos, lblVentaDiaria, txtQuantitySolds, buttonsHistorial);
             historial = controller;
-            
+            historial.actualizarCombos();
+
             tblHistorialVentas.addMouseListener(controller);
             tblHistorialVentas.addKeyListener(controller);
             tblHistorialVenta.addMouseListener(controller);
@@ -521,14 +704,19 @@ public class GUI extends javax.swing.JFrame {
 
     }
 
+    private javax.swing.JPanel toGrab;
+    private javax.swing.JPanel btnMenuMinimizar;
+    private javax.swing.JPanel btnMenuMaximizar;
+    private javax.swing.JPanel btnMenuCerrar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAcceptHistory;
+    private javax.swing.JButton btnAcceptSpend;
     private javax.swing.JButton btnDeleteItemHistory;
     private javax.swing.JButton btnDeleteSaleHistory;
+    private javax.swing.JButton btnDeleteSpend;
     private javax.swing.JMenuItem btnMenuConceptos;
     private javax.swing.JMenuItem btnMenuExportar;
     private javax.swing.JMenuItem btnMenuProveedores;
-    private javax.swing.JMenuItem btnMenuSalir;
     private javax.swing.JButton btnSell;
     private javax.swing.JComboBox<String> cbxDeletedSolds;
     private javax.swing.JComboBox<String> cbxMonth;
@@ -546,8 +734,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbxYearFilterSolds;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuBar jMenuBarOpciones;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -557,13 +744,14 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JLabel lblSpends;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblVentaDiaria;
     private javax.swing.JMenu menu;
     private javax.swing.JTable tblHistorialVenta;
     private javax.swing.JTable tblHistorialVentas;
     private javax.swing.JTable tblObjectList;
+    private javax.swing.JTable tblSpends;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtQuantitySolds;
     private javax.swing.JTextField txtQuantitySpends;
@@ -602,4 +790,4 @@ public class GUI extends javax.swing.JFrame {
         btnAcceptHistory.addActionListener(controller);
         btnDeleteSaleHistory.addActionListener(controller);
     }
-*/
+ */

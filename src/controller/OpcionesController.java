@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -38,7 +39,7 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
     private int TOGRAB = 3;
     private int xMouse;
     private int yMouse;
-    private GUI gui;
+    private JFrame gui;
 
     private List<JMenuItem> componentes; //CONTIENE LOS BOTONES DEL MENU
     private List<JComboBox> combos;
@@ -46,13 +47,14 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
     private BaseTable baseTable = new BaseTable("Componentes", combos);
     private Export export = new Export();
 
-    public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx, GUI gui, List<JPanel> modificadores) {
+    public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx, JFrame gui, List<JPanel> modificadores) {
         this.componentes = componentes;
         this.combos = cbx;
         this.gui = gui;
         this.modificadores = modificadores;
     }
 
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         //SI ES PRESIONADO EL BOTON CONCEPTOS VVVVVV

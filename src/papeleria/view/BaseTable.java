@@ -4,11 +4,14 @@
  */
 package papeleria.view;
 
+import controller.OpcionesController;
 import controller.TablaBaseController;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -23,7 +26,6 @@ public class BaseTable extends javax.swing.JFrame {
     private List<JComboBox> combos;
     String titulo;
 
-
     public BaseTable(String titulo, List<JComboBox> combos) {
         this.titulo = titulo;
         this.combos = combos;
@@ -33,8 +35,8 @@ public class BaseTable extends javax.swing.JFrame {
         this.setDefaultCloseOperation(BaseTable.DISPOSE_ON_CLOSE);
         cargarControladorYEventos();
     }
-    
-    private void cargarControladorYEventos(){
+
+    private void cargarControladorYEventos() {
         List<Component> componentes = new ArrayList();
         componentes.add(tblConcepts);
         componentes.add(cbxFiltro);
@@ -43,13 +45,24 @@ public class BaseTable extends javax.swing.JFrame {
         componentes.add(btnDelete);
         componentes.add(btnRestaurar);
         
-        TablaBaseController controller = new TablaBaseController(componentes, titulo, combos);
+        List<JPanel> modificadores = new ArrayList();
+        modificadores.add(btnMenuMinimizar);
+        //modificadores.add(btnMenuMaximizar);
+        modificadores.add(btnMenuCerrar);
+        modificadores.add(toGrab);
+
+        TablaBaseController controller = new TablaBaseController(componentes, titulo, combos, this, modificadores);
         tblConcepts.addMouseListener(controller);
         cbxFiltro.addActionListener(controller);
         //txtName.addKeyListener(controller);
         btnAdd.addActionListener(controller);
         btnDelete.addActionListener(controller);
         btnRestaurar.addActionListener(controller);
+        toGrab.addMouseListener(controller);
+        toGrab.addMouseMotionListener(controller);
+        btnMenuCerrar.addMouseListener(controller);
+        //btnMenuMaximizar.addMouseListener(controller);
+        btnMenuMinimizar.addMouseListener(controller);
     }
 
     /**
@@ -70,10 +83,17 @@ public class BaseTable extends javax.swing.JFrame {
         btnRestaurar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblConcepts = new javax.swing.JTable();
+        jMenuBarOpciones = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
         cbxFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registrados", "Eliminados", "Todos" }));
+        cbxFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxFiltroActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Nombre: ");
 
@@ -108,7 +128,7 @@ public class BaseTable extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
                 .addComponent(btnRestaurar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDelete)
@@ -120,6 +140,43 @@ public class BaseTable extends javax.swing.JFrame {
         tblConcepts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tblConcepts);
 
+        toGrab = new javax.swing.JPanel();
+        btnMenuMinimizar = new javax.swing.JPanel();
+        //btnMenuMaximizar = new javax.swing.JPanel();
+        btnMenuCerrar = new javax.swing.JPanel();
+        jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
+        jMenuBarOpciones.setBorder(null);
+        jMenuBarOpciones.setForeground(new java.awt.Color(204, 204, 204));
+        jMenuBarOpciones.setAlignmentY(0.5F);
+        jMenuBarOpciones.setBorderPainted(false);
+        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(410, 35));
+
+        toGrab.setBackground(new java.awt.Color(153,153,153));
+        toGrab.setPreferredSize(new java.awt.Dimension(410, 35));
+        toGrab.setMaximumSize(new java.awt.Dimension(32767, 35));
+        jMenuBarOpciones.add(toGrab);
+
+        setJMenuBar(jMenuBarOpciones);
+        btnMenuMinimizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/minimize-icon.png")))); // NOI18N
+        btnMenuMinimizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuMinimizar);
+        /*
+        btnMenuMaximizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); // NOI18N
+        btnMenuMaximizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuMaximizar);*/
+
+        jMenuBarOpciones.setMaximumSize(new java.awt.Dimension(0, 0));
+
+        btnMenuCerrar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/close-icon.png")))); // NOI18N
+        btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuCerrar);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -129,39 +186,48 @@ public class BaseTable extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 199, Short.MAX_VALUE)
-                        .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cbxFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxFiltroActionPerformed
+
     public static BaseTable getInstance(String titulo, List<JComboBox> combos) {
         base = new BaseTable(titulo, combos);
         return base;
     }
-
+    private javax.swing.JPanel toGrab;
+    private javax.swing.JPanel btnMenuMinimizar;
+    private javax.swing.JPanel btnMenuMaximizar;
+    private javax.swing.JPanel btnMenuCerrar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnRestaurar;
     private javax.swing.JComboBox<String> cbxFiltro;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JMenuBar jMenuBarOpciones;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblConcepts;

@@ -8,6 +8,7 @@ import controller.ExportController;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JPanel;
 import papeleria.model.TableBaseDAO;
 import papeleria.model.VentaDAO;
 
@@ -32,8 +33,17 @@ public class Export extends javax.swing.JFrame {
         combos.add(cbxYear);
         combos.add(cbxMonth);
         
-        ExportController controller = new ExportController(combos);
+        List<JPanel> modificadores = new ArrayList();
+        modificadores.add(btnMenuMinimizar);
+        modificadores.add(btnMenuCerrar);
+        modificadores.add(toGrab);
+        
+        ExportController controller = new ExportController(combos, this ,modificadores);
         cbxYear.addActionListener(controller);
+        toGrab.addMouseListener(controller);
+        toGrab.addMouseMotionListener(controller);
+        btnMenuCerrar.addMouseListener(controller);
+        btnMenuMinimizar.addMouseListener(controller);
         
     }
 
@@ -55,11 +65,14 @@ public class Export extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         cbxMonth = new javax.swing.JComboBox<>();
         jButton2 = new javax.swing.JButton();
-        btnCerrarExportar = new javax.swing.JPanel();
+        jMenuBarOpciones = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(245, 245, 245));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         cbxConcepto.setBackground(new java.awt.Color(240, 240, 240));
@@ -108,20 +121,35 @@ public class Export extends javax.swing.JFrame {
         jButton2.setText("Exportar");
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, -1, -1));
 
-        btnCerrarExportar.setPreferredSize(new java.awt.Dimension(45, 35));
+        toGrab = new javax.swing.JPanel();
+        btnMenuMinimizar = new javax.swing.JPanel();
+        btnMenuCerrar = new javax.swing.JPanel();
+        jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
+        jMenuBarOpciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jMenuBarOpciones.setForeground(new java.awt.Color(204, 204, 204));
+        jMenuBarOpciones.setAlignmentY(0.5F);
+        jMenuBarOpciones.setBorderPainted(false);
+        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(410, 35));
 
-        javax.swing.GroupLayout btnCerrarExportarLayout = new javax.swing.GroupLayout(btnCerrarExportar);
-        btnCerrarExportar.setLayout(btnCerrarExportarLayout);
-        btnCerrarExportarLayout.setHorizontalGroup(
-            btnCerrarExportarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 40, Short.MAX_VALUE)
-        );
-        btnCerrarExportarLayout.setVerticalGroup(
-            btnCerrarExportarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
+        toGrab.setBackground(new java.awt.Color(153,153,153));
+        toGrab.setPreferredSize(new java.awt.Dimension(410, 35));
+        toGrab.setMaximumSize(new java.awt.Dimension(32767, 35));
+        jMenuBarOpciones.add(toGrab);
 
-        jPanel1.add(btnCerrarExportar, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 0, 40, 30));
+        setJMenuBar(jMenuBarOpciones);
+        btnMenuMinimizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/minimize-icon.png")))); // NOI18N
+        btnMenuMinimizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuMinimizar);
+
+        jMenuBarOpciones.setMaximumSize(new java.awt.Dimension(0, 0));
+
+        btnMenuCerrar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/close-icon.png")))); // NOI18N
+        btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuCerrar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -131,49 +159,16 @@ public class Export extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-//    public static void main(String args[]) {
-//        /* Set the Nimbus look and feel */
-//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-//         */
-//        try {
-//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-//                if ("Nimbus".equals(info.getName())) {
-//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-//                    break;
-//                }
-//            }
-//        } catch (ClassNotFoundException ex) {
-//            java.util.logging.Logger.getLogger(Export.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            java.util.logging.Logger.getLogger(Export.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            java.util.logging.Logger.getLogger(Export.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-//            java.util.logging.Logger.getLogger(Export.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-//        }
-//        //</editor-fold>
-//
-//        /* Create and display the form */
-//        java.awt.EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                new Export().setVisible(true);
-//            }
-//        });
-//    }
-
+    private javax.swing.JPanel toGrab;
+    private javax.swing.JPanel btnMenuMinimizar;
+    private javax.swing.JPanel btnMenuCerrar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel btnCerrarExportar;
     private javax.swing.JComboBox<String> cbxConcepto;
     private javax.swing.JComboBox<String> cbxMonth;
     private javax.swing.JComboBox<String> cbxYear;
@@ -182,6 +177,7 @@ public class Export extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JMenuBar jMenuBarOpciones;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }

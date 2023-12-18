@@ -74,7 +74,8 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
                 baseTable.dispose();
             }
             if (!export.isVisible()) {
-                export.setVisible(true);
+                //export.setVisible(true);
+                JOptionPane.showMessageDialog(gui, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
             }
 
         }
@@ -104,9 +105,11 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = e.getXOnScreen();
-        int y = e.getYOnScreen();
-        gui.setLocation(x - xMouse - 120, y - yMouse);
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            int x = e.getXOnScreen();
+            int y = e.getYOnScreen();
+            gui.setLocation(x - xMouse, y - yMouse);
+        }
     }
 
     @Override
@@ -130,8 +133,10 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
 
     @Override
     public void mousePressed(MouseEvent e) {
-        xMouse = e.getX();
-        yMouse = e.getY();
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            xMouse = e.getX();
+            yMouse = e.getY();
+        }
     }
 
     @Override

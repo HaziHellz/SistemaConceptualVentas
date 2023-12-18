@@ -8,12 +8,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,11 +27,6 @@ import papeleria.view.BaseTable;
  */
 public class TablaBaseController extends MouseAdapter implements ActionListener {
 
-    /*
-        componentes.add(txtName);
-        componentes.add(btnAdd);
-        componentes.add(btnDelete);
-     */
     //SE DEFINEN LOS INDEX DE CADA COMPONENTE EN EL ARRAY COMPONENTES
     final static private int TABLA = 0;
     final static private int CBXFILTRO = 1;
@@ -44,13 +35,12 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
     final static private int BTNDELETE = 4;
     final static private int BTNRESTAURAR = 5;
     final static private int CBXTYPESALE = 0;
-    private int MINIMIZAR = 0;
-    //private int MAXIMIZAR = 1;
-    private boolean defaultSize = true;
-    private int SALIR = 1;
-    private int TOGRAB = 2;
+    private final int MINIMIZAR = 0;
+    private final int SALIR = 1;
+    private final int TOGRAB = 2;
     private int xMouse;
     private int yMouse;
+    private final boolean defaultSize = true;
 
     //SE DEFINE EL TITULO DE LA TABLA BASE CONCEPTO/PROVEEDOR
     private final String titulo;
@@ -170,12 +160,9 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
                     habilitarEdicion();
                 }
 
-                //PARA PRUEBA
-                //System.out.println(index + "    " + id + "      " + nuevo);
             } else {
                 //SI EL INDEX ES EL MISMO, LO DESELECCIONA Y RESETEA EL INDEX, EL ID Y EL FORMULARIO
                 resetForm();
-                //System.out.println(index + "    " + id + "      " + nuevo);   PARA PRUEBA
             }
         }
     }
@@ -186,20 +173,20 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
             JPanel boton = (JPanel) e.getSource();
             if (boton.equals(modificadores.get(MINIMIZAR))) {
                 minimizarVentana();
-            //} else if (boton.equals(modificadores.get(MAXIMIZAR))) {
-               // maximizarVentana();
             } else if (boton.equals(modificadores.get(SALIR))) {
                 gui.setVisible(false);
             }
         }
     }
-    
+
     @Override
     public void mousePressed(MouseEvent e) {
-        xMouse = e.getX();
-        yMouse = e.getY();
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            xMouse = e.getX();
+            yMouse = e.getY();
+        }
     }
-    
+
     @Override
     public void mouseEntered(MouseEvent e) {
         if (e.getSource() instanceof JPanel) {
@@ -207,9 +194,7 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
                 modificadores.get(SALIR).setBackground(Color.red);
             } else if (e.getSource().equals(modificadores.get(MINIMIZAR))) {
                 modificadores.get(MINIMIZAR).setBackground(Color.lightGray);
-            } /*else if (e.getSource().equals(modificadores.get(MAXIMIZAR))) {
-                modificadores.get(MAXIMIZAR).setBackground(Color.lightGray);
-            }*/
+            }
         }
     }
 
@@ -218,42 +203,27 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
         if (e.getSource() instanceof JPanel) {
             if (e.getSource().equals(modificadores.get(SALIR))) {
                 modificadores.get(SALIR).setBackground(new java.awt.Color(153, 153, 153));
-            /*} else if (e.getSource().equals(modificadores.get(MAXIMIZAR))) {
+                /*} else if (e.getSource().equals(modificadores.get(MAXIMIZAR))) {
                 modificadores.get(MAXIMIZAR).setBackground(new java.awt.Color(153, 153, 153));
-              */  
+                 */
             } else if (e.getSource().equals(modificadores.get(MINIMIZAR))) {
                 modificadores.get(MINIMIZAR).setBackground(new java.awt.Color(153, 153, 153));
             }
         }
     }
-    /*
-    public void maximizarVentana() {
-        if (defaultSize) {
-            gui.setExtendedState(BaseTable.MAXIMIZED_BOTH);
-            modificadores.get(MAXIMIZAR).removeAll();
-            modificadores.get(MAXIMIZAR).add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/re-scale-icon.png")))); 
-            gui.setLocation(0, 0);
-            defaultSize = false;
-        }else{
-            gui.setExtendedState(BaseTable.NORMAL);
-            gui.setSize(1115, 700);
-            modificadores.get(MAXIMIZAR).removeAll();
-            modificadores.get(MAXIMIZAR).add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); 
-            defaultSize = true;
-        }
 
-    }
-*/
     public void minimizarVentana() {
         gui.setExtendedState(BaseTable.ICONIFIED);
-      
+
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = e.getXOnScreen();
-        int y = e.getYOnScreen();
-        gui.setLocation(x - xMouse, y - yMouse);
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            int x = e.getXOnScreen();
+            int y = e.getYOnScreen();
+            gui.setLocation(x - xMouse, y - yMouse);
+        }
     }
 
     private void habilitarEdicion() {

@@ -4,11 +4,14 @@
  */
 package papeleria.view;
 
+import controller.OpcionesController;
 import controller.TablaBaseController;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  *
@@ -23,7 +26,6 @@ public class BaseTable extends javax.swing.JFrame {
     private List<JComboBox> combos;
     String titulo;
 
-
     public BaseTable(String titulo, List<JComboBox> combos) {
         this.titulo = titulo;
         this.combos = combos;
@@ -33,8 +35,8 @@ public class BaseTable extends javax.swing.JFrame {
         this.setDefaultCloseOperation(BaseTable.DISPOSE_ON_CLOSE);
         cargarControladorYEventos();
     }
-    
-    private void cargarControladorYEventos(){
+
+    private void cargarControladorYEventos() {
         List<Component> componentes = new ArrayList();
         componentes.add(tblConcepts);
         componentes.add(cbxFiltro);
@@ -43,13 +45,22 @@ public class BaseTable extends javax.swing.JFrame {
         componentes.add(btnDelete);
         componentes.add(btnRestaurar);
         
-        TablaBaseController controller = new TablaBaseController(componentes, titulo, combos);
+        List<JPanel> modificadores = new ArrayList();
+        modificadores.add(btnMenuMinimizar);
+        modificadores.add(btnMenuCerrar);
+        modificadores.add(toGrab);
+
+        TablaBaseController controller = new TablaBaseController(componentes, titulo, combos, this, modificadores);
         tblConcepts.addMouseListener(controller);
         cbxFiltro.addActionListener(controller);
         //txtName.addKeyListener(controller);
         btnAdd.addActionListener(controller);
         btnDelete.addActionListener(controller);
         btnRestaurar.addActionListener(controller);
+        toGrab.addMouseListener(controller);
+        toGrab.addMouseMotionListener(controller);
+        btnMenuCerrar.addMouseListener(controller);
+        btnMenuMinimizar.addMouseListener(controller);
     }
 
     /**
@@ -61,27 +72,56 @@ public class BaseTable extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
         cbxFiltro = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblConcepts = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
         btnDelete = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         btnRestaurar = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        tblConcepts = new javax.swing.JTable();
+        jMenuBarOpciones = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+        setForeground(new java.awt.Color(102, 102, 102));
+        setUndecorated(true);
 
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jPanel2.setForeground(new java.awt.Color(255, 255, 255));
+
+        cbxFiltro.setBackground(new java.awt.Color(240, 240, 240));
+        cbxFiltro.setForeground(new java.awt.Color(0, 0, 0));
         cbxFiltro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Registrados", "Eliminados", "Todos" }));
+        cbxFiltro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbxFiltroActionPerformed(evt);
+            }
+        });
+
+        tblConcepts.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        tblConcepts.setRowHeight(30);
+        tblConcepts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane1.setViewportView(tblConcepts);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
 
         jLabel2.setText("Nombre: ");
 
+        btnDelete.setBackground(new java.awt.Color(240, 240, 240));
+        btnDelete.setForeground(new java.awt.Color(0, 0, 0));
         btnDelete.setText("Eliminar");
         btnDelete.setEnabled(false);
 
+        btnAdd.setBackground(new java.awt.Color(240, 240, 240));
+        btnAdd.setForeground(new java.awt.Color(0, 0, 0));
         btnAdd.setText("Aceptar");
 
+        btnRestaurar.setBackground(new java.awt.Color(240, 240, 240));
+        btnRestaurar.setForeground(new java.awt.Color(0, 0, 0));
         btnRestaurar.setText("Restaurar");
         btnRestaurar.setEnabled(false);
 
@@ -92,14 +132,14 @@ public class BaseTable extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRestaurar, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                    .addComponent(txtName)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btnRestaurar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,61 +148,115 @@ public class BaseTable extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 147, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnRestaurar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDelete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAdd))
+                .addComponent(btnAdd)
+                .addContainerGap(150, Short.MAX_VALUE))
         );
 
-        tblConcepts.setRowHeight(30);
-        tblConcepts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(tblConcepts);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 199, Short.MAX_VALUE)
-                        .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)))
                 .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
+        toGrab = new javax.swing.JPanel();
+        btnMenuMinimizar = new javax.swing.JPanel();
+        //btnMenuMaximizar = new javax.swing.JPanel();
+        btnMenuCerrar = new javax.swing.JPanel();
+        jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
+        jMenuBarOpciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jMenuBarOpciones.setForeground(new java.awt.Color(204, 204, 204));
+        jMenuBarOpciones.setAlignmentY(0.5F);
+        jMenuBarOpciones.setBorderPainted(false);
+        jMenuBarOpciones.setPreferredSize(new java.awt.Dimension(410, 35));
+
+        toGrab.setBackground(new java.awt.Color(153,153,153));
+        toGrab.setPreferredSize(new java.awt.Dimension(410, 35));
+        toGrab.setMaximumSize(new java.awt.Dimension(32767, 35));
+        jMenuBarOpciones.add(toGrab);
+
+        setJMenuBar(jMenuBarOpciones);
+        btnMenuMinimizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/minimize-icon.png")))); // NOI18N
+        btnMenuMinimizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuMinimizar);
+        /*
+        btnMenuMaximizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); // NOI18N
+        btnMenuMaximizar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuMaximizar);*/
+
+        jMenuBarOpciones.setMaximumSize(new java.awt.Dimension(0, 0));
+
+        btnMenuCerrar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/close-icon.png")))); // NOI18N
+        btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
+        btnMenuCerrar.setPreferredSize(new java.awt.Dimension(45, 35));
+        btnMenuCerrar.setMaximumSize(new java.awt.Dimension(45, 35));
+        jMenuBarOpciones.add(btnMenuCerrar);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cbxFiltroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxFiltroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxFiltroActionPerformed
 
     public static BaseTable getInstance(String titulo, List<JComboBox> combos) {
         base = new BaseTable(titulo, combos);
         return base;
     }
-
+    private javax.swing.JPanel toGrab;
+    private javax.swing.JPanel btnMenuMinimizar;
+    private javax.swing.JPanel btnMenuCerrar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnRestaurar;
     private javax.swing.JComboBox<String> cbxFiltro;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JMenuBar jMenuBarOpciones;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblConcepts;
     private javax.swing.JTextField txtName;

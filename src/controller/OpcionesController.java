@@ -14,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -38,7 +39,7 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
     private int TOGRAB = 3;
     private int xMouse;
     private int yMouse;
-    private GUI gui;
+    private JFrame gui;
 
     private List<JMenuItem> componentes; //CONTIENE LOS BOTONES DEL MENU
     private List<JComboBox> combos;
@@ -46,13 +47,14 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
     private BaseTable baseTable = new BaseTable("Componentes", combos);
     private Export export = new Export();
 
-    public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx, GUI gui, List<JPanel> modificadores) {
+    public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx, JFrame gui, List<JPanel> modificadores) {
         this.componentes = componentes;
         this.combos = cbx;
         this.gui = gui;
         this.modificadores = modificadores;
     }
 
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         //SI ES PRESIONADO EL BOTON CONCEPTOS VVVVVV
@@ -72,7 +74,8 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
                 baseTable.dispose();
             }
             if (!export.isVisible()) {
-                export.setVisible(true);
+                //export.setVisible(true);
+                JOptionPane.showMessageDialog(gui, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
             }
 
         }
@@ -102,9 +105,11 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        int x = e.getXOnScreen();
-        int y = e.getYOnScreen();
-        gui.setLocation(x - xMouse - 120, y - yMouse);
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            int x = e.getXOnScreen();
+            int y = e.getYOnScreen();
+            gui.setLocation(x - xMouse, y - yMouse);
+        }
     }
 
     @Override
@@ -128,8 +133,10 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
 
     @Override
     public void mousePressed(MouseEvent e) {
-        xMouse = e.getX();
-        yMouse = e.getY();
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            xMouse = e.getX();
+            yMouse = e.getY();
+        }
     }
 
     @Override

@@ -4,21 +4,22 @@
  */
 package controller;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.Base;
 import papeleria.model.TableBaseDAO;
+import papeleria.view.BaseTable;
 
 /**
  *
@@ -26,11 +27,6 @@ import papeleria.model.TableBaseDAO;
  */
 public class TablaBaseController extends MouseAdapter implements ActionListener {
 
-    /*
-        componentes.add(txtName);
-        componentes.add(btnAdd);
-        componentes.add(btnDelete);
-     */
     //SE DEFINEN LOS INDEX DE CADA COMPONENTE EN EL ARRAY COMPONENTES
     final static private int TABLA = 0;
     final static private int CBXFILTRO = 1;
@@ -39,6 +35,12 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
     final static private int BTNDELETE = 4;
     final static private int BTNRESTAURAR = 5;
     final static private int CBXTYPESALE = 0;
+    private final int MINIMIZAR = 0;
+    private final int SALIR = 1;
+    private final int TOGRAB = 2;
+    private int xMouse;
+    private int yMouse;
+    private final boolean defaultSize = true;
 
     //SE DEFINE EL TITULO DE LA TABLA BASE CONCEPTO/PROVEEDOR
     private final String titulo;
@@ -52,13 +54,17 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
 
     private List<Component> componentes;
     private List<JComboBox> combos;
+    private JFrame gui;
+    private List<JPanel> modificadores;
     private Base base;
 
     //EL ARRAY COMPONENTES, CONTIENE LOS COMPONENTES DE LA VISTA, EL TITULO CORRESPONDE A LA TABLA DE LA BASE DE DATOS
-    public TablaBaseController(List<Component> componentes, String titulo, List<JComboBox> combos) {
+    public TablaBaseController(List<Component> componentes, String titulo, List<JComboBox> combos, JFrame gui, List<JPanel> modificadores) {
         this.componentes = componentes;
         this.combos = combos;
         this.titulo = titulo;
+        this.gui = gui;
+        this.modificadores = modificadores;
         actualizarTabla();
     }
 
@@ -98,20 +104,20 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
 
             //ACTUALIZA LOS COMBOBOX DEL TIPO DE LAS OTRAS VENTANAS
             if (titulo.equals("Conceptos")) {
-                for (int i = 0; i < (combos.size()-2); i++) {
+                for (int i = 0; i < (combos.size() - 2); i++) {
                     if (i == 1 || i == 4 || i == 6) {
                         combos.get(i).setModel(TableBaseDAO.comboModelTodo(titulo));
-                    }else{
+                    } else {
                         combos.get(i).setModel(TableBaseDAO.comboModel(titulo));
                     }
                 }
-                
-            }else{
+
+            } else {
                 //ACTUALIZA LOS COMBOBOX DEL PROVEEDOR
                 for (int i = 5; i < combos.size(); i++) {
                     if (i != 6) {
                         combos.get(i).setModel(TableBaseDAO.comboModel(titulo));
-                    }else{
+                    } else {
                         combos.get(i).setModel(TableBaseDAO.comboModelTodo(titulo));
                     }
                 }
@@ -154,13 +160,69 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
                     habilitarEdicion();
                 }
 
-                //PARA PRUEBA
-                //System.out.println(index + "    " + id + "      " + nuevo);
             } else {
                 //SI EL INDEX ES EL MISMO, LO DESELECCIONA Y RESETEA EL INDEX, EL ID Y EL FORMULARIO
                 resetForm();
-                //System.out.println(index + "    " + id + "      " + nuevo);   PARA PRUEBA
             }
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getSource() instanceof JPanel) {
+            JPanel boton = (JPanel) e.getSource();
+            if (boton.equals(modificadores.get(MINIMIZAR))) {
+                minimizarVentana();
+            } else if (boton.equals(modificadores.get(SALIR))) {
+                gui.setVisible(false);
+            }
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            xMouse = e.getX();
+            yMouse = e.getY();
+        }
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (e.getSource() instanceof JPanel) {
+            if (e.getSource().equals(modificadores.get(SALIR))) {
+                modificadores.get(SALIR).setBackground(Color.red);
+            } else if (e.getSource().equals(modificadores.get(MINIMIZAR))) {
+                modificadores.get(MINIMIZAR).setBackground(Color.lightGray);
+            }
+        }
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (e.getSource() instanceof JPanel) {
+            if (e.getSource().equals(modificadores.get(SALIR))) {
+                modificadores.get(SALIR).setBackground(new java.awt.Color(153, 153, 153));
+                /*} else if (e.getSource().equals(modificadores.get(MAXIMIZAR))) {
+                modificadores.get(MAXIMIZAR).setBackground(new java.awt.Color(153, 153, 153));
+                 */
+            } else if (e.getSource().equals(modificadores.get(MINIMIZAR))) {
+                modificadores.get(MINIMIZAR).setBackground(new java.awt.Color(153, 153, 153));
+            }
+        }
+    }
+
+    public void minimizarVentana() {
+        gui.setExtendedState(BaseTable.ICONIFIED);
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        if (e.getSource().equals(modificadores.get(TOGRAB))) {
+            int x = e.getXOnScreen();
+            int y = e.getYOnScreen();
+            gui.setLocation(x - xMouse, y - yMouse);
         }
     }
 

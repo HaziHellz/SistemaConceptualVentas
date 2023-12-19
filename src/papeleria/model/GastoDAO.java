@@ -54,6 +54,7 @@ public class GastoDAO {
                 Object[] fila = new Object[columns];
                 for (int i = 0; i < columns; i++) {
                     fila[i] = rs.getObject(i + 1);
+                    System.out.println(fila[i]);
                 }
                 tableModel.addRow(fila);
             }
@@ -286,20 +287,20 @@ public class GastoDAO {
             if (tipo.equals("Todo") && proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%';";
                 //System.out.println("TODO: " + query);
-            }else if(tipo.equals("Todo") && !proveedor.equals("Todo")){
+            } else if (tipo.equals("Todo") && !proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
-            
-            }else if(!tipo.equals("Todo") && proveedor.equals("Todo")){
+
+            } else if (!tipo.equals("Todo") && proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + ";";
-            
-            }else {
+
+            } else {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + " && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
             }
-            
+
             rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                totalMes =  Double.valueOf(rs.getObject(1).toString());
+                totalMes = Double.valueOf(rs.getObject(1).toString());
             }
             result += "Mes: " + totalMes;
 
@@ -345,8 +346,8 @@ public class GastoDAO {
             }
         }
     }
-    
-    public static void delete(Gasto gasto){
+
+    public static void delete(Gasto gasto) {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -372,7 +373,7 @@ public class GastoDAO {
             }
         }
     }
-    
+
     public static Timestamp getDate() {
         Timestamp date = null;
         Connection conn = null;

@@ -108,7 +108,7 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
         if (e.getSource().equals(modificadores.get(TOGRAB))) {
             int x = e.getXOnScreen();
             int y = e.getYOnScreen();
-            gui.setLocation(x - xMouse, y - yMouse);
+            gui.setLocation(x - xMouse - 120, y - yMouse);
         }
     }
 

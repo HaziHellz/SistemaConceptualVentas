@@ -20,6 +20,12 @@ public class Cliente {
         telefono = builder.telefono;
     }
 
+    public Cliente() {
+        nombre = "vacio";
+        apellido = "vacio";
+        telefono = "vacio";
+    }
+
     public String getApellido() {
         return apellido;
     }

@@ -54,7 +54,6 @@ public class GastoDAO {
                 Object[] fila = new Object[columns];
                 for (int i = 0; i < columns; i++) {
                     fila[i] = rs.getObject(i + 1);
-                    System.out.println(fila[i]);
                 }
                 tableModel.addRow(fila);
             }

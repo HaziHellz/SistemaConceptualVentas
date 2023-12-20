@@ -19,6 +19,10 @@ public class Base {
         this.nombreBase = build.nameBase;
         this.exists = build.exists;
     }
+    
+    public Base(){
+        
+    }
 
     public int getIdBase() {
         return idBase;

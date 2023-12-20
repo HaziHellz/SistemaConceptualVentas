@@ -47,7 +47,8 @@ public class GUI extends javax.swing.JFrame {
         componentes.add(btnMenuConceptos);
         componentes.add(btnMenuProveedores);
         componentes.add(btnMenuExportar);
-
+        componentes.add(btnMenuClientes);
+        
         List<JPanel> modificadores = new ArrayList();
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuMaximizar);
@@ -63,13 +64,14 @@ public class GUI extends javax.swing.JFrame {
         cbx.add(cbxProvider);
         cbx.add(cbxProviderFilter);
 
-        OpcionesController controller = new OpcionesController(componentes, cbx, this, modificadores);
+        OpcionesController controller = new OpcionesController(componentes, cbx, this, modificadores, this.tblClientes);
 
         this.addWindowListener(controller);
         toGrab.addMouseListener(controller);
         toGrab.addMouseMotionListener(controller);
         btnMenuConceptos.addActionListener(controller);
         btnMenuProveedores.addActionListener(controller);
+        btnMenuClientes.addActionListener(controller);
         btnMenuExportar.addActionListener(controller);
         btnMenuCerrar.addMouseListener(controller);
         btnMenuMaximizar.addMouseListener(controller);
@@ -189,6 +191,7 @@ public class GUI extends javax.swing.JFrame {
         menu = new javax.swing.JMenu();
         btnMenuConceptos = new javax.swing.JMenuItem();
         btnMenuProveedores = new javax.swing.JMenuItem();
+        btnMenuClientes = new javax.swing.JMenuItem();
         btnMenuExportar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -658,6 +661,10 @@ public class GUI extends javax.swing.JFrame {
         btnMenuProveedores.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuProveedores);
 
+        btnMenuClientes.setText("Clientes");
+        btnMenuClientes.setPreferredSize(new java.awt.Dimension(120, 35));
+        menu.add(btnMenuClientes);
+
         btnMenuExportar.setText("Exportar");
         btnMenuExportar.setPreferredSize(new java.awt.Dimension(120, 35));
         menu.add(btnMenuExportar);
@@ -774,6 +781,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton btnDeleteItemHistory;
     private javax.swing.JButton btnDeleteSaleHistory;
     private javax.swing.JButton btnDeleteSpend;
+    private javax.swing.JMenuItem btnMenuClientes;
     private javax.swing.JMenuItem btnMenuConceptos;
     private javax.swing.JMenuItem btnMenuExportar;
     private javax.swing.JMenuItem btnMenuProveedores;

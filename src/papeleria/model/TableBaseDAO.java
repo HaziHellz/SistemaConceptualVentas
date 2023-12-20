@@ -35,12 +35,16 @@ public class TableBaseDAO {
             stmt = conn.createStatement();
             String query = "";
 
-            if (filtro.equals("Registrados")) {
-                query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " where existe_" + tabla + " = true order by nombre_" + tabla + " asc;";
-            } else if (filtro.equals("Eliminados")) {
-                query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " where existe_" + tabla + " = false order by nombre_" + tabla + " asc;";
-            } else {
-                query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " order by nombre_" + tabla + " asc;";
+            if (titulo != "Clientes") {
+                if (filtro.equals("Registrados")) {
+                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " where existe_" + tabla + " = true order by nombre_" + tabla + " asc;";
+                } else if (filtro.equals("Eliminados")) {
+                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " where existe_" + tabla + " = false order by nombre_" + tabla + " asc;";
+                } else {
+                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " order by nombre_" + tabla + " asc;";
+                }
+            }else {
+                query = "call sps_clientes()";
             }
 
             rs = stmt.executeQuery(query);
@@ -265,7 +269,7 @@ public class TableBaseDAO {
         }
 
     }
-    
+
     public static boolean consultarExistencia(Base base, String titulo) {
         //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
 
@@ -274,7 +278,7 @@ public class TableBaseDAO {
         ResultSet rs = null;
         boolean existe = false;
         System.out.println("hola");
-        
+
         try {
             String tabla = getTabla(titulo);
             conn = Conexion.getConnection();
@@ -285,8 +289,7 @@ public class TableBaseDAO {
             if (rs.next()) {
                 existe = rs.getBoolean(1);
             }
-            
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -300,37 +303,37 @@ public class TableBaseDAO {
         }
         return existe;
     }
-    
+
     public static DefaultComboBoxModel comboModel(String titulo) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
         try {
-            
+
             if (titulo.equals("Conceptos")) {
                 titulo = "tipo";
-            }else{
+            } else {
                 titulo = "proveedor";
             }
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
-            rs = stmt.executeQuery("select nombre_" + titulo + " from " + titulo + " where existe_" + titulo  + " = true order by nombre_" + titulo + " asc;");
-         
+            rs = stmt.executeQuery("select nombre_" + titulo + " from " + titulo + " where existe_" + titulo + " = true order by nombre_" + titulo + " asc;");
+
             int rows = 0;
             List<Object> name = new ArrayList();
-            
+
             while (rs.next()) {
                 rows += 1;
                 name.add(rs.getObject(1));
                 //System.out.println(rows);
             }
-            
+
             String[] types = new String[rows];
             for (int i = 0; i < rows; i++) {
                 types[i] = (String) name.get(i);
             }
-            
+
             cbxModel = new javax.swing.DefaultComboBoxModel<>(types);
 
         } catch (SQLException e) {
@@ -338,7 +341,7 @@ public class TableBaseDAO {
             e.printStackTrace(System.out);
             System.exit(0);
         } finally {
-            
+
             try {
                 close(rs);
                 close(stmt);
@@ -350,43 +353,42 @@ public class TableBaseDAO {
         }
 
     }
-    
+
     public static DefaultComboBoxModel comboModelTodo(String titulo) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         ResultSetMetaData metaData;
         DefaultComboBoxModel cbxModel = new DefaultComboBoxModel();
-        
+
         if (titulo.equals("Conceptos")) {
-                titulo = "tipo";
-            }else{
-                titulo = "proveedor";
-            }
-        
+            titulo = "tipo";
+        } else {
+            titulo = "proveedor";
+        }
+
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select nombre_" + titulo + " from " + titulo + " where existe_" + titulo + " = true order by nombre_" + titulo + " asc;");
             metaData = rs.getMetaData();
-            
+
             int rows = 0;
             List<Object> name = new ArrayList();
-            
+
             //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
             while (rs.next()) {
                 rows += 1;
                 name.add(rs.getObject(1));
             }
-            
-            
-            String[] types = new String[rows+1];
-            
+
+            String[] types = new String[rows + 1];
+
             //AGREGA LA OPCION TODO
             types[0] = "Todo";
             //AGREGA EL NOMBRE AL ARREGLO
             for (int i = 0; i < rows; i++) {
-                types[i+1] = (String) name.get(i);
+                types[i + 1] = (String) name.get(i);
             }
             //CREA EL MODELO PARA COMBO BOX CON EL ARREGLO
             cbxModel = new javax.swing.DefaultComboBoxModel<>(types);
@@ -394,7 +396,7 @@ public class TableBaseDAO {
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-            
+
             try {
                 close(rs);
                 close(stmt);
@@ -406,28 +408,27 @@ public class TableBaseDAO {
         }
 
     }
-    
-    public static Base getNombre(String nombreTipo, String titulo){
+
+    public static Base getNombre(String nombreTipo, String titulo) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         Base tipo = null;
-        
+
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select id_" + titulo + ", nombre_" + titulo + ", existe_" + titulo + " from " + titulo + " where existe_" + titulo + " = true && nombre_" + titulo + " = '" + nombreTipo + "'");
-            
-            
+
             //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
             while (rs.next()) {
                 tipo = new Base.TipoBuilder().idBase((int) rs.getObject(1)).nameBase((String) rs.getObject(2)).exists((boolean) rs.getObject(3)).build();
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-            
+
             try {
                 close(rs);
                 close(stmt);
@@ -438,7 +439,7 @@ public class TableBaseDAO {
             return tipo;
         }
     }
-    
+
     public static List<Base> getTipos() {
         List<Base> tipos = new ArrayList();
         Connection conn = null;
@@ -448,16 +449,16 @@ public class TableBaseDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select nombre_tipo, id_tipo from tipo where existe_tipo = true");
-            
+
             while (rs.next()) {
                 tipos.add(new Base.TipoBuilder().nameBase((String) rs.getObject(1)).idBase((Integer) rs.getObject(2)).build());
                 //System.out.println(rows);
             }
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-            
+
             try {
                 close(rs);
                 close(stmt);

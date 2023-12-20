@@ -101,7 +101,32 @@ public class ClienteDAO {
     }
     
     public static void insertar(Cliente cliente){
-        
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            conn = Conexion.getConnection();
+            conn.setAutoCommit(false);
+            stmt = conn.createStatement();
+            
+            System.out.println(cliente.toString());
+            String query = "call spi_cliente('"+ cliente.getNombre() + "','" + cliente.getApellido() + "', '"  + cliente.getTelefono() + "')";
+            
+            stmt.executeQuery(query);
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+
+            try {
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
     }
     
     public static void actualizar(Cliente cliente, String telefono){

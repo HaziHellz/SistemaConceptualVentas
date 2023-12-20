@@ -107,11 +107,19 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
                 } else if (titulo == "Clientes") {
                     if (telefonoVerificado()) {
                         //SI EL TELEFONO TIENE 10 DIGITOS, ENTRA A ESTE IF
+                        //CREA UNA INSTANCIA DEL CLIENTE CON LOS DATOS EN EL FORMULARIO
+                        Cliente cliente = new Cliente.ClienteBuilder()
+                                .setNombre(((JTextField) componentes.get(TXTNAME)).getText())
+                                .setApellido(((JTextField) componentes.get(TXTAPELLIDO)).getText())
+                                .setTelefono(((JTextField) componentes.get(TXTTELEFONO)).getText())
+                                .build();
+
                         if (nuevo) {
                             // SI EL CLIENTE ES NUEVO CREA UN NUEVO CLIENTE
-                            insertarCliente();
+                            insertarCliente(cliente);
                         } else {
-                            actualizarCliente();
+                            // SI EL CLIENTE EXISTE, ACTUALIZA LOS DATOS EN LA BASE DE DATOS
+                            actualizarCliente(cliente);
                         }
                     } else {
                         JOptionPane.showMessageDialog(gui, "El teléfono debe tener 10 digitos", "Verificación", JOptionPane.WARNING_MESSAGE);
@@ -310,11 +318,11 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
 
         ((JButton) componentes.get(BTNDELETE)).setEnabled(false);
         ((JButton) componentes.get(BTNRESTAURAR)).setEnabled(false);
-
+        /*
         if (titulo == "Clientes") {
             ((JTable) componentes.get(TABLA)).getColumnModel().getColumn(0).setMaxWidth(100);
         }
-
+         */
     }
 
     private boolean telefonoVerificado() {
@@ -325,27 +333,26 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
         }
     }
 
-    private void actualizarCliente() {
-        // SI EL CLIENTE NO ES NUEVO, CREA UNA INSTANCIA DE LA CLASE CLIENTE CON LOS DATOS ACTUALIZADOS
-        Cliente clienteActualizado = new Cliente.ClienteBuilder()
-                .setNombre(((JTextField) componentes.get(TXTNAME)).getText())
-                .setApellido(((JTextField) componentes.get(TXTAPELLIDO)).getText())
-                .setTelefono(((JTextField) componentes.get(TXTTELEFONO)).getText())
-                .build();
+    private void actualizarCliente(Cliente clienteActualizado) {
         //Y ACTUALIZA EL CLIENTE USANDO EL NUMERO DE TELEFONO QUE YA SE TENIA ANTES
-        ClienteDAO.actualizar(clienteActualizado, cliente.getTelefono());
+        ClienteDAO.actualizar(clienteActualizado, this.cliente.getTelefono());
+        resetFormYTableCliente();
 
+    }
+
+    private void insertarCliente(Cliente clienteNuevo) {
+        //INSERTA EL CLIENTE USANDO LA INSTANCIA DE CLIENTE QUE CONTIENE LOS DATOS DEL FORMULARIO
+        ClienteDAO.insertar(clienteNuevo);
+        resetFormYTableCliente();
+    }
+
+    private void resetFormYTableCliente() {
         // RESETEA EL FORMULARIO
         resetForm();
 
         //ACTUALIZA LA TABLA CLIENTES EN LA VENTANA DE APARTADOS
         tblClientes.setModel(ClienteDAO.tableModel());
         tblClientes.getColumnModel().getColumn(0).setMaxWidth(100);
-
-    }
-
-    private void insertarCliente() {
-
     }
 
 }

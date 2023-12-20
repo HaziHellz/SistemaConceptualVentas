@@ -50,7 +50,10 @@ public class Cliente {
         this.telefono = telefono;
     }
     
-    
+    @Override
+    public String toString(){
+        return getNombre() + " " + getApellido() + " " + getTelefono();
+    }
 
     public static class ClienteBuilder {
 

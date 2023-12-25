@@ -5,7 +5,7 @@
 package papeleria.view;
 
 import controller.OpcionesController;
-import controller.TablaBaseController;
+import controller.FRAMETablaBaseController;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +45,10 @@ public class BaseTable extends javax.swing.JFrame {
         
         cargarControladorYEventos();
     }
+    
+    public BaseTable(){
+        
+    }
 
     private void cargarControladorYEventos() {
         List<Component> componentes = new ArrayList();
@@ -62,7 +66,7 @@ public class BaseTable extends javax.swing.JFrame {
         modificadores.add(btnMenuCerrar);
         modificadores.add(toGrab);
 
-        TablaBaseController controller = new TablaBaseController(componentes, titulo, combos, this, modificadores, tblClientes);
+        FRAMETablaBaseController controller = new FRAMETablaBaseController(componentes, titulo, combos, this, modificadores, tblClientes);
         tblConcepts.addMouseListener(controller);
         cbxFiltro.addActionListener(controller);
 
@@ -134,8 +138,17 @@ public class BaseTable extends javax.swing.JFrame {
         });
 
         tblConcepts.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        tblConcepts.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         tblConcepts.setRowHeight(30);
         tblConcepts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblConcepts.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblConcepts);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));

@@ -440,6 +440,37 @@ public class TableBaseDAO {
         }
     }
 
+    public static Base getNombreByID(String id, String titulo) {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Base tipo = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select id_" + titulo + ", nombre_" + titulo + ", existe_" + titulo + " from " + titulo + " where existe_" + titulo + " = true && id_" + titulo + " = '" + id + "'");
+
+            //CUENTA LOS RENGLONES Y GUARDA EL NOMBRE DE CADA RENGLON
+            while (rs.next()) {
+                tipo = new Base.TipoBuilder().idBase((int) rs.getObject(1)).nameBase((String) rs.getObject(2)).exists((boolean) rs.getObject(3)).build();
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return tipo;
+        }
+    }
+    
     public static List<Base> getTipos() {
         List<Base> tipos = new ArrayList();
         Connection conn = null;

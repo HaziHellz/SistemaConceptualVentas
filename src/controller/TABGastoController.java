@@ -31,7 +31,7 @@ import papeleria.model.VentaDAO;
  * @author Heber Haziel Nava Martinez
  * @version 0.8.5
  */
-public class GastoController extends MouseAdapter implements ActionListener, KeyListener {
+public class TABGastoController extends MouseAdapter implements ActionListener, KeyListener {
 
     int CBX_PROVIDER = 0;
     int CBX_TYPE_SPENDS = 1;
@@ -55,7 +55,7 @@ public class GastoController extends MouseAdapter implements ActionListener, Key
 
     boolean nuevo = true;
 
-    public GastoController(List<JComboBox> combos, List<Object> componentes) {
+    public TABGastoController(List<JComboBox> combos, List<Object> componentes) {
         this.combos = combos;
         txtCantidad = (JTextField) componentes.get(0);
         buttons.add(((JButton) componentes.get(1)));

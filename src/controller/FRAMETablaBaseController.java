@@ -28,7 +28,7 @@ import papeleria.view.BaseTable;
  *
  * @author heber
  */
-public class TablaBaseController extends MouseAdapter implements ActionListener {
+public class FRAMETablaBaseController extends MouseAdapter implements ActionListener {
 
     //SE DEFINEN LOS INDEX DE CADA COMPONENTE EN EL ARRAY COMPONENTES
     final static private int TABLA = 0;
@@ -66,7 +66,7 @@ public class TablaBaseController extends MouseAdapter implements ActionListener 
     private Cliente cliente;
 
     //EL ARRAY COMPONENTES, CONTIENE LOS COMPONENTES DE LA VISTA, EL TITULO CORRESPONDE A LA TABLA DE LA BASE DE DATOS
-    public TablaBaseController(List<Component> componentes, String titulo, List<JComboBox> combos, JFrame gui, List<JPanel> modificadores, JTable tblClientes) {
+    public FRAMETablaBaseController(List<Component> componentes, String titulo, List<JComboBox> combos, JFrame gui, List<JPanel> modificadores, JTable tblClientes) {
         this.componentes = componentes;
         this.combos = combos;
         this.titulo = titulo;

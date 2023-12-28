@@ -5,13 +5,14 @@
 package papeleria.view;
 
 import controller.OpcionesController;
-import controller.TablaBaseController;
+import controller.FRAMETablaBaseController;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 
 /**
  *
@@ -24,16 +25,29 @@ public class BaseTable extends javax.swing.JFrame {
      */
     private static BaseTable base;
     private List<JComboBox> combos;
+    private JTable tblClientes;
     String titulo;
 
-    public BaseTable(String titulo, List<JComboBox> combos) {
+    public BaseTable(String titulo, List<JComboBox> combos, JTable tblClientes) {
         this.titulo = titulo;
         this.combos = combos;
+        this.tblClientes = tblClientes;
         initComponents();
         this.setLocationRelativeTo(this);
-        this.setTitle(titulo);
+        this.title.setText(" " + titulo);
         this.setDefaultCloseOperation(BaseTable.DISPOSE_ON_CLOSE);
+        
+        if (titulo !="Clientes") {
+            setVisibleTelefono(false);
+        }else{
+            setVisibleTelefono(true);
+        }
+        
         cargarControladorYEventos();
+    }
+    
+    public BaseTable(){
+        
     }
 
     private void cargarControladorYEventos() {
@@ -44,16 +58,18 @@ public class BaseTable extends javax.swing.JFrame {
         componentes.add(btnAdd);
         componentes.add(btnDelete);
         componentes.add(btnRestaurar);
+        componentes.add(txtApellido);
+        componentes.add(txtTelefono);
         
         List<JPanel> modificadores = new ArrayList();
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuCerrar);
         modificadores.add(toGrab);
 
-        TablaBaseController controller = new TablaBaseController(componentes, titulo, combos, this, modificadores);
+        FRAMETablaBaseController controller = new FRAMETablaBaseController(componentes, titulo, combos, this, modificadores, tblClientes);
         tblConcepts.addMouseListener(controller);
         cbxFiltro.addActionListener(controller);
-        //txtName.addKeyListener(controller);
+
         btnAdd.addActionListener(controller);
         btnDelete.addActionListener(controller);
         btnRestaurar.addActionListener(controller);
@@ -61,6 +77,21 @@ public class BaseTable extends javax.swing.JFrame {
         toGrab.addMouseMotionListener(controller);
         btnMenuCerrar.addMouseListener(controller);
         btnMenuMinimizar.addMouseListener(controller);
+        
+    }
+    
+    public void setVisibleTelefono(boolean value){
+        this.txtApellido.setVisible(value);
+        this.lblApellido.setVisible(value);
+        this.txtApellido.setEnabled(value);
+        this.lblApellido.setEnabled(value);
+        this.txtTelefono.setVisible(value);
+        this.lblTelefono.setVisible(value);
+        this.txtTelefono.setEnabled(value);
+        this.lblTelefono.setEnabled(value);
+        this.cbxFiltro.setVisible(!value);
+        this.btnDelete.setVisible(!value);
+        this.btnRestaurar.setVisible(!value);
     }
 
     /**
@@ -82,6 +113,10 @@ public class BaseTable extends javax.swing.JFrame {
         btnDelete = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
         btnRestaurar = new javax.swing.JButton();
+        lblTelefono = new javax.swing.JLabel();
+        txtTelefono = new javax.swing.JTextField();
+        lblApellido = new javax.swing.JLabel();
+        txtApellido = new javax.swing.JTextField();
         jMenuBarOpciones = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -103,11 +138,22 @@ public class BaseTable extends javax.swing.JFrame {
         });
 
         tblConcepts.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        tblConcepts.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
         tblConcepts.setRowHeight(30);
         tblConcepts.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblConcepts.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblConcepts);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
+        jPanel1.setMinimumSize(new java.awt.Dimension(142, 307));
+        jPanel1.setVerifyInputWhenFocusTarget(false);
 
         jLabel2.setText("Nombre: ");
 
@@ -119,11 +165,24 @@ public class BaseTable extends javax.swing.JFrame {
         btnAdd.setBackground(new java.awt.Color(240, 240, 240));
         btnAdd.setForeground(new java.awt.Color(0, 0, 0));
         btnAdd.setText("Aceptar");
+        btnAdd.setMaximumSize(new java.awt.Dimension(171, 22));
+        btnAdd.setMinimumSize(new java.awt.Dimension(171, 22));
+        btnAdd.setPreferredSize(new java.awt.Dimension(171, 22));
 
         btnRestaurar.setBackground(new java.awt.Color(240, 240, 240));
         btnRestaurar.setForeground(new java.awt.Color(0, 0, 0));
         btnRestaurar.setText("Restaurar");
         btnRestaurar.setEnabled(false);
+
+        lblTelefono.setText("Teléfono:");
+        lblTelefono.setEnabled(false);
+
+        txtTelefono.setEnabled(false);
+
+        lblApellido.setText("Apellido:");
+        lblApellido.setEnabled(false);
+
+        txtApellido.setEnabled(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -132,14 +191,20 @@ public class BaseTable extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRestaurar, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
-                    .addComponent(txtName)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addComponent(lblApellido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lblTelefono, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtApellido, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(btnDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnRestaurar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtName, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -148,13 +213,21 @@ public class BaseTable extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnRestaurar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnDelete)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnAdd)
-                .addContainerGap(150, Short.MAX_VALUE))
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -164,14 +237,15 @@ public class BaseTable extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 246, Short.MAX_VALUE)
                         .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)))
-                .addContainerGap())
+                        .addGap(16, 16, 16))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -182,13 +256,12 @@ public class BaseTable extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cbxFiltro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         toGrab = new javax.swing.JPanel();
         btnMenuMinimizar = new javax.swing.JPanel();
-        //btnMenuMaximizar = new javax.swing.JPanel();
         btnMenuCerrar = new javax.swing.JPanel();
         jMenuBarOpciones.setBackground(new java.awt.Color(153, 153, 153));
         jMenuBarOpciones.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 102)));
@@ -200,6 +273,14 @@ public class BaseTable extends javax.swing.JFrame {
         toGrab.setBackground(new java.awt.Color(153,153,153));
         toGrab.setPreferredSize(new java.awt.Dimension(410, 35));
         toGrab.setMaximumSize(new java.awt.Dimension(32767, 35));
+
+        title.setSize(80, 35);
+        title.setBounds(2, 2, 80, 35);
+        title.setForeground(new java.awt.Color(255,255,255));
+        toGrab.setLayout(null);
+
+        //jMenuBarOpciones.add(title);
+        toGrab.add(title);
         jMenuBarOpciones.add(toGrab);
 
         setJMenuBar(jMenuBarOpciones);
@@ -208,12 +289,6 @@ public class BaseTable extends javax.swing.JFrame {
         btnMenuMinimizar.setPreferredSize(new java.awt.Dimension(45, 35));
         btnMenuMinimizar.setMaximumSize(new java.awt.Dimension(45, 35));
         jMenuBarOpciones.add(btnMenuMinimizar);
-        /*
-        btnMenuMaximizar.add(new javax.swing.JLabel(new javax.swing.ImageIcon(getClass().getResource("/images/maximize-icon.png")))); // NOI18N
-        btnMenuMaximizar.setBackground(new java.awt.Color(153,153,153));
-        btnMenuMaximizar.setPreferredSize(new java.awt.Dimension(45, 35));
-        btnMenuMaximizar.setMaximumSize(new java.awt.Dimension(45, 35));
-        jMenuBarOpciones.add(btnMenuMaximizar);*/
 
         jMenuBarOpciones.setMaximumSize(new java.awt.Dimension(0, 0));
 
@@ -221,6 +296,7 @@ public class BaseTable extends javax.swing.JFrame {
         btnMenuCerrar.setBackground(new java.awt.Color(153,153,153));
         btnMenuCerrar.setPreferredSize(new java.awt.Dimension(45, 35));
         btnMenuCerrar.setMaximumSize(new java.awt.Dimension(45, 35));
+
         jMenuBarOpciones.add(btnMenuCerrar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -241,10 +317,11 @@ public class BaseTable extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbxFiltroActionPerformed
 
-    public static BaseTable getInstance(String titulo, List<JComboBox> combos) {
-        base = new BaseTable(titulo, combos);
+    public static BaseTable getInstance(String titulo, List<JComboBox> combos, JTable tblClientes) {
+        base = new BaseTable(titulo, combos, tblClientes);
         return base;
     }
+    private javax.swing.JLabel title = new javax.swing.JLabel("");
     private javax.swing.JPanel toGrab;
     private javax.swing.JPanel btnMenuMinimizar;
     private javax.swing.JPanel btnMenuCerrar;
@@ -258,7 +335,11 @@ public class BaseTable extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblApellido;
+    private javax.swing.JLabel lblTelefono;
     private javax.swing.JTable tblConcepts;
+    private javax.swing.JTextField txtApellido;
     private javax.swing.JTextField txtName;
+    private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
 }

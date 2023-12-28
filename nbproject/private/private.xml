@@ -3,8 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/ApartadoDAO.java</file>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/controller/TABApartadosController.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/Conexion.java</file>
-            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/Papeleria.java</file>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/ClienteDAO.java</file>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/view/Apartar.java</file>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/controller/FRAMEApartarController.java</file>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/view/GUI.java</file>
         </group>
     </open-files>
 </project-private>

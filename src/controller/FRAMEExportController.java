@@ -20,7 +20,7 @@ import papeleria.view.BaseTable;
  *
  * @author heber
  */
-public class ExportController extends MouseAdapter implements ActionListener {
+public class FRAMEExportController extends MouseAdapter implements ActionListener {
 
     private List<JComboBox> combos;
     private JFrame gui;
@@ -35,7 +35,7 @@ public class ExportController extends MouseAdapter implements ActionListener {
     private final int CBX_YEAR = 1;
     private final int CBX_MONTH = 2;
 
-    public ExportController(List<JComboBox> combos, JFrame gui, List<JPanel> modificadores) {
+    public FRAMEExportController(List<JComboBox> combos, JFrame gui, List<JPanel> modificadores) {
         this.combos = combos;
         this.gui = gui;
         this.modificadores = modificadores;

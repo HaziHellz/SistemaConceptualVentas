@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import static papeleria.model.Conexion.close;
 
 public class VentaTipoDAO {
@@ -62,7 +63,7 @@ public class VentaTipoDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO `papeleria`.`venta_tipo` (`id_venta`, `id_tipo`, `cantidad_tipo`, `fecha_venta`) VALUES ( ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("INSERT INTO `venta_tipo` (`id_venta`, `id_tipo`, `cantidad_tipo`, `fecha_venta`) VALUES ( ?, ?, ?, ?);");
             stmt.setInt(1, ventaTipo.getVenta().getIdVenta());
             stmt.setInt(2, ventaTipo.getTipo().getIdBase());
             stmt.setDouble(3, ventaTipo.getCantidadTipo());
@@ -83,7 +84,7 @@ public class VentaTipoDAO {
         }
     }
     
-    public static void delete(VentaTipo ventaTipo){
+    public static boolean delete(VentaTipo ventaTipo){
         //DELETE FROM `papeleria`.`venta_tipo` WHERE (`id_venta` = '1') and (`fecha_venta` = '2023-04-10 13:37:19') and (`id_tipo` = '3');
         
         Connection conn = null;
@@ -92,15 +93,17 @@ public class VentaTipoDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("DELETE FROM `papeleria`.`venta_tipo` WHERE (`id_venta` = ?) and (`fecha_venta` = ?) and (`id_tipo` = ?)");
+            stmt = conn.prepareStatement("DELETE FROM `venta_tipo` WHERE (`id_venta` = ?) and (`fecha_venta` = ?) and (`id_tipo` = ?)");
             stmt.setInt(1, ventaTipo.getVenta().getIdVenta());
             stmt.setTimestamp(2, ventaTipo.getVenta().getFecha());
             stmt.setInt(3, ventaTipo.getTipo().getIdBase());
             stmt.executeUpdate();
             conn.commit();
-            
+            return true;
         } catch (SQLException e) {
             e.printStackTrace(System.out);
+            JOptionPane.showMessageDialog(null, "No se puede modificar o eliminar este registro", "Error", JOptionPane.WARNING_MESSAGE);
+            return false;
         } finally {
             
             try {
@@ -108,6 +111,7 @@ public class VentaTipoDAO {
                 close(conn);
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
+                return false;
             }
         }
     }
@@ -120,7 +124,7 @@ public class VentaTipoDAO {
             //System.out.println(ventaTipo.getVenta().getIdVenta());
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE `papeleria`.`venta_tipo` SET `cantidad_tipo` = ? WHERE (`id_venta` = ?) and (`fecha_venta` = ?) and (`id_tipo` = ?);");
+            stmt = conn.prepareStatement("UPDATE `venta_tipo` SET `cantidad_tipo` = ? WHERE (`id_venta` = ?) and (`fecha_venta` = ?) and (`id_tipo` = ?);");
             stmt.setDouble(1, ventaTipo.getCantidadTipo());
             stmt.setInt(2, ventaTipo.getVenta().getIdVenta());
             stmt.setTimestamp(3, ventaTipo.getVenta().getFecha());

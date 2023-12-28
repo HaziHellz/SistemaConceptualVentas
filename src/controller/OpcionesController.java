@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTable;
 import papeleria.view.BaseTable;
 import papeleria.view.Export;
 import papeleria.view.GUI;
@@ -32,6 +33,7 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
     private int CONCEPTOS = 0;
     private int PROVEEDORES = 1;
     private int EXPORTAR = 2;
+    private int CLIENTES = 3;
     private int MINIMIZAR = 0;
     private int MAXIMIZAR = 1;
     private boolean defaultSize = true;
@@ -44,14 +46,16 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
     private List<JMenuItem> componentes; //CONTIENE LOS BOTONES DEL MENU
     private List<JComboBox> combos;
     private List<JPanel> modificadores;
-    private BaseTable baseTable = new BaseTable("Componentes", combos);
+    private JTable tblClientes;
+    private BaseTable baseTable = new BaseTable("Componentes", combos, tblClientes);
     private Export export = new Export();
 
-    public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx, JFrame gui, List<JPanel> modificadores) {
+    public OpcionesController(List<JMenuItem> componentes, List<JComboBox> cbx, JFrame gui, List<JPanel> modificadores, JTable tblClientes) {
         this.componentes = componentes;
         this.combos = cbx;
         this.gui = gui;
         this.modificadores = modificadores;
+        this.tblClientes = tblClientes;
     }
 
     
@@ -60,13 +64,13 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
         //SI ES PRESIONADO EL BOTON CONCEPTOS VVVVVV
         if (e.getSource().equals(componentes.get(CONCEPTOS))) {
             baseTable.dispose();
-            baseTable = BaseTable.getInstance("Conceptos", combos);
+            baseTable = BaseTable.getInstance("Conceptos", combos, tblClientes);
             baseTable.setVisible(true);
 
             //SI ES PRESIONADO EL BOTON PROVEEDORES VVVVVV
         } else if (e.getSource().equals(componentes.get(PROVEEDORES))) {
             baseTable.dispose();
-            baseTable = BaseTable.getInstance("Proveedores", combos);
+            baseTable = BaseTable.getInstance("Proveedores", combos, tblClientes);
             baseTable.setVisible(true);
             //SI ES PRESIONADO EL BOTON EXPORTAR VVVVVV
         } else if (e.getSource().equals(componentes.get(EXPORTAR))) {
@@ -78,6 +82,10 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
                 JOptionPane.showMessageDialog(gui, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
             }
 
+        } else if(e.getSource().equals(componentes.get(CLIENTES))){
+            baseTable.dispose();
+            baseTable = BaseTable.getInstance("Clientes", combos , tblClientes);
+            baseTable.setVisible(true);
         }
     }
 
@@ -108,7 +116,7 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
         if (e.getSource().equals(modificadores.get(TOGRAB))) {
             int x = e.getXOnScreen();
             int y = e.getYOnScreen();
-            gui.setLocation(x - xMouse, y - yMouse);
+            gui.setLocation(x - xMouse - 120, y - yMouse);
         }
     }
 

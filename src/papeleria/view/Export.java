@@ -4,7 +4,7 @@
  */
 package papeleria.view;
 
-import controller.ExportController;
+import controller.FRAMEExportController;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JComboBox;
@@ -38,7 +38,7 @@ public class Export extends javax.swing.JFrame {
         modificadores.add(btnMenuCerrar);
         modificadores.add(toGrab);
         
-        ExportController controller = new ExportController(combos, this ,modificadores);
+        FRAMEExportController controller = new FRAMEExportController(combos, this ,modificadores);
         cbxYear.addActionListener(controller);
         toGrab.addMouseListener(controller);
         toGrab.addMouseMotionListener(controller);

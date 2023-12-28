@@ -9,7 +9,9 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import javax.swing.JOptionPane;
 import static papeleria.model.Conexion.close;
 
 /**
@@ -118,7 +120,11 @@ public class ApartadoDAO {
 
             conn.commit();
 
-        } catch (SQLException e) {
+        } catch(SQLIntegrityConstraintViolationException ex){
+            if (ex.getMessage().equals("Duplicate entry '" + cliente.getTelefono() + "' for key 'cliente.PRIMARY'")) {
+                JOptionPane.showMessageDialog(null, "El telefono ya se ha registrado antes", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }catch (SQLException e) {
 
             e.printStackTrace(System.out);
         } finally {

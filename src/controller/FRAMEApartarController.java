@@ -242,33 +242,35 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
                     .setNombre(textFields[TXT_NOMBRE].getText())
                     .setApellido(textFields[TXT_APELLIDO].getText())
                     .build();
-            
+
             /*
             TAMBIEN SE CREA UN OBJETO APARTADO CON EL FIN DE HACER MAS LEGIBLE EL CODIGOUSANDO LOS DATOS PROPORCIONADOS
             POR EL USUARIO
-            */
+             */
             apartado = getDatosApartado();
-            
+
             //SE ESPECIFICA EL ABONO
             double abono = Double.parseDouble(textFields[TXT_ABONO].getText());
-            
+
             //SE LLAMA AL METODO PARA INSERTAR EL APARTADO Y CLIENTE NUEVOS A LA BASE DE DATOS
-            ApartadoDAO.insertarApartadoYCliente(cliente, apartado, abono);
-            
-            //SE RESETEAN LAS VARIABLES DE CLIENTE Y APARTADO ASI COMO LOS INDEX Y TABLAS DE LA VENTANA PRINCIPAL
-            resetAllMainFrameApartados();
-            gui.setVisible(false);
+            boolean completado = ApartadoDAO.insertarApartadoYCliente(cliente, apartado, abono);
+
+            if (completado) {
+                //SE RESETEAN LAS VARIABLES DE CLIENTE Y APARTADO ASI COMO LOS INDEX Y TABLAS DE LA VENTANA PRINCIPAL
+                resetAllMainFrameApartados();
+                gui.setVisible(false);
+            }
         } else {
             apartado = getDatosApartado();
             double abono = Double.parseDouble(textFields[TXT_ABONO].getText());
-            
+
             ApartadoDAO.insertarApartado(cliente, apartado, abono);
 
             resetMainFrameApartadosCliente();
-            
+
             gui.setVisible(false);
         }
-        
+
     }
 
     private void abonara() {
@@ -301,8 +303,8 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
         tablas.get(CLIENTES).setModel(ClienteDAO.tableModel());
         tablas.get(CLIENTES).getColumnModel().getColumn(COL_TELEFONO).setMaxWidth(100);
     }
-    
-     private void resetMainFrameApartadosCliente() {
+
+    private void resetMainFrameApartadosCliente() {
         //RESETEA LOS INDEX 
         index[APARTADOS] = index[APORTACIONES] = -1;
         apartado = new Apartado();
@@ -311,8 +313,8 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
         tablas.get(APARTADOS).setModel(ApartadoDAO.tableModel(cliente));
         tablas.get(APORTACIONES).setModel(tableModelVacio());
     }
-     
-     private void resetMainFrameAportacionesApartado() {
+
+    private void resetMainFrameAportacionesApartado() {
         index[APORTACIONES] = -1;
         tablas.get(APORTACIONES).setModel(AbonoDAO.tableModel(cliente, apartado));
     }
@@ -327,11 +329,11 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
 
     private Apartado getDatosApartado() {
         return new Apartado.ApartadoBuilder()
-                    .setCliente(cliente)
-                    .setDescripcion(txtaDescripcion.getText())
-                    .setIdTipo((TableBaseDAO.getID("tipo", cbxConcepto.getSelectedItem().toString())))
-                    .setTotalPagar(Double.parseDouble(textFields[TXT_TOTAL].getText()))
-                    .build();
+                .setCliente(cliente)
+                .setDescripcion(txtaDescripcion.getText())
+                .setIdTipo((TableBaseDAO.getID("tipo", cbxConcepto.getSelectedItem().toString())))
+                .setTotalPagar(Double.parseDouble(textFields[TXT_TOTAL].getText()))
+                .build();
     }
 
 }

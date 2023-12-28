@@ -195,8 +195,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getSource().equals(txtSearchCostumer)) {
-            tablas.get(CLIENTES).setModel(ClienteDAO.buscarClienteTableModel(txtSearchCostumer.getText()));
-            tablas.get(CLIENTES).getColumnModel().getColumn(COL_TELEFONO).setMaxWidth(100);
+            resetAll();
         }
     }
 

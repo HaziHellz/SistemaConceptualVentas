@@ -1,4 +1,4 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -70,14 +70,12 @@ public class ApartadoDAO {
             stmt = conn.createStatement();
             String query = "";
 
-            
-            query = "call spg_apartado(" + cliente.getTelefono() + ", '" + (fecha_apartado.getYear()+1900) + "-"+ (fecha_apartado.getMonth()+1) + "-"+ (fecha_apartado.getDate()) +"')";
-            
+            query = "call spg_apartado(" + cliente.getTelefono() + ", '" + (fecha_apartado.getYear() + 1900) + "-" + (fecha_apartado.getMonth() + 1) + "-" + (fecha_apartado.getDate()) + "')";
 
             rs = stmt.executeQuery(query);
             if (rs.next()) {
-                System.out.println(rs.getObject("fecha_apartado").toString());
-                System.out.println("AA");
+                //System.out.println(rs.getObject("fecha_apartado").toString());
+                //System.out.println("AA");
                 apartado = new Apartado.ApartadoBuilder()
                         .setCliente(cliente)
                         .setFechaApartado((Date) rs.getObject(2))
@@ -88,8 +86,7 @@ public class ApartadoDAO {
                         .setFechaMaxima((Date) rs.getObject(7))
                         .build();
             }
-            
-            
+
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -102,6 +99,101 @@ public class ApartadoDAO {
             }
             return apartado;
         }
+    }
+
+    public static boolean insertarApartadoYCliente(Cliente cliente, Apartado apartado, double abono) {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            conn.setAutoCommit(false);
+
+            String insertCliente = "call spi_cliente('" + cliente.getNombre() + "', '" + cliente.getApellido() + "', " + cliente.getTelefono() + ")";
+            String insertApartado = "call spi_apartado('" + cliente.getTelefono() + "', '" + apartado.getDescripcion() + "', " + apartado.getIdTipo() + ", " + apartado.getTotalPagar() + ", " + abono + ")";
+
+            stmt.execute(insertCliente);
+            stmt.execute(insertApartado);
+
+            conn.commit();
+
+        } catch (SQLException e) {
+
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(stmt);
+                close(conn);
+                return true;
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return false;
+        }
+
+    }
+
+    public static boolean insertarApartado(Cliente cliente, Apartado apartado, double abono) {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            conn.setAutoCommit(false);
+
+            String insertApartado = "call spi_apartado('" + cliente.getTelefono() + "', '" + apartado.getDescripcion() + "', " + apartado.getIdTipo() + ", " + apartado.getTotalPagar() + ", " + abono + ")";
+
+            stmt.execute(insertApartado);
+
+            conn.commit();
+
+        } catch (SQLException e) {
+
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(stmt);
+                close(conn);
+                return true;
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return false;
+        }
+
+    }
+    
+    public static boolean abonar (Cliente cliente, Apartado apartado, double abono) {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            conn.setAutoCommit(false);
+
+            String spi_aportaciones = "call spi_aportaciones('" + cliente.getTelefono() + "', '" + apartado.getFechaApartado() + "', " + abono + ")";
+
+            stmt.execute(spi_aportaciones);
+
+            conn.commit();
+
+        } catch (SQLException e) {
+
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(stmt);
+                close(conn);
+                return true;
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return false;
+        }
+
     }
 
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import papeleria.model.TableModel;
@@ -228,6 +229,8 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
             JButton source = (JButton) e.getSource();
 
             if (source.equals(buttons.get(BTN_ACCEPT))) {
+                boolean deleted = false;
+
                 List<Base> tipos = TableBaseDAO.getTipos();
                 //TOMA LOS TIPOS EXISTENTES EN LA BASE DE DATOS  ^^^^^^^^
 
@@ -270,27 +273,43 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
                             existeTipoEnItemsYBD = true;
                         }
                     }
+                    deleted = true;
                     if (!existeTipoEnItemsYBD) {
-                        VentaTipoDAO.delete(itemsBD.get(i));
+                        deleted = VentaTipoDAO.delete(itemsBD.get(i));
+                        System.out.println(i);
+                        System.out.println(deleted);
+                        if (!deleted) {
+                            System.out.println(i + " |  " + deleted);
+                            break;
+                        }
                     }
 
                 }
-
-                //REALIZA LOS CAMBIOS EN LA BASE DE DATOS
-                for (int i = 0; i < datosAgrupados.size(); i++) {
-                    boolean existeEnBD = false;
-                    for (int j = 0; j < itemsBD.size(); j++) {
-                        if (datosAgrupados.get(i).getTipo().getIdBase() == itemsBD.get(j).getTipo().getIdBase()) {
-                            existeEnBD = true;
+                System.out.println(deleted);
+                if (deleted) {
+                    //
+                    //
+                    //NOTA: COMPROBAR QUE NO SE PUEDA MODIFICAR SI ES UN ABONO DE ALGUN APARTADO
+                    //
+                    //
+                    //REALIZA LOS CAMBIOS EN LA BASE DE DATOS
+                    for (int i = 0; i < datosAgrupados.size(); i++) {
+                        boolean existeEnBD = false;
+                        for (int j = 0; j < itemsBD.size(); j++) {
+                            if (datosAgrupados.get(i).getTipo().getIdBase() == itemsBD.get(j).getTipo().getIdBase()) {
+                                existeEnBD = true;
+                            }
+                        }
+                        //ACTUALIZA LA CANTIDAD DEL TIPO A LA VENTA QUE CORRESPONDE
+                        if (existeEnBD) {
+                            VentaTipoDAO.update(datosAgrupados.get(i));
+                        } else {
+                            //AGREGA EL TIPO Y LA CANTIDAD A LA VENTA QUE CORRESPONDE
+                            VentaTipoDAO.insert(datosAgrupados.get(i));
                         }
                     }
-                    //ACTUALIZA LA CANTIDAD DEL TIPO A LA VENTA QUE CORRESPONDE
-                    if (existeEnBD) {
-                        VentaTipoDAO.update(datosAgrupados.get(i));
-                    } else {
-                        //AGREGA EL TIPO Y LA CANTIDAD A LA VENTA QUE CORRESPONDE
-                        VentaTipoDAO.insert(datosAgrupados.get(i));
-                    }
+                }else{
+                    JOptionPane.showMessageDialog(null, "El registro que intenta editar es un abono, \ndirijace a la pestaña de 'Apartados' si desea modificar el concepto", "Error", JOptionPane.WARNING_MESSAGE);
                 }
 
                 actualizarVentaDiaria();

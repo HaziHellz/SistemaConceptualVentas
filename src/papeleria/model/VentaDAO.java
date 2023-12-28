@@ -199,7 +199,7 @@ public class VentaDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE `papeleria`.`venta` SET `existe_venta` = ? WHERE (`id_venta` = ?) and (`fecha_venta` = ?);");
+            stmt = conn.prepareStatement("UPDATE `venta` SET `existe_venta` = ? WHERE (`id_venta` = ?) and (`fecha_venta` = ?);");
             stmt.setBoolean(1, exists);
             stmt.setInt(2, venta.getIdVenta());
             stmt.setTimestamp(3, venta.getFecha());
@@ -341,7 +341,7 @@ public class VentaDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO `papeleria`.`venta` (`id_venta`, `fecha_venta`, `existe_venta`) VALUES ( ? , ?, ?)");
+            stmt = conn.prepareStatement("INSERT INTO `venta` (`id_venta`, `fecha_venta`, `existe_venta`) VALUES ( ? , ?, ?)");
             stmt.setBoolean(3, true);
             stmt.setInt(1, venta.getIdVenta());
             stmt.setTimestamp(2, venta.getFecha());

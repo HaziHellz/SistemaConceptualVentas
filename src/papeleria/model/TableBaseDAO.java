@@ -37,11 +37,11 @@ public class TableBaseDAO {
 
             if (titulo != "Clientes") {
                 if (filtro.equals("Registrados")) {
-                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " where existe_" + tabla + " = true order by nombre_" + tabla + " asc;";
+                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM " + tabla + " where existe_" + tabla + " = true order by nombre_" + tabla + " asc;";
                 } else if (filtro.equals("Eliminados")) {
-                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " where existe_" + tabla + " = false order by nombre_" + tabla + " asc;";
+                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM " + tabla + " where existe_" + tabla + " = false order by nombre_" + tabla + " asc;";
                 } else {
-                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM papeleria." + tabla + " order by nombre_" + tabla + " asc;";
+                    query = "SELECT nombre_" + tabla + " as " + titulo + " FROM " + tabla + " order by nombre_" + tabla + " asc;";
                 }
             }else {
                 query = "call sps_clientes()";
@@ -85,7 +85,7 @@ public class TableBaseDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             String query;
-            query = "SELECT id_" + tabla + " FROM papeleria." + tabla + " where nombre_" + tabla + " = '" + nombre + "';";
+            query = "SELECT id_" + tabla + " FROM " + tabla + " where nombre_" + tabla + " = '" + nombre + "';";
 
             //System.out.println("QUERY TABLE: " + query);
             rs = stmt.executeQuery(query);
@@ -109,7 +109,6 @@ public class TableBaseDAO {
     }
 
     public static void editarNombre(Base base, String titulo) {
-        //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -120,7 +119,7 @@ public class TableBaseDAO {
 
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE `papeleria`.`" + tabla + "` SET `nombre_" + tabla + "` = ? WHERE (`id_" + tabla + "` = ?);");
+            stmt = conn.prepareStatement("UPDATE " + tabla + " SET `nombre_" + tabla + "` = ? WHERE (`id_" + tabla + "` = ?);");
             stmt.setString(1, base.getNombreBase());
             stmt.setInt(2, base.getIdBase());
             stmt.executeUpdate();
@@ -147,7 +146,7 @@ public class TableBaseDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO `papeleria`.`" + tabla + "` (`nombre_" + tabla + "`) VALUES (?);");
+            stmt = conn.prepareStatement("INSERT INTO " + tabla + " (`nombre_" + tabla + "`) VALUES (?);");
             stmt.setString(1, base.getNombreBase());
             stmt.executeUpdate();
             conn.commit();
@@ -176,7 +175,6 @@ public class TableBaseDAO {
     }
 
     public static void eliminar(Base base, String titulo) {
-        //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
 
         if (!delete(base, titulo)) {
             Connection conn = null;
@@ -188,7 +186,7 @@ public class TableBaseDAO {
 
                 conn = Conexion.getConnection();
                 conn.setAutoCommit(false);
-                stmt = conn.prepareStatement("UPDATE `papeleria`.`" + tabla + "` SET `existe_" + tabla + "` = ? WHERE (`id_" + tabla + "` = ?);");
+                stmt = conn.prepareStatement("UPDATE " + tabla + " SET `existe_" + tabla + "` = ? WHERE (`id_" + tabla + "` = ?);");
                 stmt.setBoolean(1, false);
                 stmt.setInt(2, base.getIdBase());
                 stmt.executeUpdate();
@@ -219,7 +217,7 @@ public class TableBaseDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("DELETE FROM papeleria." + tabla + " where id_" + tabla + " = " + base.getIdBase() + ";");
+            stmt = conn.prepareStatement("DELETE FROM " + tabla + " where id_" + tabla + " = " + base.getIdBase() + ";");
             stmt.executeUpdate();
             conn.commit();
             return true;
@@ -240,7 +238,7 @@ public class TableBaseDAO {
     }
 
     public static void restaurar(Base base, String titulo) {
-        //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
+
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -249,7 +247,7 @@ public class TableBaseDAO {
             String tabla = getTabla(titulo);
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE `papeleria`.`" + tabla + "` SET `existe_" + tabla + "` = ? WHERE (`id_" + tabla + "` = ?);");
+            stmt = conn.prepareStatement("UPDATE " + tabla + " SET `existe_" + tabla + "` = ? WHERE (`id_" + tabla + "` = ?);");
             stmt.setBoolean(1, true);
             stmt.setInt(2, base.getIdBase());
             stmt.executeUpdate();
@@ -271,8 +269,6 @@ public class TableBaseDAO {
     }
 
     public static boolean consultarExistencia(Base base, String titulo) {
-        //UPDATE `papeleria`.`venta` SET `existe_venta` = '0' WHERE (`id_venta` = '6') and (`fecha_venta` = '2023-04-12 13:30:58');
-
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -283,7 +279,7 @@ public class TableBaseDAO {
             String tabla = getTabla(titulo);
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("SELECT `existe_" + tabla + "` FROM papeleria." + tabla + " WHERE (`id_" + tabla + "` = ?);");
+            stmt = conn.prepareStatement("SELECT `existe_" + tabla + "` FROM " + tabla + " WHERE (`id_" + tabla + "` = ?);");
             stmt.setInt(1, base.getIdBase());
             rs = stmt.executeQuery();
             if (rs.next()) {

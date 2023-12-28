@@ -31,8 +31,13 @@ public class Apartado {
         idTipo = built.idTipo;
         totalPagar = built.totalPagar;
         cancelado = built.cancelado;
-        abonos = AbonoDAO.getAbonos(cliente, this);
-        calcularPagado();
+        try{
+            abonos = AbonoDAO.getAbonos(cliente, this);
+            calcularPagado();
+        }catch(java.lang.NullPointerException ex){
+            System.out.println("NO HAY ABONOS EN ESTE CLIENTE");
+        }
+        
     }
     
     private void calcularPagado(){

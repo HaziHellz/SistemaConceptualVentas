@@ -41,6 +41,7 @@ public class GUI extends javax.swing.JFrame {
         venta(historialController);
         opciones();
         gasto();
+        
         apartados();
     }
     
@@ -54,13 +55,15 @@ public class GUI extends javax.swing.JFrame {
         botones.add(btnApartar);
         botones.add(btnAbonar);
         
-        TABApartadosController controller = new TABApartadosController(tablas, botones);
+        TABApartadosController controller = new TABApartadosController(tablas, botones, txtSearchCostumer);
+        
         
         tblClientes.addMouseListener(controller);
         tblClienteApartados.addMouseListener(controller);
         tblApartadoAportaciones.addMouseListener(controller);
         btnApartar.addActionListener(controller);
         btnAbonar.addActionListener(controller);
+        txtSearchCostumer.addKeyListener(controller);
     }
 
     private void opciones() {
@@ -382,8 +385,12 @@ public class GUI extends javax.swing.JFrame {
         }catch(NullPointerException ex){}
 
         tblSpends.getTableHeader().setReorderingAllowed(false);
-        tblSpends.setModel(GastoDAO.tableModel(cbxYearFilter.getSelectedItem().toString(), cbxMonthFilter.getSelectedItem().toString(), cbxTypeSpendsFilter.getSelectedItem().toString(), cbxProviderFilter.getSelectedItem().toString())
-        );
+        try{
+            tblSpends.setModel(GastoDAO.tableModel(cbxYearFilter.getSelectedItem().toString(), cbxMonthFilter.getSelectedItem().toString(), cbxTypeSpendsFilter.getSelectedItem().toString(), cbxProviderFilter.getSelectedItem().toString())
+            );
+        } catch(NullPointerException ex){
+
+        }
         tblSpends.setRowHeight(30);
         tblSpends.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblSpends.getTableHeader().setReorderingAllowed(false);

@@ -47,15 +47,22 @@ public class GastoDAO {
             rs = stmt.executeQuery(query);
             metaData = rs.getMetaData();
             int columns = metaData.getColumnCount();
-            for (int i = 1; i <= columns; i++) {
-                tableModel.addColumn(metaData.getColumnLabel(i));
-            }
-            while (rs.next()) {
-                Object[] fila = new Object[columns];
-                for (int i = 0; i < columns; i++) {
-                    fila[i] = rs.getObject(i + 1);
+            if (columns != 0) {
+                for (int i = 1; i <= columns; i++) {
+                    tableModel.addColumn(metaData.getColumnLabel(i));
                 }
-                tableModel.addRow(fila);
+                while (rs.next()) {
+                    Object[] fila = new Object[columns];
+                    for (int i = 0; i < columns; i++) {
+                        fila[i] = rs.getObject(i + 1);
+                    }
+                    tableModel.addRow(fila);
+                }
+            } else {
+                return (TableModel) new javax.swing.table.DefaultTableModel(
+                        new Object[][]{},
+                        new String[]{}
+                );
             }
 
         } catch (SQLException e) {
@@ -244,7 +251,7 @@ public class GastoDAO {
             //System.out.println(ventaTipo.getVenta().getIdVenta());
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("UPDATE `papeleria`.`gastos` SET `fecha_gasto` = ? , `cantidad_gasto` = ? , `id_tipo` = ? , `id_proveedor` = ? WHERE (`id_gasto` = ? ) and (`fecha_gasto` = ? );");
+            stmt = conn.prepareStatement("UPDATE `gastos` SET `fecha_gasto` = ? , `cantidad_gasto` = ? , `id_tipo` = ? , `id_proveedor` = ? WHERE (`id_gasto` = ? ) and (`fecha_gasto` = ? );");
             stmt.setTimestamp(1, gasto.getFecha());
             stmt.setDouble(2, gasto.getCantidad());
             stmt.setInt(3, gasto.getIdTipo());
@@ -324,7 +331,7 @@ public class GastoDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("INSERT INTO `papeleria`.`gastos` (`id_gasto`, `cantidad_gasto`, `id_tipo`, `id_proveedor`, `fecha_gasto`) VALUES (?, ?, ?, ?, ?);");
+            stmt = conn.prepareStatement("INSERT INTO `gastos` (`id_gasto`, `cantidad_gasto`, `id_tipo`, `id_proveedor`, `fecha_gasto`) VALUES (?, ?, ?, ?, ?);");
             stmt.setInt(1, gasto.getIdGasto());
             stmt.setDouble(2, gasto.getCantidad());
             stmt.setInt(3, gasto.getIdTipo());
@@ -353,7 +360,7 @@ public class GastoDAO {
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
-            stmt = conn.prepareStatement("DELETE FROM `papeleria`.`gastos` WHERE id_gasto = ? && fecha_gasto = ?;");
+            stmt = conn.prepareStatement("DELETE FROM `gastos` WHERE id_gasto = ? && fecha_gasto = ?;");
             //System.out.println("ID: " +  gasto.getIdGasto() + " FECHA: " + gasto.getFecha());
             stmt.setInt(1, gasto.getIdGasto());
             stmt.setTimestamp(2, gasto.getFecha());

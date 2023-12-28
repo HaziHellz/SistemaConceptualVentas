@@ -7,6 +7,7 @@ package papeleria.view;
 import controller.FRAMEApartarController;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -26,17 +27,21 @@ public class Apartar extends javax.swing.JFrame {
      */
     private static Cliente cliente;
     private static Apartado apartado;
-    private static int index [];
+    private static int index[];
     private static List<JTable> tablas;
     private static Apartar gui;
-    
-    public Apartar(Cliente cliente, Apartado apartado, int index [], List<JTable> tablas) {
+    private static boolean abonar;
+    private static List<JButton> botones;
+
+    public Apartar(Cliente cliente, Apartado apartado, int[] index, List<JTable> tablas, boolean abonar, List<JButton> botones) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.cliente = cliente;
         this.apartado = apartado;
         this.index = index;
         this.tablas = tablas;
+        this.abonar = abonar;
+        this.botones = botones;
         cargarControladorYEventos();
     }
 
@@ -47,35 +52,44 @@ public class Apartar extends javax.swing.JFrame {
         textFields[2] = txtTelefono;
         textFields[3] = txtTotal;
         textFields[4] = txtAbono;
-        
-        JLabel [] labels = new JLabel[4];
+
+        JLabel[] labels = new JLabel[4];
         labels[0] = lblAbono;
         labels[1] = lblAPagar;
         labels[2] = lblPagado;
         labels[3] = lblFechaMaxima;
-        
+
         List<JPanel> modificadores = new ArrayList();
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuCerrar);
         modificadores.add(toGrab);
-        
-        FRAMEApartarController controller = new FRAMEApartarController(cliente, apartado, textFields, labels, modificadores, this, txtaDescripcion, cbxConcepto);
-        
+
+        JButton[] buttons = new JButton[4];
+        buttons[0] = btnAbonar;
+        buttons[1] = btnApartar;
+        try {
+            buttons[2] = botones.get(0);
+            buttons[3] = botones.get(1);
+        } catch (java.lang.NullPointerException ex){
+            //ex.printStackTrace();
+        }
+
+        FRAMEApartarController controller = new FRAMEApartarController(cliente, apartado, textFields, labels, modificadores, this, txtaDescripcion, cbxConcepto, abonar, buttons, tablas, index);
+
+        btnAbonar.addActionListener(controller);
+        btnApartar.addActionListener(controller);
         toGrab.addMouseListener(controller);
         toGrab.addMouseMotionListener(controller);
         btnMenuCerrar.addMouseListener(controller);
         btnMenuMinimizar.addMouseListener(controller);
-        
-        
+
     }
-    
-    public static Apartar getInstance(Cliente cliente, Apartado apartado, int index [], List<JTable> tablas){
-        gui = new Apartar(cliente, apartado, index, tablas);
+
+    public static Apartar getInstance(Cliente cliente, Apartado apartado, int index[], List<JTable> tablas, boolean abonar) {
+        gui = new Apartar(cliente, apartado, index, tablas, abonar, botones);
         return gui;
     }
-    
-    
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -142,10 +156,14 @@ public class Apartar extends javax.swing.JFrame {
         txtaDescripcion.setRows(5);
         jScrollPane2.setViewportView(txtaDescripcion);
 
+        btnApartar.setBackground(new java.awt.Color(240, 240, 240));
+        btnApartar.setForeground(new java.awt.Color(0, 0, 0));
         btnApartar.setText("Apartar");
 
         lblFechaMaxima.setText("Fecha máxima:");
 
+        btnAbonar.setBackground(new java.awt.Color(240, 240, 240));
+        btnAbonar.setForeground(new java.awt.Color(0, 0, 0));
         btnAbonar.setText("Abonar");
 
         jLabel6.setText("Apellido/s:");

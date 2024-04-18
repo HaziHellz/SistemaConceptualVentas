@@ -62,6 +62,9 @@ public class TABGastoController extends MouseAdapter implements ActionListener, 
         buttons.add(((JButton) componentes.get(2)));
         tblSpend = (JTable) componentes.get(3);
         lblSpend = ((JLabel) componentes.get(4));
+        
+        
+        
     }
 
     @Override

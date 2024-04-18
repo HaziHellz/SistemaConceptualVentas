@@ -5,6 +5,7 @@
 package papeleria.model;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -314,6 +315,42 @@ public class VentaDAO {
             while (rs.next()) {
                 // firstSale = (Timestamp) rs.getObject(1);
                 result = (Integer) rs.getObject(1) + 1;
+                //System.out.println("TOTAL MES: " + totalMes);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return result;
+        }
+
+    }
+    
+    public static int getNumeroVentas(Date fecha, String status, String tipo) {
+        String query = "";
+        int result = 1;
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            
+            query = "select get_numero_ventas('" + fecha.toString()  + "', " + status.equals("Registradas") + ", '" + tipo +"');";
+            System.out.println(query);
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                // firstSale = (Timestamp) rs.getObject(1);
+                result = (Integer) rs.getObject(1);
                 //System.out.println("TOTAL MES: " + totalMes);
             }
 

@@ -106,7 +106,8 @@ public class ApartadoDAO {
     public static boolean insertarApartadoYCliente(Cliente cliente, Apartado apartado, double abono) {
         Connection conn = null;
         Statement stmt = null;
-
+        boolean registrado = false;
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
@@ -119,11 +120,14 @@ public class ApartadoDAO {
             stmt.execute(insertApartado);
 
             conn.commit();
+            registrado = true;
 
         } catch(SQLIntegrityConstraintViolationException ex){
             if (ex.getMessage().equals("Duplicate entry '" + cliente.getTelefono() + "' for key 'cliente.PRIMARY'")) {
                 JOptionPane.showMessageDialog(null, "El telefono ya se ha registrado antes", "Error", JOptionPane.ERROR_MESSAGE);
+               
             }
+            ex.printStackTrace(System.err);
         }catch (SQLException e) {
 
             e.printStackTrace(System.out);
@@ -131,7 +135,7 @@ public class ApartadoDAO {
             try {
                 close(stmt);
                 close(conn);
-                return true;
+                return registrado;
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
             }
@@ -143,7 +147,8 @@ public class ApartadoDAO {
     public static boolean insertarApartado(Cliente cliente, Apartado apartado, double abono) {
         Connection conn = null;
         Statement stmt = null;
-
+        boolean registrado = false;
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
@@ -154,15 +159,18 @@ public class ApartadoDAO {
             stmt.execute(insertApartado);
 
             conn.commit();
-
-        } catch (SQLException e) {
+            registrado = true;
+        } catch (SQLIntegrityConstraintViolationException e){
+            JOptionPane.showMessageDialog(null, "Solo se puede apartar un objeto por cliente al dia, modifique el apartado existente", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }catch (SQLException e) {
 
             e.printStackTrace(System.out);
         } finally {
             try {
                 close(stmt);
                 close(conn);
-                return true;
+                return registrado;
             } catch (SQLException ex) {
                 ex.printStackTrace(System.out);
             }

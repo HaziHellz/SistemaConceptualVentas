@@ -16,6 +16,8 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -75,6 +77,42 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
         } catch (NullPointerException ex) {
 
         }
+
+        new Thread() {
+            @Override
+            public void run() {
+
+                Date date;
+                int registrosEnTabla;
+                int registrosEnBD;
+
+                while (true) {
+
+                    date = new Date((Integer.parseInt(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString()) - 1900), (Integer.parseInt(combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()) - 1), 1);
+                    registrosEnBD = VentaDAO.getNumeroVentas(date, combos.get(CBX_DELETED).getSelectedItem().toString(), combos.get(CBX_TYPES_SOLDS).getSelectedItem().toString());
+                    registrosEnTabla = tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount();
+
+                    System.out.println(date.toString() + "  " + combos.get(CBX_DELETED).getSelectedItem().toString());
+                    
+                    
+                    if (registrosEnTabla != registrosEnBD) {
+                        System.out.println(registrosEnBD + "  |  " + registrosEnTabla);
+                        actualizarVentaDiaria();
+                        resetTableHistorial();
+                    } else {
+                        System.out.println("VENTAS IGUALES ");
+                        System.out.println(registrosEnBD + "  |  " + registrosEnTabla);
+                    }
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(TABHistorialController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            }
+
+        }.start();
 
     }
 
@@ -308,7 +346,7 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
                             VentaTipoDAO.insert(datosAgrupados.get(i));
                         }
                     }
-                }else{
+                } else {
                     JOptionPane.showMessageDialog(null, "El registro que intenta editar es un abono, \ndirijace a la pestaña de 'Apartados' si desea modificar el concepto", "Error", JOptionPane.WARNING_MESSAGE);
                 }
 
@@ -455,4 +493,5 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
         defecto = true;
         resetTableHistorial();
     }
+
 }

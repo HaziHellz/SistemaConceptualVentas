@@ -295,6 +295,49 @@ public class VentaDAO {
             return result;
         }
     }
+    
+    public static double ventaMensual(String año, String mes, String tipo, String Registradas) {
+        String query = "";
+        String result = "";
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        double totalMes = 0;
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            if (tipo.equals("Todo")) {
+                query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where vt.fecha_venta like '" + año + "-" + mes + "-%' && vt.existe = true && v.id_venta = vt.id_venta && vt.fecha_venta = v.fecha_venta && v.existe_venta = " + Registradas.equals("Registradas") + ";";
+                //System.out.println("TODO: " + query);
+            } else {
+                query = "select sum(cantidad_tipo) from venta_tipo vt, venta v where id_tipo = (select id_tipo from tipo where nombre_tipo = '" + tipo + "') && vt.fecha_venta like '" + año + "-" + mes + "-%' && vt.existe = true && v.id_venta = vt.id_venta && vt.fecha_venta = v.fecha_venta && v.existe_venta = " + Registradas.equals("Registradas") + ";";
+                //System.out.println("TIPO: " + query);
+            }
+
+            rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                // firstSale = (Timestamp) rs.getObject(1);
+                totalMes = (double) rs.getObject(1);
+                //System.out.println("TOTAL MES: " + totalMes);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return totalMes;
+        }
+    }
 
     public static int idSiguienteVentaDelMes() {
         String query = "";
@@ -344,7 +387,8 @@ public class VentaDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             
-            query = "select get_numero_ventas('" + fecha.toString()  + "', " + status.equals("Registradas") + ", '" + tipo +"');";
+           query = "select get_numero_ventas('" + fecha.toString()  + "', " + status.equals("Registradas") + ", '" + TableBaseDAO.getID("tipo", tipo) +"');";
+            
             System.out.println(query);
             rs = stmt.executeQuery(query);
 

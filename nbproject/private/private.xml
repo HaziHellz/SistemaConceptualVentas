@@ -5,12 +5,12 @@
         <group>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/Conexion.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/controller/TABHistorialController.java</file>
+            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/TableBaseDAO.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/Apartado.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/controller/TABVentasController.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/VentaDAO.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/view/GUI.java</file>
             <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/VentaTipo.java</file>
-            <file>file:/C:/Users/heber/OneDrive/Documentos/GitHub/Papeleria/src/papeleria/model/Base.java</file>
         </group>
     </open-files>
 </project-private>

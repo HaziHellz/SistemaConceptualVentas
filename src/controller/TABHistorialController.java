@@ -45,7 +45,7 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
     private final int CBX_YEAR_FILTER = 0;
     private final int CBX_MONTH_FILTER = 1;
     private final int CBX_DELETED = 2;
-    private final int CBX_TYPE_SPENDS_FILTER_SOLDS = 3;
+    private final int CBX_TYPE_FILTER_SOLDS = 3;
     private final int CBX_TYPES_SOLDS = 4;
 
     private final int BTN_DELETE_ITEM = 0;
@@ -85,24 +85,29 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
                 Date date;
                 int registrosEnTabla;
                 int registrosEnBD;
+                double sumaEnBD;
+                double sumaEnTabla;
 
                 while (true) {
 
                     date = new Date((Integer.parseInt(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString()) - 1900), (Integer.parseInt(combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()) - 1), 1);
-                    registrosEnBD = VentaDAO.getNumeroVentas(date, combos.get(CBX_DELETED).getSelectedItem().toString(), combos.get(CBX_TYPES_SOLDS).getSelectedItem().toString());
+                    registrosEnBD = VentaDAO.getNumeroVentas(date, combos.get(CBX_DELETED).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString());
                     registrosEnTabla = tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount();
-
+                    
                     System.out.println(date.toString() + "  " + combos.get(CBX_DELETED).getSelectedItem().toString());
                     
+                    sumaEnBD = VentaDAO.ventaMensual(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString(), combos.get(CBX_DELETED).getSelectedItem().toString());
+                    sumaEnTabla = getConteoDeIngresosEnTabla();
                     
-                    if (registrosEnTabla != registrosEnBD) {
-                        System.out.println(registrosEnBD + "  |  " + registrosEnTabla);
+                    if (sumaEnTabla != sumaEnBD) {
+                        System.out.println(sumaEnBD  + "  |  " + sumaEnTabla);
                         actualizarVentaDiaria();
                         resetTableHistorial();
                     } else {
                         System.out.println("VENTAS IGUALES ");
-                        System.out.println(registrosEnBD + "  |  " + registrosEnTabla);
+                        System.out.println(sumaEnBD + "  |  " + sumaEnTabla);
                     }
+
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
@@ -133,7 +138,7 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
 
     public void actualizarVentaDiaria() {
         try {
-            ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
+            ventaDiaria.setText(VentaDAO.ventaDiaria(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString()));
             ventaDiaria.setVisible(true);
         } catch (NullPointerException ex) {
 
@@ -178,7 +183,7 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
     }
 
     public void resetTableHistorial() {
-        tablesHistorial.get(TBL_HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), registrada(), combos.get(CBX_TYPE_SPENDS_FILTER_SOLDS).getSelectedItem().toString()));
+        tablesHistorial.get(TBL_HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), registrada(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString()));
         tablesHistorial.get(TBL_VENTA).setModel(new TableModel());
         buttons.get(BTN_DELETE_ITEM).setEnabled(false);
         buttons.get(BTN_ACCEPT).setEnabled(false);
@@ -494,4 +499,13 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
         resetTableHistorial();
     }
 
+    private double getConteoDeIngresosEnTabla(){
+        double sumaEnTabla = 0;
+        for (int i = 0; i < tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount(); i++) {
+            sumaEnTabla += Double.parseDouble(tablesHistorial.get(TBL_HISTORIAL_VENTAS).getValueAt(i, 2).toString());
+        }
+        
+        return sumaEnTabla;
+    }
+    
 }

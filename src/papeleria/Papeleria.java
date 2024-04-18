@@ -12,7 +12,7 @@ import papeleria.view.GUI;
  */
 public class Papeleria {
     
-    private static String version = "0.9.11";
+    private static String version = "0.9.12";
     
     /**
      * @param args the command line arguments

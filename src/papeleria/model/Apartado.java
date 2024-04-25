@@ -5,6 +5,7 @@
 package papeleria.model;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
 public class Apartado {
 
     private Cliente cliente;
-    private Date fechaApartado;
+    private LocalDateTime fechaApartado;
      private Date fechaMaxima;
     private String descripcion;
     private int idTipo;
@@ -60,11 +61,11 @@ public class Apartado {
         this.cliente = cliente;
     }
 
-    public Date getFechaApartado() {
+    public LocalDateTime getFechaApartado() {
         return fechaApartado;
     }
 
-    public void setFechaApartado(Date fechaApartado) {
+    public void setFechaApartado(LocalDateTime fechaApartado) {
         this.fechaApartado = fechaApartado;
     }
 
@@ -125,7 +126,7 @@ public class Apartado {
     public static class ApartadoBuilder {
 
         private Cliente cliente;
-        private Date fechaApartado;
+        private LocalDateTime fechaApartado;
         private String descripcion;
         private int idTipo;
         private double totalPagar;
@@ -137,7 +138,7 @@ public class Apartado {
             return this;
         }
         
-        public ApartadoBuilder setFechaApartado (Date fechaApartado){
+        public ApartadoBuilder setFechaApartado (LocalDateTime fechaApartado){
             this.fechaApartado = fechaApartado;
             return this;
         }

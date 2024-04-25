@@ -55,7 +55,7 @@ public class GUI extends javax.swing.JFrame {
         botones.add(btnApartar);
         botones.add(btnAbonar);
         
-        TABApartadosController controller = new TABApartadosController(tablas, botones, txtSearchCostumer);
+        TABApartadosController controller = new TABApartadosController(tablas, botones, txtSearchCostumer, lblInformacion);
         
         
         tblClientes.addMouseListener(controller);
@@ -218,6 +218,7 @@ public class GUI extends javax.swing.JFrame {
         btnAbonar = new javax.swing.JButton();
         jScrollPane7 = new javax.swing.JScrollPane();
         tblApartadoAportaciones = new javax.swing.JTable();
+        lblInformacion = new javax.swing.JLabel();
         jMenuBarOpciones = new javax.swing.JMenuBar();
         menu = new javax.swing.JMenu();
         btnMenuConceptos = new javax.swing.JMenuItem();
@@ -684,6 +685,8 @@ public class GUI extends javax.swing.JFrame {
         tblApartadoAportaciones.getTableHeader().setReorderingAllowed(false);
         jScrollPane7.setViewportView(tblApartadoAportaciones);
 
+        lblInformacion.setText("Cliente:");
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -695,10 +698,12 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(jLabel3)
                         .addGap(6, 6, 6)
                         .addComponent(txtSearchCostumer, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAbonar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnApartar, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblInformacion)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnApartar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAbonar))
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -718,7 +723,8 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtSearchCostumer, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnApartar)
-                        .addComponent(btnAbonar)))
+                        .addComponent(btnAbonar)
+                        .addComponent(lblInformacion)))
                 .addGap(6, 6, 6)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -928,6 +934,7 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblInformacion;
     private javax.swing.JLabel lblSpends;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblVentaDiaria;

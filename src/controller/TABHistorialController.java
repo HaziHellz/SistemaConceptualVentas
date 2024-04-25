@@ -90,30 +90,34 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
 
                 while (true) {
 
-                    date = new Date((Integer.parseInt(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString()) - 1900), (Integer.parseInt(combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()) - 1), 1);
-                    registrosEnBD = VentaDAO.getNumeroVentas(date, combos.get(CBX_DELETED).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString());
-                    registrosEnTabla = tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount();
-                    
-                    System.out.println(date.toString() + "  " + combos.get(CBX_DELETED).getSelectedItem().toString());
-                    
-                    sumaEnBD = VentaDAO.ventaMensual(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString(), combos.get(CBX_DELETED).getSelectedItem().toString());
-                    sumaEnTabla = getConteoDeIngresosEnTabla();
-                    
-                    if (sumaEnTabla != sumaEnBD) {
-                        System.out.println(sumaEnBD  + "  |  " + sumaEnTabla);
-                        actualizarVentaDiaria();
-                        resetTableHistorial();
-                    } else {
-                        System.out.println("VENTAS IGUALES ");
-                        System.out.println(sumaEnBD + "  |  " + sumaEnTabla);
-                    }
+                    try {
+                        date = new Date((Integer.parseInt(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString()) - 1900), (Integer.parseInt(combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()) - 1), 1);
+/*
+                        registrosEnBD = VentaDAO.getNumeroVentas(date, combos.get(CBX_DELETED).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString());
+                        registrosEnTabla = tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount();
+*/
+                        //System.out.println(date.toString() + "  " + combos.get(CBX_DELETED).getSelectedItem().toString());
 
+                        sumaEnBD = VentaDAO.ventaMensual(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString(), combos.get(CBX_DELETED).getSelectedItem().toString());
+                        sumaEnTabla = getConteoDeIngresosEnTabla();
+
+                        if (sumaEnTabla != sumaEnBD) {
+                            //System.out.println(sumaEnBD + "  |  " + sumaEnTabla);
+                            actualizarVentaDiaria();
+                            resetTableHistorial();
+                        } else {
+                            //System.out.println("VENTAS IGUALES ");
+                            //System.out.println(sumaEnBD + "  |  " + sumaEnTabla);
+                        }
+
+                    } catch (java.lang.NullPointerException ex) {
+                        System.out.println("DATE NULO");
+                    }
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(TABHistorialController.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
                 }
             }
 
@@ -499,13 +503,13 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
         resetTableHistorial();
     }
 
-    private double getConteoDeIngresosEnTabla(){
+    private double getConteoDeIngresosEnTabla() {
         double sumaEnTabla = 0;
         for (int i = 0; i < tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount(); i++) {
             sumaEnTabla += Double.parseDouble(tablesHistorial.get(TBL_HISTORIAL_VENTAS).getValueAt(i, 2).toString());
         }
-        
+
         return sumaEnTabla;
     }
-    
+
 }

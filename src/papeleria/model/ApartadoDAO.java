@@ -11,6 +11,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import javax.swing.JOptionPane;
 import static papeleria.model.Conexion.close;
 
@@ -62,7 +63,7 @@ public class ApartadoDAO {
 
     }
 
-    public static Apartado getDatos(Cliente cliente, Date fecha_apartado) {
+    public static Apartado getDatos(Cliente cliente, LocalDateTime fecha_apartado) {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -71,8 +72,10 @@ public class ApartadoDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             String query = "";
-
-            query = "call spg_apartado(" + cliente.getTelefono() + ", '" + (fecha_apartado.getYear() + 1900) + "-" + (fecha_apartado.getMonth() + 1) + "-" + (fecha_apartado.getDate()) + "')";
+            
+           
+            System.out.println("" + fecha_apartado.toString());
+            query = "call spg_apartado(" + cliente.getTelefono() + ", '" + fecha_apartado.toString() +"')";
 
             rs = stmt.executeQuery(query);
             if (rs.next()) {
@@ -80,7 +83,7 @@ public class ApartadoDAO {
                 //System.out.println("AA");
                 apartado = new Apartado.ApartadoBuilder()
                         .setCliente(cliente)
-                        .setFechaApartado((Date) rs.getObject(2))
+                        .setFechaApartado((LocalDateTime) rs.getObject(2))
                         .setDescripcion((String) rs.getObject(3))
                         .setIdTipo((int) rs.getObject(4))
                         .setTotalPagar((double) rs.getObject(5))
@@ -188,7 +191,7 @@ public class ApartadoDAO {
             stmt = conn.createStatement();
             conn.setAutoCommit(false);
 
-            String spi_aportaciones = "call spi_aportaciones('" + cliente.getTelefono() + "', '" + apartado.getFechaApartado() + "', " + abono + ")";
+            String spi_aportaciones = "call spi_aportaciones('" + cliente.getTelefono() + "', '" + apartado.getFechaApartado().toString() + "', " + abono + ")";
 
             stmt.execute(spi_aportaciones);
 

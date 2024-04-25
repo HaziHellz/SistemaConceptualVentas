@@ -10,9 +10,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -44,13 +45,15 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
     private Apartado apartado = new Apartado();
     private List<JTable> tablas;
     private List<JButton> botones;
+    private JLabel lblInformacion;
 
     private Apartar apartar = new Apartar(cliente, apartado, index, tablas, false, botones);
 
-    public TABApartadosController(List<JTable> tablas, List<JButton> botones, JTextField txtSearchCostumer) {
+    public TABApartadosController(List<JTable> tablas, List<JButton> botones, JTextField txtSearchCostumer, JLabel lblInformacion) {
         this.tablas = tablas;
         this.botones = botones;
         this.txtSearchCostumer = txtSearchCostumer;
+        this.lblInformacion = lblInformacion;
         index[CLIENTES] = -1;
         index[APARTADOS] = -1;
         index[APORTACIONES] = -1;
@@ -86,7 +89,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
             //SE OBTIENE LA DIRECCION DE MEMORIA DE ESA TABLA Y SE GUARDA EN SOURCE PARA PODER MANIPULAR LA TABLA
             JTable source = (JTable) e.getSource();
 
-            //SI VERIFICA QUE LA TABLA DE CLIENTES HAYA ACTIVADO EL EVENTO
+            //SE VERIFICA QUE LA TABLA DE CLIENTES HAYA ACTIVADO EL EVENTO
             if (source.equals(tablas.get(CLIENTES))) {
                 //SE COMPARA EL INDEX SELECCIONADO DE LA TABLA PARA TENER LA REFERENCIA
                 if (index[CLIENTES] != tablas.get(CLIENTES).getSelectedRow()) {
@@ -95,7 +98,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
 
                     //UNA VEZ ACTUALIZADO EL INDEX, SE ACTUALIZA EL CLIENTE SELECCIONADO
                     cliente = ClienteDAO.getDatos((String) (tablas.get(CLIENTES)).getValueAt(index[CLIENTES], 0));
-
+                    lblInformacion.setText("Cliente: " + cliente.getNombre() + " " + cliente.getApellido());
                     //CARGA LA TABLA DE APARTADOS CON LOS APARTADOS QUE HA HECHO EL CLIENTE
                     //tablas.get(APARTADOS).setModel(ApartadoDAO.tableModel(cliente));
                     resetApartado();
@@ -113,8 +116,8 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
                     index[APARTADOS] = tablas.get(APARTADOS).getSelectedRow();
 
                     //UNA VEZ ACTUALIZADO EL INDEX, SE ACTUALIZA EL APARTADO SELECCIONADO
-                    apartado = ApartadoDAO.getDatos(cliente, (Date) (tablas.get(APARTADOS)).getValueAt(index[APARTADOS], 0));
-                    botones.get(APARTAR).setText("Editar");
+                    apartado = ApartadoDAO.getDatos(cliente, (LocalDateTime) (tablas.get(APARTADOS)).getValueAt(index[APARTADOS], 0));
+                    botones.get(APARTAR).setText("Editar Apartado");
                     botones.get(ABONAR).setEnabled(true);
                     //CARGA LA TABLA DE APARTADOS CON LOS APARTADOS QUE HA HECHO EL CLIENTE
                     tablas.get(APORTACIONES).setModel(AbonoDAO.tableModel(cliente, apartado));
@@ -123,6 +126,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
                 }
                 //SI LA TABLA DE APARTADOS NO ACTIVO EL EVENTO ENTONCES SE VERIFICA SI ES LA TABLA DE APORTACIONES:
             } else if (source.equals(tablas.get(APORTACIONES))) {
+                botones.get(APARTAR).setText("Editar Abono");
 
                 if (index[APORTACIONES] != tablas.get(APORTACIONES).getSelectedRow()) {
                     //SI EL INDEX ES DISTINTO AL SELECCIONADO, ENTONCES SE ACTUALIZA EL INDEX
@@ -147,6 +151,8 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
         System.out.println(index + "\n");
         cliente = new Cliente();
         apartado = new Apartado();
+        
+        lblInformacion.setText("Cliente: ");
 
         botones.get(ABONAR).setEnabled(false);
         botones.get(APARTAR).setText("Apartar");

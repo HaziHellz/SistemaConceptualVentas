@@ -973,10 +973,12 @@
                                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                                   <Component id="txtSearchCostumer" min="-2" pref="270" max="-2" attributes="0"/>
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="btnAbonar" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Component id="btnApartar" min="-2" pref="85" max="-2" attributes="0"/>
+                                  <Component id="lblInformacion" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btnApartar" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnAbonar" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jScrollPane5" min="-2" pref="320" max="-2" attributes="0"/>
@@ -1004,6 +1006,7 @@
                                   <Component id="txtSearchCostumer" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                                   <Component id="btnApartar" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="btnAbonar" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lblInformacion" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
@@ -1138,6 +1141,11 @@
                     </Component>
                   </SubComponents>
                 </Container>
+                <Component class="javax.swing.JLabel" name="lblInformacion">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" value="Cliente:"/>
+                  </Properties>
+                </Component>
               </SubComponents>
             </Container>
           </SubComponents>

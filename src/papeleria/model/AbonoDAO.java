@@ -31,8 +31,6 @@ public class AbonoDAO {
             stmt = conn.createStatement();
             String query = "";
             
-            System.out.println(apartado.getFechaApartado());
-            
             query = "call sps_aportaciones_apartado(" + cliente.getTelefono() + ", '" + apartado.getFechaApartado().toString() + "')";
 
             rs = stmt.executeQuery(query);

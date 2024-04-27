@@ -78,8 +78,8 @@ public class OpcionesController implements WindowListener, MouseListener, MouseM
                 baseTable.dispose();
             }
             if (!export.isVisible()) {
-                //export.setVisible(true);
-                JOptionPane.showMessageDialog(gui, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
+                export.setVisible(true);
+                //JOptionPane.showMessageDialog(gui, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
             }
 
         } else if(e.getSource().equals(componentes.get(CLIENTES))){

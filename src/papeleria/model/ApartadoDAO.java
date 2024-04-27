@@ -74,7 +74,7 @@ public class ApartadoDAO {
             String query = "";
             
            
-            System.out.println("" + fecha_apartado.toString());
+            
             query = "call spg_apartado(" + cliente.getTelefono() + ", '" + fecha_apartado.toString() +"')";
 
             rs = stmt.executeQuery(query);

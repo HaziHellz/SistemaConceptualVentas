@@ -38,6 +38,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
 
     private final int APARTAR = 0;
     private final int ABONAR = 1;
+    private final int EDITAR_ABONO = 2;
 
     private JTextField txtSearchCostumer;
     private int index[] = new int[3];
@@ -47,7 +48,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
     private List<JButton> botones;
     private JLabel lblInformacion;
 
-    private Apartar apartar = new Apartar(cliente, apartado, index, tablas, false, botones);
+    private Apartar apartar = new Apartar(cliente, apartado, index, tablas, false, botones, false);
 
     public TABApartadosController(List<JTable> tablas, List<JButton> botones, JTextField txtSearchCostumer, JLabel lblInformacion) {
         this.tablas = tablas;
@@ -65,17 +66,27 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
             JButton boton = (JButton) e.getSource();
 
             if (boton.equals(botones.get(APARTAR))) {
-                if (!boton.getText().equals("Editar")) {
+                if (boton.getText().equals("Apartar")) {
                     apartar.dispose();
-                    apartar = new Apartar(cliente, apartado, index, tablas, false, botones);
+                    apartar = new Apartar(cliente, apartado, index, tablas, false, botones, false);
                     apartar.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
-                }
+                } else if (boton.getText().equals("Editar Apartado")){
+                    //ALGORITMO PARA EDITAR APARTADO
+                    /*apartar.dispose();
+                    apartar = new Apartar(cliente, apartado, index, tablas, false, botones, true);
+                    apartar.setVisible(true);
+                    */
+                   JOptionPane.showMessageDialog(null, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
+                } 
             } else if (boton.equals(botones.get(ABONAR))) {
                 apartar.dispose();
-                apartar = new Apartar(cliente, apartado, index, tablas, true, botones);
+                apartar = new Apartar(cliente, apartado, index, tablas, true, botones, false);
                 apartar.setVisible(true);
+            }else if (boton.equals(botones.get(EDITAR_ABONO))) {
+                apartar.dispose();
+                JOptionPane.showMessageDialog(null, "Esta opción está en desarrollo", "No disponible", JOptionPane.INFORMATION_MESSAGE);
+                //apartar = new Apartar(cliente, apartado, index, tablas, true, botones, true);
+                //apartar.setVisible(true);
             }
 
         }
@@ -110,7 +121,8 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
 
                 //SI LA TABLA DE CLIENTES NO ACTIVO EL EVENTO ENTONCES SE VERIFICA SI ES LA TABLA DE APARTADOS:
             } else if (source.equals(tablas.get(APARTADOS))) {
-                //SE COMPARA EL INDEX SELECCIONADO DE LA TABLA PARA TENER LA REFERENCIA
+                
+                //SE COMPARA EL INDEX ANTERIOR CON EL SELECCIONADO DE LA TABLA PARA TENER LA REFERENCIA
                 if (index[APARTADOS] != tablas.get(APARTADOS).getSelectedRow()) {
                     //SI EL INDEX ES DISTINTO AL SELECCIONADO, ENTONCES SE ACTUALIZA EL INDEX
                     index[APARTADOS] = tablas.get(APARTADOS).getSelectedRow();
@@ -122,19 +134,19 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
                     //CARGA LA TABLA DE APARTADOS CON LOS APARTADOS QUE HA HECHO EL CLIENTE
                     tablas.get(APORTACIONES).setModel(AbonoDAO.tableModel(cliente, apartado));
                 } else {
+                //SI EL INDEX ANTERIOR ES IGUAL AL SELECCIONADO, SE RESETEA LA TABLA DE APARTADO
                     resetApartado();
                 }
                 //SI LA TABLA DE APARTADOS NO ACTIVO EL EVENTO ENTONCES SE VERIFICA SI ES LA TABLA DE APORTACIONES:
             } else if (source.equals(tablas.get(APORTACIONES))) {
-                botones.get(APARTAR).setText("Editar Abono");
-
                 if (index[APORTACIONES] != tablas.get(APORTACIONES).getSelectedRow()) {
                     //SI EL INDEX ES DISTINTO AL SELECCIONADO, ENTONCES SE ACTUALIZA EL INDEX
                     index[APORTACIONES] = tablas.get(APORTACIONES).getSelectedRow();
+                    botones.get(EDITAR_ABONO).setEnabled(true);
+                    
 
-                    //UNA VEZ ACTUALIZADO EL INDEX, SE ACTUALIZA EL APARTADO SELECCIONADO
-//apartado = ApartadoDAO.getDatos(cliente, (Date) (tablas.get(APARTADOS)).getValueAt(indexApartado, 0));
-                    //CREAR UN BOTON PARA EDITAR APORTACION
+
+                    
                 } else {
                     System.out.println(index[APARTADOS]);
                     resetAportacion();
@@ -186,6 +198,7 @@ public class TABApartadosController extends MouseAdapter implements ActionListen
     private void resetAportacion() {
         index[APORTACIONES] = -1;
         tablas.get(APORTACIONES).setModel(AbonoDAO.tableModel(cliente, apartado));
+        botones.get(EDITAR_ABONO).setEnabled(false);
     }
 
     @Override

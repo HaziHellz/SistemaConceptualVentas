@@ -75,13 +75,14 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
     private final int SALIR = 1;
     private final int TOGRAB = 2;
     private boolean nuevoCliente;
-    private boolean nuevoApartado;
-    private boolean nuevoAbono;
+    //private boolean nuevoApartado;
+    //private boolean nuevoAbono;
     private boolean abonar;
+    private boolean editar;
     private int xMouse;
     private int yMouse;
 
-    public FRAMEApartarController(Cliente cliente, Apartado apartado, JTextField[] textFields, JLabel[] labels, List<JPanel> modificadores, JFrame gui, JTextArea txtaDescripcion, JComboBox<String> cbxConcepto, boolean abonar, JButton[] buttons, List<JTable> tablas, int[] index) {
+    public FRAMEApartarController(Cliente cliente, Apartado apartado, JTextField[] textFields, JLabel[] labels, List<JPanel> modificadores, JFrame gui, JTextArea txtaDescripcion, JComboBox<String> cbxConcepto, boolean abonar, JButton[] buttons, List<JTable> tablas, int[] index, boolean editar) {
         this.cliente = cliente;
         this.apartado = apartado;
         this.textFields = textFields;
@@ -110,7 +111,7 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
                 textFields[TXT_TELEFONO].setText(cliente.getTelefono());
 
                 if (!apartado.getCliente().getNombre().equals("vacio")) {
-                    nuevoApartado = false;
+                    //nuevoApartado = false;
                     txtaDescripcion.setText(apartado.getDescripcion());
                     cbxConcepto.setSelectedItem(TableBaseDAO.getNombreByID(String.valueOf(apartado.getIdTipo()), "tipo").getNombreBase());
                     textFields[TXT_TOTAL].setText(String.valueOf(apartado.getTotalPagar()));
@@ -122,9 +123,8 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
                     abonara();
 
                 } else {
-                    nuevoApartado = true;
+                    //nuevoApartado = true;
                     txtaDescripcion.setText("");
-                    cbxConcepto.setSelectedItem("Example");
                     buttons[BTN_ABONAR].setEnabled(false);
                 }
 
@@ -223,7 +223,7 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
     }
 
     private void editar() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
     }
 
     private void abonar() {
@@ -284,7 +284,10 @@ public class FRAMEApartarController extends MouseAdapter implements ActionListen
             txtaDescripcion.setEditable(false);
 
         } else if (!abonar) {
+            System.out.println("NO ABONARÁ");
             textFields[TXT_ABONO].setText(String.valueOf(apartado.getAbonos().get(apartado.getAbonos().size() - 1).getCantidadTipo()));
+            textFields[TXT_ABONO].setEditable(false);
+            buttons[BTN_APARTAR].setText("Editar");
             buttons[BTN_ABONAR].setEnabled(false);
         }
     }

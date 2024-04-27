@@ -21,30 +21,30 @@ public class Export extends javax.swing.JFrame {
     /**
      * Creates new form Export
      */
-    
-    
+
     public Export() {
         initComponents();
         this.setLocationRelativeTo(this);
         this.setDefaultCloseOperation(BaseTable.DISPOSE_ON_CLOSE);
-        
+
+
         List<JComboBox> combos = new ArrayList();
         combos.add(cbxConcepto);
-        combos.add(cbxYear);
-        combos.add(cbxMonth);
-        
+        combos.add(cbxInicialYear);
+        combos.add(cbxInicialMonth);
+
         List<JPanel> modificadores = new ArrayList();
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuCerrar);
         modificadores.add(toGrab);
-        
-        FRAMEExportController controller = new FRAMEExportController(combos, this ,modificadores);
-        cbxYear.addActionListener(controller);
+
+        FRAMEExportController controller = new FRAMEExportController(combos, this, modificadores);
+        cbxInicialYear.addActionListener(controller);
         toGrab.addMouseListener(controller);
         toGrab.addMouseMotionListener(controller);
         btnMenuCerrar.addMouseListener(controller);
         btnMenuMinimizar.addMouseListener(controller);
-        
+
     }
 
     /**
@@ -61,10 +61,20 @@ public class Export extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        cbxYear = new javax.swing.JComboBox<>();
+        cbxInicialYear = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        cbxMonth = new javax.swing.JComboBox<>();
+        cbxInicialMonth = new javax.swing.JComboBox<>();
         jButton2 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        cbxFinalDay = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        cbxFinalMonth = new javax.swing.JComboBox<>();
+        cbxFinalYear = new javax.swing.JComboBox<>();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        cbxInicialDay = new javax.swing.JComboBox<>();
         jMenuBarOpciones = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -79,7 +89,7 @@ public class Export extends javax.swing.JFrame {
         cbxConcepto.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbxConcepto.setForeground(new java.awt.Color(0, 0, 0));
         cbxConcepto.setModel(TableBaseDAO.comboModelTodo("Conceptos"));
-        jPanel1.add(cbxConcepto, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 100, -1, -1));
+        jPanel1.add(cbxConcepto, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 300, -1, -1));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
@@ -90,36 +100,96 @@ public class Export extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Registros con concepto:");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, -1));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 300, -1, -1));
 
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Año:");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 70, -1, -1));
+        jLabel3.setText("Fecha Final");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 180, -1, 20));
 
-        cbxYear.setBackground(new java.awt.Color(240, 240, 240));
-        cbxYear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cbxYear.setForeground(new java.awt.Color(0, 0, 0));
-        cbxYear.setModel(VentaDAO.comboModelAño());
-        jPanel1.add(cbxYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 100, -1, -1));
+        cbxInicialYear.setBackground(new java.awt.Color(240, 240, 240));
+        cbxInicialYear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxInicialYear.setForeground(new java.awt.Color(0, 0, 0));
+        cbxInicialYear.setModel(VentaDAO.comboModelAño());
+        jPanel1.add(cbxInicialYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 120, -1, -1));
 
         jLabel4.setBackground(new java.awt.Color(0, 0, 0));
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Mes:");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 70, -1, -1));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 90, -1, -1));
 
-        cbxMonth.setBackground(new java.awt.Color(240, 240, 240));
-        cbxMonth.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        cbxMonth.setForeground(new java.awt.Color(0, 0, 0));
-        cbxMonth.setModel(VentaDAO.comboModelMeses(cbxYear));
-        jPanel1.add(cbxMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 100, -1, -1));
+        cbxInicialMonth.setBackground(new java.awt.Color(240, 240, 240));
+        cbxInicialMonth.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxInicialMonth.setForeground(new java.awt.Color(0, 0, 0));
+        cbxInicialMonth.setModel(VentaDAO.comboModelMeses(cbxInicialYear));
+        jPanel1.add(cbxInicialMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 120, -1, -1));
 
         jButton2.setBackground(new java.awt.Color(245, 245, 245));
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
         jButton2.setText("Exportar");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 180, -1, -1));
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 300, -1, -1));
+
+        jLabel5.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel5.setText("Día:");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 90, -1, -1));
+
+        cbxFinalDay.setBackground(new java.awt.Color(240, 240, 240));
+        cbxFinalDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxFinalDay.setForeground(new java.awt.Color(0, 0, 0));
+        cbxFinalDay.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
+        jPanel1.add(cbxFinalDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 230, -1, -1));
+
+        jLabel6.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel6.setText("Día:");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 200, -1, -1));
+
+        jLabel7.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel7.setText("Mes:");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 200, -1, -1));
+
+        cbxFinalMonth.setBackground(new java.awt.Color(240, 240, 240));
+        cbxFinalMonth.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxFinalMonth.setForeground(new java.awt.Color(0, 0, 0));
+        cbxFinalMonth.setModel(VentaDAO.comboModelMeses(cbxInicialYear));
+        jPanel1.add(cbxFinalMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 230, -1, -1));
+
+        cbxFinalYear.setBackground(new java.awt.Color(240, 240, 240));
+        cbxFinalYear.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxFinalYear.setForeground(new java.awt.Color(0, 0, 0));
+        cbxFinalYear.setModel(VentaDAO.comboModelAño());
+        jPanel1.add(cbxFinalYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 230, -1, -1));
+
+        jLabel8.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel8.setText("Año:");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 200, -1, -1));
+
+        jLabel9.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel9.setText("Año:");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, -1, -1));
+
+        jLabel10.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel10.setText("Fecha Inicial");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, -1, 20));
+
+        cbxInicialDay.setBackground(new java.awt.Color(240, 240, 240));
+        cbxInicialDay.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cbxInicialDay.setForeground(new java.awt.Color(0, 0, 0));
+        cbxInicialDay.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
+        jPanel1.add(cbxInicialDay, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 120, -1, -1));
 
         toGrab = new javax.swing.JPanel();
         btnMenuMinimizar = new javax.swing.JPanel();
@@ -155,11 +225,11 @@ public class Export extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -170,13 +240,23 @@ public class Export extends javax.swing.JFrame {
     private javax.swing.JPanel btnMenuCerrar;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> cbxConcepto;
-    private javax.swing.JComboBox<String> cbxMonth;
-    private javax.swing.JComboBox<String> cbxYear;
+    private javax.swing.JComboBox<String> cbxFinalDay;
+    private javax.swing.JComboBox<String> cbxFinalMonth;
+    private javax.swing.JComboBox<String> cbxFinalYear;
+    private javax.swing.JComboBox<String> cbxInicialDay;
+    private javax.swing.JComboBox<String> cbxInicialMonth;
+    private javax.swing.JComboBox<String> cbxInicialYear;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBarOpciones;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables

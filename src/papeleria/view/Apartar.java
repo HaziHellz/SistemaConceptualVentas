@@ -32,8 +32,9 @@ public class Apartar extends javax.swing.JFrame {
     private static Apartar gui;
     private static boolean abonar;
     private static List<JButton> botones;
+    private static boolean editar;
 
-    public Apartar(Cliente cliente, Apartado apartado, int[] index, List<JTable> tablas, boolean abonar, List<JButton> botones) {
+    public Apartar(Cliente cliente, Apartado apartado, int[] index, List<JTable> tablas, boolean abonar, List<JButton> botones, boolean editar) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.cliente = cliente;
@@ -42,6 +43,7 @@ public class Apartar extends javax.swing.JFrame {
         this.tablas = tablas;
         this.abonar = abonar;
         this.botones = botones;
+        this.editar = editar;
         cargarControladorYEventos();
     }
 
@@ -70,11 +72,11 @@ public class Apartar extends javax.swing.JFrame {
         try {
             buttons[2] = botones.get(0);
             buttons[3] = botones.get(1);
-        } catch (java.lang.NullPointerException ex){
+        } catch (java.lang.NullPointerException ex) {
             //ex.printStackTrace();
         }
 
-        FRAMEApartarController controller = new FRAMEApartarController(cliente, apartado, textFields, labels, modificadores, this, txtaDescripcion, cbxConcepto, abonar, buttons, tablas, index);
+        FRAMEApartarController controller = new FRAMEApartarController(cliente, apartado, textFields, labels, modificadores, this, txtaDescripcion, cbxConcepto, abonar, buttons, tablas, index, editar);
 
         btnAbonar.addActionListener(controller);
         btnApartar.addActionListener(controller);
@@ -85,8 +87,8 @@ public class Apartar extends javax.swing.JFrame {
 
     }
 
-    public static Apartar getInstance(Cliente cliente, Apartado apartado, int index[], List<JTable> tablas, boolean abonar) {
-        gui = new Apartar(cliente, apartado, index, tablas, abonar, botones);
+    public static Apartar getInstance(Cliente cliente, Apartado apartado, int index[], List<JTable> tablas, boolean abonar, boolean editar) {
+        gui = new Apartar(cliente, apartado, index, tablas, abonar, botones, editar);
         return gui;
     }
 

@@ -497,4 +497,35 @@ public class TableBaseDAO {
         }
 
     }
+    
+    public static List<Base> getTodosTipos() {
+        List<Base> tipos = new ArrayList();
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery("select nombre_tipo, id_tipo from tipo");
+
+            while (rs.next()) {
+                tipos.add(new Base.TipoBuilder().nameBase((String) rs.getObject(1)).idBase((Integer) rs.getObject(2)).build());
+                //System.out.println(rows);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return tipos;
+        }
+
+    }
 }

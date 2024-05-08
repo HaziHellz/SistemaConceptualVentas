@@ -9,14 +9,15 @@ import controller.TABGastoController;
 import controller.TABHistorialController;
 import controller.OpcionesController;
 import controller.TABVentasController;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import papeleria.model.ClienteDAO;
 import papeleria.model.GastoDAO;
 import papeleria.model.TableBaseDAO;
@@ -28,9 +29,14 @@ import papeleria.model.VentaDAO;
  */
 public class GUI extends javax.swing.JFrame {
 
+    
+
     /**
      * Creates new form GUI
      */
+    
+    
+    
     public GUI() {
         initComponents();
         this.setLocationRelativeTo(this);
@@ -41,24 +47,23 @@ public class GUI extends javax.swing.JFrame {
         venta(historialController);
         opciones();
         gasto();
-        
+
         apartados();
     }
-    
-    private void apartados(){
+
+    private void apartados() {
         List<JTable> tablas = new ArrayList();
         tablas.add(tblClientes);
         tablas.add(tblClienteApartados);
         tablas.add(tblApartadoAportaciones);
-        
+
         List<JButton> botones = new ArrayList();
         botones.add(btnApartar);
         botones.add(btnAbonar);
         botones.add(btnEditarAbono);
-        
+
         TABApartadosController controller = new TABApartadosController(tablas, botones, txtSearchCostumer, lblInformacion);
-        
-        
+
         tblClientes.addMouseListener(controller);
         tblClienteApartados.addMouseListener(controller);
         tblApartadoAportaciones.addMouseListener(controller);
@@ -75,7 +80,7 @@ public class GUI extends javax.swing.JFrame {
         componentes.add(btnMenuProveedores);
         componentes.add(btnMenuExportar);
         componentes.add(btnMenuClientes);
-        
+
         List<JPanel> modificadores = new ArrayList();
         modificadores.add(btnMenuMinimizar);
         modificadores.add(btnMenuMaximizar);
@@ -498,13 +503,27 @@ public class GUI extends javax.swing.JFrame {
 
             },
             new String [] {
-
+                "Numero de Ingreso Mensual", "Fecha", "Total"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tblHistorialVentas.setRowHeight(30);
         tblHistorialVentas.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tblHistorialVentas.getTableHeader().setReorderingAllowed(false);
         jScrollPane3.setViewportView(tblHistorialVentas);
+        if (tblHistorialVentas.getColumnModel().getColumnCount() > 0) {
+            tblHistorialVentas.getColumnModel().getColumn(0).setResizable(false);
+            tblHistorialVentas.getColumnModel().getColumn(1).setResizable(false);
+            tblHistorialVentas.getColumnModel().getColumn(2).setResizable(false);
+            tblHistorialVentas.getColumnModel().getColumn(2).setCellRenderer(null);
+        }
 
         tblHistorialVenta.getTableHeader().setReorderingAllowed(false);
         tblHistorialVenta.setModel(new javax.swing.table.DefaultTableModel(

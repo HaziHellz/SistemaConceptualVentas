@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableCellRenderer;
 import papeleria.model.TableModel;
 import papeleria.model.VentaDAO;
 import papeleria.model.VentaTipoDAO;
@@ -71,6 +72,8 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
         this.ventaDiaria = ventaDiaria;
         this.txtPrecio = txtPrecio;
         this.buttons = buttonsHistorial;
+
+        
         try {
             actualizarVentaDiaria();
             resetTableHistorial();
@@ -92,10 +95,10 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
 
                     try {
                         date = new Date((Integer.parseInt(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString()) - 1900), (Integer.parseInt(combos.get(CBX_MONTH_FILTER).getSelectedItem().toString()) - 1), 1);
-/*
+                        /*
                         registrosEnBD = VentaDAO.getNumeroVentas(date, combos.get(CBX_DELETED).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString());
                         registrosEnTabla = tablesHistorial.get(TBL_HISTORIAL_VENTAS).getRowCount();
-*/
+                         */
                         //System.out.println(date.toString() + "  " + combos.get(CBX_DELETED).getSelectedItem().toString());
 
                         sumaEnBD = VentaDAO.ventaMensual(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString(), combos.get(CBX_DELETED).getSelectedItem().toString());
@@ -187,8 +190,15 @@ public class TABHistorialController extends MouseAdapter implements ActionListen
     }
 
     public void resetTableHistorial() {
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        
+        
         tablesHistorial.get(TBL_HISTORIAL_VENTAS).setModel(VentaDAO.tableModel(combos.get(CBX_YEAR_FILTER).getSelectedItem().toString(), combos.get(CBX_MONTH_FILTER).getSelectedItem().toString(), registrada(), combos.get(CBX_TYPE_FILTER_SOLDS).getSelectedItem().toString()));
         tablesHistorial.get(TBL_VENTA).setModel(new TableModel());
+        
+        this.tablesHistorial.get(TBL_HISTORIAL_VENTAS).getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+        
         buttons.get(BTN_DELETE_ITEM).setEnabled(false);
         buttons.get(BTN_ACCEPT).setEnabled(false);
         buttons.get(BTN_DELETE_SALE).setEnabled(false);

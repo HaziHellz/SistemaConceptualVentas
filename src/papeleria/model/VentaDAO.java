@@ -32,6 +32,7 @@ public class VentaDAO {
         ResultSet rs = null;
         ResultSetMetaData metaData;
         TableModel tableModel = new TableModel();
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
@@ -57,6 +58,8 @@ public class VentaDAO {
                 }
                 tableModel.addRow(fila);
             }
+            
+            
 
         } catch (SQLException e) {
             e.printStackTrace(System.out);

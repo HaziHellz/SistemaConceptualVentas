@@ -24,7 +24,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,11 +46,17 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.labels.PieSectionLabelGenerator;
 import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import papeleria.model.Base;
 import papeleria.model.Chart;
+import papeleria.model.Gasto;
+import papeleria.model.GastoDAO;
 import papeleria.model.TableBaseDAO;
 import papeleria.model.VentaDAO;
+import papeleria.model.VentaTipo;
+import papeleria.model.VentaTipoDAO;
 import papeleria.view.BaseTable;
 
 /**
@@ -336,10 +345,15 @@ public class FRAMEExportController extends MouseAdapter implements ActionListene
         ByteArrayOutputStream baos;
         Image pieChartImage;
         DefaultPieDataset pieDataSet = new DefaultPieDataset();
+        DefaultCategoryDataset barDataSet = new DefaultCategoryDataset();
         PiePlot plot;
         JFreeChart chart;
         Document document = new Document(PageSize.LETTER);
         Paragraph parrafo;
+        List<VentaTipo> ventaTiposDiaria;
+        List<Gasto> gastoMensualAgrupado = GastoDAO.getGastoMensualAgrupado(combos.get(CBX_INITIAL_YEAR).getSelectedItem().toString(), combos.get(CBX_INITIAL_MONTH).getSelectedItem().toString());
+        double ventaTotal = 0;
+        double gastoMensual = 0;
         String year = combos.get(CBX_INITIAL_YEAR).getSelectedItem().toString();
         String month = combos.get(CBX_INITIAL_MONTH).getSelectedItem().toString();
         String conceptoDeVentas = combos.get(CBX_CONCEPTOS).getSelectedItem().toString();
@@ -347,6 +361,7 @@ public class FRAMEExportController extends MouseAdapter implements ActionListene
                 + "-" + meses.get(combos.get(CBX_INITIAL_MONTH).getSelectedItem().toString())
                 + "-" + combos.get(CBX_INITIAL_YEAR).getSelectedItem().toString()
                 + ".pdf";
+        ventaTiposDiaria = VentaTipoDAO.getVentaTipoDiaria(year + "-" + month + "-" + 1, year + "-" + month + "-" + getDiaFinalDelMes(year, month));
 
         try {
             // CREA EL WRITER
@@ -357,15 +372,34 @@ public class FRAMEExportController extends MouseAdapter implements ActionListene
             document.addCreator("Papeleria MG");
             // SE ABRE EL DOCUMENTO PARA ESCRIBIR
             document.open();
-            document.add(new Paragraph("Papeleria MG", fontTitulo));
+            document.add(new Paragraph("Papeleria MG -" + "Reporte-" + combos.get(CBX_CONCEPTOS).getSelectedItem().toString()
+                    + "-" + meses.get(combos.get(CBX_INITIAL_MONTH).getSelectedItem().toString())
+                    + "-" + combos.get(CBX_INITIAL_YEAR).getSelectedItem().toString(), fontTitulo
+            ));
+
+            document.add(new Paragraph("Compras: ", fontTitulo));
+
             //SI EL CONCEPTO ES "TODO", SE AGREGAN TODOS LOS CONCEPTOS Y SU CANTIDAD
             if (conceptoDeVentas.equals("Todo")) {
                 List<Base> conceptos = TableBaseDAO.getTodosTipos();
 
+                for (Gasto gasto : gastoMensualAgrupado) {
+                    parrafo = new Paragraph(gasto.getTienda() + " | " + gasto.getConcepto() + ": $" + gasto.getCantidad(), fontTexto);
+                    parrafo.setAlignment(Element.ALIGN_RIGHT);
+                    gastoMensual += gasto.getCantidad();
+                    document.add(parrafo);
+                }
+
+                parrafo = new Paragraph("Total: $" + gastoMensual, fontTexto);
+                parrafo.setAlignment(Element.ALIGN_RIGHT);
+                document.add(parrafo);
+
+                document.add(new Paragraph("Ventas: ", fontTitulo));
+
                 for (Base concepto : conceptos) {
                     totalConcepto = VentaDAO.ventaMensual(year, month, concepto.getNombreBase(), "Registradas");
                     if (totalConcepto > 0) {
-                        parrafo = new Paragraph("Ventas de " + concepto.getNombreBase() + ": $" + totalConcepto, fontTexto);
+                        parrafo = new Paragraph("" + concepto.getNombreBase() + ": $" + totalConcepto, fontTexto);
                         parrafo.setAlignment(Element.ALIGN_RIGHT);
                         document.add(parrafo);
 
@@ -373,33 +407,124 @@ public class FRAMEExportController extends MouseAdapter implements ActionListene
                     }
 
                 }
+                ventaTotal = VentaDAO.ventaMensual(year, month, "Todo", "Registradas");
                 //AL FINAL SE CONSULTA EL TOTAL Y SE ESCRIBE
-                parrafo = new Paragraph("Total " + combos.get(CBX_CONCEPTOS).getSelectedItem().toString() + ": $" + VentaDAO.ventaMensual(year, month, "Todo", "Registradas"), fontTexto);
+                parrafo = new Paragraph("Total " + combos.get(CBX_CONCEPTOS).getSelectedItem().toString() + ": $" + ventaTotal, fontTexto);
                 parrafo.setAlignment(Element.ALIGN_RIGHT);
                 document.add(parrafo);
 
+                parrafo = new Paragraph("Margen: $" + (ventaTotal - gastoMensual), fontTitulo);
+                document.add(parrafo);
+
+                //CREA LA GRAFICA
                 chart = ChartFactory.createPieChart("", pieDataSet, true, true, false);
                 plot = (PiePlot) chart.getPlot();
                 plot.setCircular(true);
 
+                //SE ESTABLECE EL FORMATO DE LAS ETIQUETAS
                 PieSectionLabelGenerator gen = new StandardPieSectionLabelGenerator("{0}: ${1} ({2})", new DecimalFormat("0.0"), new DecimalFormat("0.00%"));
                 plot.setLabelGenerator(gen);
-                
+
+                //SE CREAN LAS ETIQUETAS
                 for (Base concepto : conceptos) {
                     plot.setExplodePercent(concepto.getNombreBase(), 0.10);
                 }
 
+                //SE CREA LA IMAGEN DE LA GRAFICA PASTEL
                 bufferedImage = chart.createBufferedImage(545, 250);
                 baos = new ByteArrayOutputStream();
                 ImageIO.write(bufferedImage, "png", baos);
                 pieChartImage = Image.getInstance(baos.toByteArray());
+
+                //SE AGREGA LA IMAGEN AL DOCUMENTO
                 document.add(pieChartImage);
+
+                //SE  INICA PROCESO PARA CREAR GRAFICA EN BARRAS
+                for (Base concepto : conceptos) {
+                    barDataSet = new DefaultCategoryDataset();
+                    for (VentaTipo vtDiaria : ventaTiposDiaria) {
+                        if (concepto.getNombreBase().equals(vtDiaria.getTipo().getNombreBase())) {
+                            barDataSet.addValue(vtDiaria.getCantidadTipo(), vtDiaria.getTipo().getNombreBase(), Date.valueOf(vtDiaria.getVenta().getFecha().toString().substring(0, 10)));
+
+                        }
+                    }
+
+                    if (barDataSet.getRowCount() > 0) {
+                        chart = ChartFactory.createBarChart(
+                                "Ventas Diarias de " + concepto.getNombreBase(),
+                                "Día",
+                                "$$",
+                                barDataSet,
+                                PlotOrientation.HORIZONTAL,
+                                false, true, false);
+
+                        //SE CREA LA IMAGEN DE LA GRAFICA EN BARRAS
+                        bufferedImage = chart.createBufferedImage(545, 500);
+                        baos = new ByteArrayOutputStream();
+                        ImageIO.write(bufferedImage, "png", baos);
+                        pieChartImage = Image.getInstance(baos.toByteArray());
+
+                        //SE AGREGA LA IMAGEN AL DOCUMENTO
+                        document.add(pieChartImage);
+
+                    }
+                }
 
             } else {
                 //SI EL CONCEPTO NO ES "TODO", SE CALCULA SÓLO EL CONCEPTO
-                parrafo = new Paragraph("Venta de " + combos.get(CBX_CONCEPTOS).getSelectedItem().toString() + ": " + VentaDAO.ventaMensual(year, month, combos.get(CBX_CONCEPTOS).getSelectedItem().toString(), "Registradas"), fontTexto);
+
+                for (Gasto gasto : gastoMensualAgrupado) {
+                    if (conceptoDeVentas.equals(gasto.getConcepto())) {
+                        parrafo = new Paragraph(gasto.getTienda() + " | " + gasto.getConcepto() + ": $" + gasto.getCantidad(), fontTexto);
+                        parrafo.setAlignment(Element.ALIGN_RIGHT);
+                        gastoMensual += gasto.getCantidad();
+                        document.add(parrafo);
+                    }
+                }
+
+                parrafo = new Paragraph("Total: $" + gastoMensual, fontTexto);
                 parrafo.setAlignment(Element.ALIGN_RIGHT);
                 document.add(parrafo);
+
+                document.add(new Paragraph("Ventas: ", fontTitulo));
+
+                ventaTotal = VentaDAO.ventaMensual(year, month, combos.get(CBX_CONCEPTOS).getSelectedItem().toString(), "Registradas");
+
+                parrafo = new Paragraph("" + combos.get(CBX_CONCEPTOS).getSelectedItem().toString() + ": " + ventaTotal, fontTexto);
+                parrafo.setAlignment(Element.ALIGN_RIGHT);
+                document.add(parrafo);
+
+                barDataSet = new DefaultCategoryDataset();
+
+                for (VentaTipo vtDiaria : ventaTiposDiaria) {
+                    if (conceptoDeVentas.equals(vtDiaria.getTipo().getNombreBase())) {
+                        barDataSet.addValue(vtDiaria.getCantidadTipo(), vtDiaria.getTipo().getNombreBase(), Date.valueOf(vtDiaria.getVenta().getFecha().toString().substring(0, 10)));
+                    }
+                }
+
+                parrafo = new Paragraph("Margen: $" + (ventaTotal - gastoMensual), fontTitulo);
+                document.add(parrafo);
+
+                if (barDataSet.getRowCount() > 0) {
+                    chart = ChartFactory.createBarChart(
+                            "Ventas Diarias de " + conceptoDeVentas,
+                            "Día",
+                            "$$",
+                            barDataSet,
+                            PlotOrientation.HORIZONTAL,
+                            false, true, false);
+
+                    //SE CREA LA IMAGEN DE LA GRAFICA EN BARRAS
+                    bufferedImage = chart.createBufferedImage(545, 500);
+                    baos = new ByteArrayOutputStream();
+                    ImageIO.write(bufferedImage, "png", baos);
+                    pieChartImage = Image.getInstance(baos.toByteArray());
+
+                    //SE AGREGA LA IMAGEN AL DOCUMENTO
+                    document.add(pieChartImage);
+
+                }
+
             }
 
         } catch (DocumentException de) {
@@ -420,4 +545,29 @@ public class FRAMEExportController extends MouseAdapter implements ActionListene
         }
     }
 
+    String getDiaFinalDelMes(String year, String month) {
+        String treintaYUno = " 01, 03, 05, 07, 08, 10, 12";
+        String treinta = " 04, 06, 09, 11";
+
+        //SI EL MES ES ALGUNO DE LOS QUE TIENE 31 DIAS, 
+        if (treintaYUno.contains(month)) {
+            return "31";
+
+            //SI EL MES TIENE 30 DIAS
+        } else if (treinta.contains(month)) {
+            //30 dias
+            return "30";
+        } else {
+            //SI NO ES NINGUNO ANTERIOR, SIGNIFICA QUE ES FEBRERO
+
+            //SI ES BICIESTO, TIENE 29 DIAS, SI NO, TIENE 28
+            if (Integer.parseInt(year) % 4 == 0) {
+                return "29";
+
+            } else {
+                return "28";
+            }
+
+        }
+    }
 }

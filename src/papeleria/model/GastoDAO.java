@@ -11,10 +11,13 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import static papeleria.model.Conexion.close;
 
 /**
@@ -22,7 +25,9 @@ import static papeleria.model.Conexion.close;
  * @author heber
  */
 public class GastoDAO {
-
+    
+    private static final QueryRunner QR = new QueryRunner();
+    
     public static TableModel tableModel(String año, String mes, String tipo, String tienda) {
         Connection conn = null;
         Statement stmt = null;
@@ -33,7 +38,7 @@ public class GastoDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             String query = "";
-
+            
             if (tipo.equals("Todo") && tienda.equals("Todo")) {
                 query = "select id_gasto as 'Gasto #', nombre_tipo as 'Concepto', nombre_proveedor as 'Tienda', cantidad_gasto as 'Cantidad $', fecha_gasto as 'Fecha' from gastos g inner join proveedor p on g.id_proveedor = p.id_proveedor inner join tipo t on g.id_tipo = t.id_tipo where fecha_gasto like '" + año + "-" + mes + "%' order by Fecha desc;";
             } else if (tipo.equals("Todo") && !tienda.equals("Todo")) {
@@ -43,7 +48,7 @@ public class GastoDAO {
             } else {
                 query = "select id_gasto as 'Gasto #', nombre_tipo as 'Concepto', nombre_proveedor as 'Tienda', cantidad_gasto as 'Cantidad $', fecha_gasto as 'Fecha' from gastos g inner join proveedor p on g.id_proveedor = p.id_proveedor inner join tipo t on g.id_tipo = t.id_tipo where fecha_gasto like '" + año + "-" + mes + "%' && nombre_proveedor = '" + tienda + "' && nombre_tipo = '" + tipo + "' order by Fecha desc;";
             }
-
+            
             rs = stmt.executeQuery(query);
             metaData = rs.getMetaData();
             int columns = metaData.getColumnCount();
@@ -64,7 +69,7 @@ public class GastoDAO {
                         new String[]{}
                 );
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -78,7 +83,7 @@ public class GastoDAO {
             return tableModel;
         }
     }
-
+    
     public static DefaultComboBoxModel comboModelAño() {
         DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
         Connection conn = null;
@@ -87,28 +92,28 @@ public class GastoDAO {
         Timestamp firstSale = null;
         Timestamp now = new Timestamp(System.currentTimeMillis());
         int firstYear, lastYear;
-
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select min(fecha_gasto) from gastos");
-
+            
             while (rs.next()) {
                 firstSale = (Timestamp) rs.getObject(1);
             }
-
+            
             firstYear = firstSale.getYear() + 1900;
             lastYear = now.getYear() + 1900;
-
+            
             String[] años = new String[lastYear - firstYear + 1];
-
+            
             for (int i = 0; i < años.length; i++) {
                 años[i] = String.valueOf(firstYear + i);
             }
-
+            
             modelFechas = new javax.swing.DefaultComboBoxModel<>(años);
             modelFechas.setSelectedItem(lastYear);
-
+            
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -121,34 +126,34 @@ public class GastoDAO {
             }
             return modelFechas;
         }
-
+        
     }
-
+    
     public static DefaultComboBoxModel comboModelMeses(JComboBox año) {
         DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
         List<Object> meses = new ArrayList();
-
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select distinct substring(fecha_gasto, 1 , 7) as Fecha from gastos where fecha_gasto like '" + año.getSelectedItem().toString() + "-%' order by Fecha desc");
-
+            
             int q = 0;
-
+            
             while (rs.next()) {
                 q += 1;
                 meses.add((rs.getObject(1).toString()).substring(5, 7));
             }
-
+            
             String[] cantidadMeses = new String[meses.size()];
-
+            
             for (int i = 0; i < cantidadMeses.length; i++) {
                 cantidadMeses[i] = String.valueOf(meses.get(i));
             }
-
+            
             modelFechas = new javax.swing.DefaultComboBoxModel<>(cantidadMeses);
         } catch (SQLException e) {
             e.printStackTrace(System.out);
@@ -162,18 +167,18 @@ public class GastoDAO {
             }
             return modelFechas;
         }
-
+        
     }
-
+    
     public static DefaultComboBoxModel comboModelActualMeses(JComboBox año) {
         DefaultComboBoxModel modelFechas = new DefaultComboBoxModel();
-
+        
         try {
             List<Object> meses = new ArrayList();
             Timestamp now = new Timestamp(System.currentTimeMillis());
             int añoSeleccionado = Integer.parseInt(año.getSelectedItem().toString());
             int añoActual = now.getYear() + 1900;
-
+            
             if (añoSeleccionado == añoActual) {
                 for (int i = 0; i < now.getMonth() + 1; i++) {
                     if (i < 9) {
@@ -191,43 +196,43 @@ public class GastoDAO {
                     }
                 }
             }
-
+            
             String[] cantidadMeses = new String[meses.size()];
-
+            
             for (int i = 0; i < cantidadMeses.length; i++) {
                 cantidadMeses[i] = String.valueOf(meses.get(i));
             }
-
+            
             modelFechas = new javax.swing.DefaultComboBoxModel<>(cantidadMeses);
-
+            
         } catch (NullPointerException ex) {
-
+            
         }
-
+        
         return modelFechas;
-
+        
     }
-
+    
     public static int idSiguienteGastoDelMes() {
         String query = "";
         int result = 1;
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             Timestamp now = new Timestamp(System.currentTimeMillis());
-
+            
             query = "select max(id_gasto) from gastos where year(fecha_gasto) = " + (now.getYear() + 1900) + " && month(fecha_gasto) = " + (now.getMonth() + 1) + ";";
-
+            
             rs = stmt.executeQuery(query);
-
+            
             while (rs.next()) {
                 result = (Integer) rs.getObject(1) + 1;
             }
-
+            
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -240,13 +245,13 @@ public class GastoDAO {
             }
             return result;
         }
-
+        
     }
-
+    
     public static void update(Gasto gasto, Gasto gastoOriginal) {
         Connection conn = null;
         PreparedStatement stmt = null;
-
+        
         try {
             //System.out.println(ventaTipo.getVenta().getIdVenta());
             conn = Conexion.getConnection();
@@ -258,30 +263,29 @@ public class GastoDAO {
             stmt.setInt(4, gasto.getIdProveedor());
             stmt.setInt(5, gastoOriginal.getIdGasto());
             stmt.setTimestamp(6, gastoOriginal.getFecha());
-
+            
             stmt.executeUpdate();
             conn.commit();
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-
+            
             try {
                 close(stmt);
                 close(conn);
             } catch (SQLException ex) {
-
+                
                 ex.printStackTrace(System.out);
             }
         }
     }
-
+    
     public static String gastoDelMes(String año, String mes, String tipo, String proveedor) {
         String query = "";
         String result = "";
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        double totalDia = 0;
         double totalMes = 0;
         //System.out.println("año: " + año + " mes: " + mes);
 
@@ -289,27 +293,27 @@ public class GastoDAO {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             Timestamp now = new Timestamp(System.currentTimeMillis());
-
+            
             if (tipo.equals("Todo") && proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%';";
                 //System.out.println("TODO: " + query);
             } else if (tipo.equals("Todo") && !proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
-
+                
             } else if (!tipo.equals("Todo") && proveedor.equals("Todo")) {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + ";";
-
+                
             } else {
                 query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + " && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
             }
-
+            
             rs = stmt.executeQuery(query);
-
+            
             while (rs.next()) {
                 totalMes = Double.valueOf(rs.getObject(1).toString());
             }
             result += "Mes: " + totalMes;
-
+            
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -324,10 +328,64 @@ public class GastoDAO {
         }
     }
 
+    /**
+     *
+     * @param año
+     * @param mes
+     * @param tipo
+     * @param proveedor
+     * @return el gasto total del mes en double
+     */
+    public static double gastoDelMes(String año, String mes, String tipo, String proveedor, boolean notString) {
+        String query = "";
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        double totalMes = 0;
+        //System.out.println("año: " + año + " mes: " + mes);
+
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            
+            if (tipo.equals("Todo") && proveedor.equals("Todo")) {
+                query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%';";
+                //System.out.println("TODO: " + query);
+            } else if (tipo.equals("Todo") && !proveedor.equals("Todo")) {
+                query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
+                
+            } else if (!tipo.equals("Todo") && proveedor.equals("Todo")) {
+                query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + ";";
+                
+            } else {
+                query = "select sum(cantidad_gasto) from gastos g where g.fecha_gasto like '" + año + "-" + mes + "-%' && id_tipo = " + TableBaseDAO.getID("tipo", tipo) + " && id_proveedor = " + TableBaseDAO.getID("proveedor", proveedor) + " ;";
+            }
+            
+            rs = stmt.executeQuery(query);
+            
+            while (rs.next()) {
+                totalMes = Double.valueOf(rs.getObject(1).toString());
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace(System.out);
+        } finally {
+            try {
+                close(rs);
+                close(stmt);
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+            return totalMes;
+        }
+    }
+    
     public static void insert(Gasto gasto) {
         Connection conn = null;
         PreparedStatement stmt = null;
-
+        
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
@@ -342,21 +400,21 @@ public class GastoDAO {
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-
+            
             try {
                 close(stmt);
                 close(conn);
             } catch (SQLException ex) {
-
+                
                 ex.printStackTrace(System.out);
             }
         }
     }
-
+    
     public static void delete(Gasto gasto) {
         Connection conn = null;
         PreparedStatement stmt = null;
-
+        
         try {
             conn = Conexion.getConnection();
             conn.setAutoCommit(false);
@@ -369,30 +427,30 @@ public class GastoDAO {
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
-
+            
             try {
                 close(stmt);
                 close(conn);
             } catch (SQLException ex) {
-
+                
                 ex.printStackTrace(System.out);
             }
         }
     }
-
+    
     public static Timestamp getDate() {
         Timestamp date = null;
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-
+        
         try {
             conn = Conexion.getConnection();
             stmt = conn.createStatement();
             rs = stmt.executeQuery("select current_timestamp()");
             rs.next();
             date = rs.getTimestamp(1);
-
+            
         } catch (SQLException e) {
             e.printStackTrace(System.out);
         } finally {
@@ -406,5 +464,37 @@ public class GastoDAO {
             return date;
         }
     }
-
+    
+    public static List<Gasto> getGastoMensualAgrupado(String year, String month) {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ResultSetMetaData metaData;
+        DecimalFormat df = new DecimalFormat("####0.00");
+        
+        List<Gasto> gastosAgrupados = new ArrayList();
+        try {
+            conn = Conexion.getConnection();
+            stmt = conn.createStatement();
+            String query = "CALL sps_gastos_mes_agrupados ('" + year + "', '" + month + "')";
+            rs = stmt.executeQuery(query);
+            
+            while (rs.next()) {
+                
+                gastosAgrupados.add(new Gasto(Double.parseDouble(rs.getObject(1).toString()), rs.getObject(2).toString(), rs.getObject(3).toString()));
+                
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace(System.err);
+        } finally {
+            try {
+                close(conn);
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.out);
+            }
+        }
+        return gastosAgrupados;
+    }
+    
 }

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -190,14 +191,39 @@ public class VentaTipoDAO {
         }
         return ventaTipoDAO;
     }
+    //String fechaInicio, String fechaFinal
 
-    public List<VentaTipo> getVentaTipoDiaria() {
+    public static List<VentaTipo> getVentaTipoDiaria(String fechaInicio, String fechaFinal) {
         Connection conn = null;
-        List<VentaTipo> ventaTiposDiaria = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ResultSetMetaData metaData;
+        List<VentaTipo> ventaTiposDiaria = new ArrayList<>();
         try {
             conn = Conexion.getConnection();
-            String query = "SELECT * FROM tipo";
-            ventaTiposDiaria = QR.query(conn, query, new BeanListHandler<>(VentaTipo.class));
+            stmt = conn.createStatement();
+            String query = "call sps_ventas_por_dia_tipo_intervalo('" + fechaInicio + "', '" + fechaFinal + "');"; 
+            rs = stmt.executeQuery(query);
+            metaData = rs.getMetaData();
+
+            int columns = metaData.getColumnCount();
+
+            while (rs.next()) {
+                Object[] item = new Object[columns];
+                for (int i = 0; i < columns; i++) {
+                    item[i] = rs.getObject(i + 1);
+                }
+                ventaTiposDiaria.add(
+                        new VentaTipo.VentaBuilder()
+                                .cantidadTipo((double) item[0])
+                                .venta(
+                                        new Venta.VentaBuilder()
+                                                .fecha(
+                                                        Timestamp.valueOf( item[2].toString() + " 00:00:01")
+                                                )
+                                                .build()).tipo(TableBaseDAO.getNombreSinImportarExiste((String) item[1], "tipo")).build());
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace(System.err);
         } finally {

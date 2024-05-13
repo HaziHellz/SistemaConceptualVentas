@@ -18,7 +18,10 @@ public class Gasto {
     private Timestamp fecha;
     private double cantidad;
 
-    public Gasto (GastoBuilder builder){
+    private String concepto;
+    private String tienda;
+
+    public Gasto(GastoBuilder builder) {
         this.idGasto = builder.idGasto;
         this.idTipo = builder.idTipo;
         this.idProveedor = builder.idProveedor;
@@ -26,6 +29,26 @@ public class Gasto {
         this.cantidad = builder.cantidad;
     }
 
+    public Gasto(double cantidad, String concepto, String tienda) {
+        this.cantidad = cantidad;
+        this.concepto = concepto;
+        this.tienda = tienda;
+    }
+
+    public Gasto() {
+
+    }
+
+    public String getConcepto() {
+        return concepto;
+    }
+
+    public String getTienda() {
+        return tienda;
+    }
+
+
+    
     public int getIdGasto() {
         return idGasto;
     }
@@ -45,7 +68,7 @@ public class Gasto {
     public double getCantidad() {
         return cantidad;
     }
-    
+
     public static class GastoBuilder {
 
         int idGasto;
@@ -79,9 +102,9 @@ public class Gasto {
             return this;
         }
 
-        public Gasto build (){
+        public Gasto build() {
             return new Gasto(this);
         }
-        
+
     }
 }
